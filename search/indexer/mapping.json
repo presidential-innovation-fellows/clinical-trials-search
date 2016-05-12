@@ -1,0 +1,14 @@
+{
+  "nci_id": {
+    "type": "string"
+  },
+  "nct_id": {
+    "type": "string"
+  },
+  "brief_title": {
+    "type": "string"
+  },
+  "official_title": {
+    "type": "string"
+  }
+}

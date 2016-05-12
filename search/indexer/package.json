@@ -1,0 +1,14 @@
+{
+  "name": "search-indexer",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Michael Balint <michael.balint@pif.gov> (https://presidentialinnovationfellows.gov/)",
+  "dependencies": {
+    "bunyan": "^1.8.1",
+    "elasticsearch": "11.0.1"
+  }
+}

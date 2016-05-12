@@ -1,0 +1,809 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "/",
+  "description": "Proposed clinical trial schema",
+  "type": "object",
+  "properties": {
+    "nci_id": {
+      "description": "NCI ID",
+      "type": "string"
+    },
+    "nct_id": {
+      "description": "ClinicalTrials.gov ID",
+      "type": "string"
+    },
+    // do we have these?
+    "other_ids": {
+      "description": "Other identification numbers assigned to the protocol, including unique identifiers from other registries and NIH grant numbers, if applicable.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "secondaryIdType": {
+            "enum": [
+              "US NIH Grant/Contract Award Number",
+              "Other Grant/Funding Number",
+              "Registry Identifier",
+              "EudraCT Number",
+              "Other Identifier"
+            ]
+          },
+          "secondaryId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "secondaryIdType",
+          "secondaryId"
+        ]
+      }
+    },
+    "brief_title": {
+      "description": "Protocol title intended for the lay public",
+      "type": "string"
+    },
+    "official_title": {
+      "description": "Official name of the protocol provided by the study principal investigator or sponsor",
+      "type": "string"
+    },
+    "brief_summary": {
+      "description": "Short description of the protocol intended for the lay public. Include a brief statement of the study hypothesis.",
+      "type": "string"
+    },
+    "official_summary": {
+      "description": "Extended description of the protocol, including more technical information (as compared to the Brief Summary) if desired",
+      "type": "string"
+    },
+    // does nci have recruiting status in this manner?
+    "recruiting_status": {
+      "enum": [
+        "Open",
+        "Not yet recruiting",
+        "Recruiting",
+        "Closed",
+        "Terminated",
+        "Suspended",
+        "Withdrawn",
+        "Enrolling by invitation",
+        "Recruiting",
+        "Expanded Access: Available",
+        "Expanded Access: Temporarily not available",
+        "Expanded Access: No longer available",
+        "Expanded Access: Approved for marketing"
+      ]
+    },
+    "study_start_date": {
+      "type": "string"
+    },
+    // does nci have estimated enrollment?
+    "estimated_enrollment": {
+      "type": "integer"
+    },
+    // does nci have estimated completion date?
+    "study_estimated_completion_date": {
+      "type": "string"
+    },
+    // syapse - how is this different from the field before?
+    "estimated_primary_completion_date": {
+      "type": "string"
+    },
+    "study_completion_date": {
+      "type": "string"
+    },
+    // not sure if we have acronyms?...
+    "acronym": {
+      "description": "Acronym or initials used to identify this study, if applicable",
+      "type": "string"
+    },
+    "sponsor": {
+      "description": "Name of primary organization that oversees implementation of study and is responsible for data analysis.",
+      "type": "string"
+    },
+    // is the following the same as nci's lead organization?
+    "responsible_party": {
+      "description": "The sponsor of the clinical trial (as defined in 21 CFR 50.3) or the principal investigator of such clinical trial if so designated by a sponsor, grantee, contractor, or awardee, so long as the principal investigator is responsible for conducting the trial, has access to and control over the data from the clinical trial, has the right to publish the results of the trial, and has the ability to meet all of the requirements for the submission of clinical trial information.",
+      "type": "string"
+    },
+    "collaborators": {
+      "description": "Other organizations (if any) providing support, including funding, design, implementation, data analysis and reporting.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "sites": {
+      "description": "Participating sites, including their locations and any relevant information about them",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "institution": {
+            "description": "The site's institution",
+            "type": "string"
+          },
+          // what is the family name really?
+          "institution_family": {
+            "description": "The institution's family name",
+            "type": "string"
+          },
+          "address": {
+            "type": "object",
+            "properties": {
+              "city": {
+                "type": "string"
+              },
+              "state": {
+                "type": "string"
+              },
+              "postal_code": {
+                "type": "string"
+              },
+              "country": {
+                "type": "string"
+              },
+              "latitude": {
+                "type": "number"
+              },
+              "longitude": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "city",
+              "state",
+              "postal_code",
+              "country",
+              "latitude",
+              "longitude"
+            ]
+          },
+          "recruiting_status": {
+            "enum": [
+              "Open",
+              "Not yet recruiting",
+              "Recruiting",
+              "Closed",
+              "Terminated",
+              "Suspended",
+              "Withdrawn",
+              "Enrolling by invitation",
+              "Recruiting",
+              "Expanded Access: Available",
+              "Expanded Access: Temporarily not available",
+              "Expanded Access: No longer available",
+              "Expanded Access: Approved for marketing"
+            ]
+          },
+          // do we have study contacts for each site?
+          "study_contacts": {
+            "type": "array",
+            "items": [
+              {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "institution": {
+                    "type": "string"
+                  },
+                  "phone": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name",
+                  "institution",
+                  "phone",
+                  "email"
+                ]
+              }
+            ]
+          },
+          // necessary/required?
+          "required": [
+            "institution",
+            "recruiting_status",
+            "last_updated",
+            "address",
+            "study_contacts"
+          ]
+        }
+      }
+    },
+    // what are anatomic sites?
+    "anatomic_sites": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    // does nci have this?
+    "funder_type": {
+      "enum": [
+        "NIH",
+        "Industry",
+        "Other U.S. Federal agency",
+        "All others (individuals, universities, organizations)"
+      ]
+    },
+    // does nci have study type in this manner?
+    "study_type": {
+      "enum": [
+        "Interventional",
+        "Observational",
+        "Expanded Access"
+      ]
+    },
+    // is there a different way to break this up?
+    "interventional_study_design": {
+      "type": "object",
+      "properties": {
+        "primary_purpose": {
+          "enum": [
+            "Treatment",
+            "Diagnostic",
+            "Prevention",
+            "Basic Science"
+          ]
+        },
+        "study_phase": {
+          "description": "Phase of investigation, as defined by the US FDA for trials involving investigational new drugs.",
+          "enum": [
+            "Phase 0",
+            "Phase 1",
+            "Phase 1/Phase 2",
+            "Phase 2",
+            "Phase 2/Phase 3",
+            "Phase 3",
+            "Phase 4"
+          ]
+        },
+        "allocation": {
+          "description": "Participant assignment to intervention group",
+          "enum": [
+            "Randomized",
+            "Non-Randomized"
+          ]
+        },
+        "study_classification": {
+          "description": "Type of primary outcome or endpoint that the protocol is designed to evaluate",
+          "enum": [
+            "Safety Study",
+            "Safety/Efficacy Study",
+            "Efficacy Study",
+            "Bio-equivalence Study",
+            "Bio-availability Study",
+            "Pharmacokinetics Study",
+            "Pharmacokinetics/Dynamics Study"
+          ]
+        },
+        "intervention_model": {
+          "description": "Intervention assignments",
+          "enum": [
+            "Parallel Assignment",
+            "Single Group Assignment",
+            "Crossover Assignment",
+            "Factorial"
+          ]
+        },
+        "number_of_arms": {
+          "description": "Number of intervention groups (enter 1 for single-arm study)",
+          "type": "integer"
+        },
+        "masking": {
+          "description": "Knowledge of intervention assignments",
+          "enum": [
+            "Open Label",
+            "Single Blind (Investigator)",
+            "Single Blind (Outcomes Assessor)",
+            "Double Blind (Subject, Investigator)",
+            "Double Blind (Subject, Caregiver, Investigator)",
+            "Double Blind (Subject, Caregiver, Investigator, Outcomes Assessor)"
+          ]
+        }
+      },
+      "required": [
+        "study_phase",
+        "number_of_arms"
+      ]
+    },
+    "observational_study_design": {
+      "type": "object",
+      "properties": {
+        "observational_study_model": {
+          "description": "Primary strategy for subject identification and follow-up",
+          "enum": [
+            "Cohort",
+            "Case-control",
+            "Case-only",
+            "Case-crossover",
+            "Ecologic or community studies",
+            "Family-based",
+            "Other"
+          ]
+        },
+        "time_perspective": {
+          "description": "Temporal relationship of observation period to time of subject enrollment.",
+          "enum": [
+            "Prospective",
+            "Retrospective",
+            "Cross-sectional",
+            "Other"
+          ]
+        },
+        "biospecimen_retention": {
+          "enum": [
+            "None Retained",
+            "Samples With DNA",
+            "Samples Without DNA"
+          ]
+        },
+        "biospecimen_description": {
+          "description": "Specify all types of biospecimens to be retained (e.g., whole blood, serum, white cells, urine, tissue)",
+          "type": "string"
+        },
+        "target_followup_duration": {
+          "description": "For Patient Registries, the anticipated time period over which each participant is to be followed",
+          "type": "string"
+        },
+        "number_of_groups_cohorts": {
+          "description": "Number of study groups/cohorts. Enter 1 for a single-group study.",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "observationalStudyModel",
+        "timePerspective",
+        "targetFollowupDuration",
+        "NumberOfGroupsCohorts"
+      ]
+    },
+    "interventions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "intervention_type": {
+            "enum": [
+              "Drug",
+              "Device",
+              "Biological/Vaccine",
+              "Procedure/Surgery",
+              "Radiation",
+              "Behavioral",
+              "Genetic",
+              "Dietary Supplement",
+              "Other"
+            ]
+          },
+          "intervention_name": {
+            "description": "For drugs use generic name; for other types of interventions provide a brief descriptive name",
+            "type": "string"
+          },
+          "intervention_description": {
+            "description": "Cover key details of the intervention. Must be sufficiently detailed to distinguish between arms of a study",
+            "type": "string"
+          },
+          "intervention_codes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "codingMethod": {
+                  "type": "string"
+                },
+                "code": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "codingMethod",
+                "code"
+              ]
+            }
+          }
+        },
+        "required": [
+          "intervention_type",
+          "intervention_name",
+          "intervention_description"
+        ]
+      }
+    },
+    // does nci have this?
+    "outcomes_measures": {
+      "description": "Specific key measurement(s) or observation(s) used to measure the effect of experimental variables in a study, or for observational studies, to describe patterns of diseases or traits or associations with exposures, risk factors or treatment.",
+      "type": "object",
+      "properties": {
+        "primary_outcomes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "description": "A concise name for the specific measure that will be used to determine the effect of the intervention(s) or, for observational studies, related to core objectives of the study and receiving the most emphasis in assessment.",
+                "type": "string"
+              },
+              "outcome_description": {
+                "description": "Additional information about the outcome measure, if needed for clarification.",
+                "type": "string"
+              },
+              "timeframe": {
+                "description": "Time point(s) at which outcome measure is assessed.",
+                "type": "string"
+              },
+              "safety_issue": {
+                "description": "Is this outcome measure assessing a safety issue?",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "title",
+              "timeframe"
+            ]
+          }
+        },
+        "secondary_outcomes": {
+          "id": "secondary_outcomes",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "description": "A concise name for the specific measure that will be used to determine the effect of the intervention(s) or, for observational studies, related to core objectives of the study and receiving the most emphasis in assessment.",
+                "type": "string"
+              },
+              "outcome_description": {
+                "description": "Additional information about the outcome measure, if needed for clarification.",
+                "type": "string"
+              },
+              "timeframe": {
+                "description": "Time point(s) at which outcome measure is assessed.",
+                "type": "string"
+              },
+              "safety_issue": {
+                "description": "Is this outcome measure assessing a safety issue?",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "title",
+              "timeframe"
+            ]
+          }
+        },
+        "other_outcomes": {
+          "id": "other_outcomes",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "description": "A concise name for the specific measure that will be used to determine the effect of the intervention(s) or, for observational studies, related to core objectives of the study and receiving the most emphasis in assessment.",
+                "type": "string"
+              },
+              "outcome_description": {
+                "description": "Additional information about the outcome measure, if needed for clarification.",
+                "type": "string"
+              },
+              "timeframe": {
+                "description": "Time point(s) at which outcome measure is assessed.",
+                "type": "string"
+              },
+              "safety_issue": {
+                "description": "Is this outcome measure assessing a safety issue?",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "title",
+              "timeframe"
+            ]
+          }
+        }
+      },
+      "required": [
+        "primary_outcomes"
+      ]
+    },
+    "arms": {
+      "type": "array",
+      "items": [
+        {
+          "type": "object",
+          "properties": {
+            "label": {
+              "description": "The short name used to identify the arm.",
+              "type": "string"
+            },
+            "arm_type": {
+              "enum": [
+                "Experimental",
+                "Active Comparator",
+                "Placebo Comparator",
+                "Sham Comparator",
+                "No intervention",
+                "Other"
+              ]
+            },
+            "arm_description": {
+              "description": "Brief description of the arm",
+              "type": "string"
+            },
+            "intervention": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "label",
+            "arm_type"
+          ]
+        }
+      ]
+    },
+    "groups": {
+      "type": "array",
+      "items": [
+        {
+          "type": "object",
+          "properties": {
+            "label": {
+              "description": "The short name used to identify the group.",
+              "type": "string"
+            },
+            "group_description": {
+              "description": "Explanation of the nature of the study group",
+              "type": "string"
+            }
+          },
+          "required": [
+            "label"
+          ]
+        }
+      ]
+    },
+    "eligibility_requirements": {
+      "type": "object",
+      "properties": {
+        "gender": {
+          "enum": [
+            "Female",
+            "Male",
+            "Both"
+          ]
+        },
+        "age_minimum": {
+          "type": "integer"
+        },
+        "age_maximum": {
+          "type": "integer"
+        },
+        "tumor_types": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "primary_tumor_site": {
+                "type": "string"
+              },
+              "histology": {
+                "type": "string"
+              },
+              "stage": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "primary_tumor_site"
+            ]
+          }
+        },
+        "condition_codes_icd10": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "condition_codes_snomed": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "genomic_alterations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "gene": {
+                "type": "string"
+              },
+              "hgvs": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "gene"
+            ]
+          }
+        },
+        "biomarkers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "biomarker_name": {
+                "type": "string"
+              },
+              "status": {
+                "enum": [
+                  "Positive",
+                  "Negative"
+                ]
+              }
+            },
+            "required": [
+              "biomarker_name",
+              "status"
+            ]
+          }
+        },
+        "inclusion_criteria": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "criterion_number": {
+                "type": "integer"
+              },
+              "criterion_description": {
+                "type": "string"
+              },
+              "arm_name": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "criterion_number",
+              "criterion_description"
+            ]
+          }
+        },
+        "exclusion_criteria": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "criterion_number": {
+                "type": "integer"
+              },
+              "criterion_description": {
+                "type": "string"
+              },
+              "arm_name": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "criterion_number",
+              "criterion_description"
+            ]
+          }
+        }
+      },
+      "required": [
+        "gender",
+        "age_minimum",
+        "age_maximum",
+        "condition_codes_icd10",
+        "condition_codes_snomed",
+        "tumor_types"
+      ]
+    },
+    "principal_investigator": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "institution": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "institution",
+        "phone",
+        "email"
+      ]
+    },
+    "study_contacts": {
+      "type": "array",
+      "items": [
+        {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "institution": {
+              "type": "string"
+            },
+            "phone": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "name",
+            "institution",
+            "phone",
+            "email"
+          ]
+        }
+      ]
+    }
+    // MISSING?: disease code
+    // MISSING?: phase of trial
+    // MISSING?: stage
+    // accrual rate
+    // adverse affects, warnings
+    // last-updated date
+    // linkage between trials (phase 1 to phase 2/3)
+    // NCTN, cooperative group code, etc?
+
+    // anything else that's missing?
+
+    // can't currently search for trials for dana farber
+    // search by family organization table
+
+  },
+  // what should be required?
+  "required": [
+    "nct_id",
+    "brief_title",
+    "official_title",
+    "sponsor",
+    "responsible_party",
+    "brief_summary",
+    "study_type",
+    "recruiting_status",
+    "principal_investigator",
+    "study_contacts",
+    "sites",
+    "eligibility_requirements"
+  ]
+}
+
+// find out about CT.gov's search infrastructure / ontology
+//
+
+// patient, reporting use case for data
+// make a list of use cases
+
+// follow up with gisele about meeting with jose and joe
+// biomarker - breast cancer erp status
+
+// improving seo through exposing search results
+// crowdsourced data updating
+
+// send email to warren re: data warehouse
+// send schema to warren, tell him who we're talking to - ask him for who else I should reach out to
+
