@@ -23,6 +23,11 @@ class StripTrialContainer extends stream.Transform {
       data = data.substring(0, data.lastIndexOf("}"));
       // logger.info(`Transformed: ${data}`);
     }
+    if (data.length >= 32) {
+      logger.info(`Piping "${data.substring(0, 32)}..." to stream...`);
+    } else {
+      logger.info(`Piping "${data}" to stream...`);
+    }
     this.push(data);
     return next();
   }
