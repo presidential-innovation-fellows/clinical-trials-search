@@ -1,5 +1,5 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-  Temporary script to translate sql version of trials into json files.
+  Temporary script to translate sql version of trials into json.
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 const fs             = require("fs");
