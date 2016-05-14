@@ -4,6 +4,8 @@ SELECT
     'nct_id', study.nct_id,
     'brief_title', study.brief_title,
     'official_title', study.official_title,
+    'brief_summary', study.brief_summary,
+    'detail_description', study.detail_description,
     'lead_org', study.lead_org,
     'sites', (
       SELECT
