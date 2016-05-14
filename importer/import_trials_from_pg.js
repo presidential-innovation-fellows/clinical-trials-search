@@ -45,7 +45,7 @@ client.connect((err) => {
   fs.readFile("trial_query.sql", "utf-8", (err, queryString) => {
     logger.info("Querying postgres for trials...");
     // set up the streams
-    let qs = client.query(new QueryStream(queryString));
+    let qs = client.query(new QueryStream(queryString, null, {batchSize: 10}));
     let js = JSONStream.stringify();
     let ts = new StripTrialContainer();
     let ws = fs.createWriteStream('trials.json');
