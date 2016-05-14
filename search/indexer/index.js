@@ -1,9 +1,6 @@
-const Indexer = require("./indexer"),
-      Logger = require("./logger");
+const TrialIndexer          = require("./trial/indexer");
+const Logger                = require("./logger");
 
-let indexer = new Indexer();
 let logger = new Logger();
 
-indexer.deleteIndex()
-.then(indexer.initIndex())
-.then(indexer.initMapping());
+TrialIndexer.init();

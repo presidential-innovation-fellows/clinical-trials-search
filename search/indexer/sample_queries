@@ -1,0 +1,48 @@
+curl -XPOST "http://localhost:9200/cancer-clinical-trials/_suggest" -d '
+{
+  "trial": {
+    "nested": {
+      "path": "diseases",
+      "text": "progressive disease",
+      "completion": {
+        "field": "disease_suggest"
+      }
+    }
+  }
+}'
+
+curl -XPOST "http://localhost:9200/cancer-clinical-trials/_search" -d '
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "nested": {
+            "path": "diseases",
+            "query": {
+              "bool": {
+                "must": [
+                  { "match": { "disease_suggest": "progressive disease" }}
+                ]
+        }}}}
+      ]
+}}}'
+
+curl -XPOST "http://localhost:9200/cancer-clinical-trials/_search" -d '
+{
+  "fields": ["nci_id", "diseases.disease_suggest"],
+  "query": {
+    "match": {
+      "diseases.disease_suggest": "progressive disease"
+    }
+  }
+}'
+
+curl -XPOST "http://localhost:9200/cancer-clinical-trials/_search" -d '
+{
+  "query": {
+    "match": {
+      "anatomic_sites": "Multiple Myeloma"
+    }
+  }
+}'

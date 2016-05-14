@@ -1,0 +1,274 @@
+{
+  "trial": {
+    "properties": {
+      "accruals": {
+        "type": "nested",
+        "properties": {
+          "accrual_count": {
+            "type": "long"
+          },
+          "count_type": {
+            "type": "string"
+          },
+          "org_name": {
+            "type": "string"
+          },
+          "org_org_family": {
+            "type": "string"
+          }
+        }
+      },
+      "anatomic_sites": {
+        "type": "string"
+      },
+      "biomarkers": {
+        "type": "nested",
+        "properties": {
+          "assay_purpose": {
+            "type": "string"
+          },
+          "assay_type_code": {
+            "type": "string"
+          },
+          "assay_use": {
+            "type": "string"
+          },
+          "evaluation_type_code": {
+            "type": "string"
+          },
+          "long_name": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "status_code": {
+            "type": "string"
+          },
+          "tissue_collection_method_code": {
+            "type": "string"
+          },
+          "tissue_specimen_type_code": {
+            "type": "string"
+          }
+        }
+      },
+      "brief_title": {
+        "type": "string"
+      },
+      "brief_summary": {
+        "type": "string"
+      },
+      "detail_description": {
+        "type": "string"
+      },
+      "diseases": {
+        "type": "nested",
+        "include_in_root": true,
+        "properties": {
+          "date_last_created": {
+            "type": "date",
+            "format": "strict_date_optional_time||epoch_millis"
+          },
+          "date_last_updated": {
+            "type": "date",
+            "format": "strict_date_optional_time||epoch_millis"
+          },
+          "disease_code": {
+            "type": "string"
+          },
+          "disease_menu_display_name": {
+            "type": "string"
+          },
+          "disease_preferred_name": {
+            "type": "string"
+          },
+          "nci_thesaurus_concept_id": {
+            "type": "string"
+          },
+          "synonyms": {
+            "type": "string"
+          }
+        }
+      },
+      "eligibility": {
+        "type": "nested",
+        "properties": {
+          "gender": {
+            "type": "string"
+          },
+          "max_age": {
+            "type": "string"
+          },
+          "max_age_number": {
+            "type": "long"
+          },
+          "max_age_unit": {
+            "type": "string"
+          },
+          "min_age": {
+            "type": "string"
+          },
+          "min_age_number": {
+            "type": "long"
+          },
+          "min_age_unit": {
+            "type": "string"
+          }
+        }
+      },
+      "funding": {
+        "type": "string"
+      },
+      "irb": {
+        "type": "nested",
+        "properties": {
+          "irb_approval_number": {
+            "type": "string"
+          },
+          "irb_approval_status": {
+            "type": "string"
+          },
+          "irb_city": {
+            "type": "string"
+          },
+          "irb_country": {
+            "type": "string"
+          },
+          "irb_name": {
+            "type": "string"
+          },
+          "irb_organization_affiliation": {
+            "type": "string"
+          },
+          "irb_state_or_province": {
+            "type": "string"
+          },
+          "irb_zip_code": {
+            "type": "string"
+          }
+        }
+      },
+      "lead_org": {
+        "type": "string"
+      },
+      "nci_id": {
+        "type": "string"
+      },
+      "nct_id": {
+        "type": "string"
+      },
+      "official_title": {
+        "type": "string"
+      },
+      "phase": {
+        "type": "string"
+      },
+      "sites": {
+        "type": "nested",
+        "properties": {
+          "contact_email": {
+            "type": "string"
+          },
+          "contact_name": {
+            "type": "string"
+          },
+          "contact_phone": {
+            "type": "string"
+          },
+          "local_site_identifier": {
+            "type": "string"
+          },
+          "org": {
+            "type": "nested",
+            "properties": {
+              "address_line_1": {
+                "type": "string"
+              },
+              "address_line_2": {
+                "type": "string"
+              },
+              "change_request_count": {
+                "type": "long"
+              },
+              "city": {
+                "type": "string"
+              },
+              "country": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "family": {
+                "type": "string"
+              },
+              "fax": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "org_to_family_relationship": {
+                "type": "string"
+              },
+              "phone": {
+                "type": "string"
+              },
+              "postal_code": {
+                "type": "string"
+              },
+              "state_or_province": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              },
+              "status_date": {
+                "type": "date",
+                "format": "strict_date_optional_time||epoch_millis"
+              }
+            }
+          },
+          "program_code": {
+            "type": "string"
+          },
+          "recruitment_status": {
+            "type": "string"
+          },
+          "recruitment_status_date": {
+            "type": "date",
+            "format": "strict_date_optional_time||epoch_millis"
+          },
+          "target_accrual": {
+            "type": "long"
+          }
+        }
+      },
+      "sponsor": {
+        "type": "nested",
+        "properties": {
+          "responsible_party_name": {
+            "type": "string"
+          },
+          "sponsor": {
+            "type": "string"
+          },
+          "sponsor_org_family": {
+            "type": "string"
+          },
+          "sponsor_resp_party_email": {
+            "type": "string"
+          },
+          "sponsor_resp_party_phone": {
+            "type": "string"
+          }
+        }
+      },
+      "start_date": {
+        "type": "date",
+        "format": "strict_date_optional_time||epoch_millis"
+      }
+    }
+  }
+}
