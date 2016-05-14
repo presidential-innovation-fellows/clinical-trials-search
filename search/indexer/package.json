@@ -8,7 +8,10 @@
   },
   "author": "Michael Balint <michael.balint@pif.gov> (https://presidentialinnovationfellows.gov/)",
   "dependencies": {
+    "JSONStream": "^1.1.1",
+    "async": "^2.0.0-rc.4",
     "bunyan": "^1.8.1",
-    "elasticsearch": "11.0.1"
+    "elasticsearch": "11.0.1",
+    "event-stream": "^3.3.2"
   }
 }
