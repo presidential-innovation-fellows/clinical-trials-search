@@ -24,9 +24,9 @@ class StripTrialContainer extends Transform {
       // logger.info(`Transformed: ${data}`);
     }
     if (data.length >= 32) {
-      logger.info(`Piping "${data.substring(0, 32)}..." to stream...`);
+      logger.info(`Piping '${data.substring(0, 32).replace(/(\r\n|\n|\r)/gm,"")}...' to stream...`);
     } else {
-      logger.info(`Piping "${data}" to stream...`);
+      logger.info(`Piping '${data.replace(/(\r\n|\n|\r)/gm,"")}' to stream...`);
     }
     this.push(data);
     return next();
