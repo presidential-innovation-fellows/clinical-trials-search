@@ -87,7 +87,7 @@ class TermIndexer extends AbstractIndexer {
       });
     };
 
-    let maxTagCount = _.max(this.terms.tags);
+    let maxTagCount = _.max(_.values(this.terms.tags));
     Object.keys(this.terms.tags).forEach((tag) => {
       let count = this.terms.tags[tag];
       let count_normalized = count / maxTagCount;
