@@ -1,0 +1,18 @@
+{
+  "term": {
+    "properties": {
+      "text": {
+        "type": "string"
+      },
+      "classification": {
+        "type": "string"
+      },
+      "count": {
+        "type": "long"
+      },
+      "count_normalized": {
+        "type": "double"
+      }
+    }
+  }
+}
