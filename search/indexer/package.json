@@ -12,6 +12,7 @@
     "async": "^2.0.0-rc.4",
     "bunyan": "^1.8.1",
     "elasticsearch": "11.0.1",
-    "event-stream": "^3.3.2"
+    "event-stream": "^3.3.2",
+    "lodash": "^4.12.0"
   }
 }

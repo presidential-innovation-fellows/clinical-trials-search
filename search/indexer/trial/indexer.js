@@ -25,7 +25,8 @@ class TrialIndexer extends AbstractIndexer {
       path.join(__dirname, '../../../importer/trials.json'));
     let js = JSONStream.parse("*");
 
-    const _indexTrial = (trial, next) => {
+    let indexCounter = 0;
+    const _indexTrial = (trial, done) => {
       logger.info(`Indexing clinical trial with nci_id (${trial.nci_id}).`);
       this.indexDocument({
         "index": this.esIndex,
@@ -34,7 +35,8 @@ class TrialIndexer extends AbstractIndexer {
         "body": trial
       }, (err, response, status) => {
         if(err) { logger.error(err); }
-        return next(err, response);
+        indexCounter++;
+        return done(err, response);
       });
     };
 
@@ -77,7 +79,9 @@ class TrialIndexer extends AbstractIndexer {
       (response, next) => { indexer.initMapping(next); },
       (response, next) => { indexer.indexFromTrialsJsonDump(next); }
     ], (err) => {
-      logger.info("Finished indexing.");
+      if(err) { logger.error(err); }
+      logger.info(`Finished indexing (${indexer.esType}) indices.`);
+      return callback(err);
     });
   }
 
