@@ -1,5 +1,6 @@
 {
   "ES_HOST": "localhost",
   "ES_PORT": "9200",
-  "ES_CONCURRENCY": 10
+  "ES_CONCURRENCY": 10,
+  "QUEUE_GRACE_PERIOD": 5000
 }

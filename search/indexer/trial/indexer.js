@@ -46,14 +46,24 @@ class TrialIndexer extends AbstractIndexer {
       });
     }
 
-    rs.pipe(js).on("data", _pushToQ).on("finished", () => {
-      logger.info("Indexed all trials in \"trials.json\".");
-    });
+    rs.pipe(js).on("data", _pushToQ);
+
+    let queueCompleted = false;
+    indexQ.drain = () => {
+      logger.info(`Waiting ${CONFIG.QUEUE_GRACE_PERIOD/1000} seconds for queue to complete...`);
+      setTimeout(() => {
+        if(!queueCompleted) {
+          logger.info(`Indexed all ${indexCounter} trials in "trials.json".`);
+          queueCompleted = true;
+          return callback();
+        }
+      }, CONFIG.QUEUE_GRACE_PERIOD);
+    }
   }
 
   static init(callback) {
     let indexer = new TrialIndexer(ES_PARAMS);
-    logger.info("Started indexing.");
+    logger.info(`Started indexing (${indexer.esType}) indices.`);
     async.waterfall([
       (next) => { indexer.indexExists(next); },
       (exists, next) => {
