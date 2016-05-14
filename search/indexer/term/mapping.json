@@ -2,7 +2,9 @@
   "term": {
     "properties": {
       "text": {
-        "type": "string"
+        "type": "string",
+        "analyzer": "edge_ngram_analyzer",
+        "search_analyzer": "standard"
       },
       "classification": {
         "type": "string"

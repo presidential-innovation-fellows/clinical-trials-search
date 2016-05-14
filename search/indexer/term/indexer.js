@@ -24,7 +24,7 @@ class TermIndexer extends AbstractIndexer {
   constructor(params) {
     super(params);
     this.terms = {
-      tags: {}
+      diseases: {}
     };
   }
 
@@ -35,30 +35,35 @@ class TermIndexer extends AbstractIndexer {
     let js = JSONStream.parse("*");
 
     let _loadTerms = (trial) => {
-      trial.diseases.forEach((disease) => {
-        let trialTerms = {
-          tags: {}
-        };
-        disease.synonyms.forEach((synonym) => {
-          if(typeof trialTerms.tags[synonym] === "undefined") {
-            trialTerms.tags[synonym] = 1;
-          } else{
-            trialTerms.tags[synonym]++;
-          }
-        });
-        Object.keys(trialTerms.tags).forEach((tag) => {
-          if(typeof this.terms.tags[tag] === "undefined") {
-            this.terms.tags[tag] = trialTerms.tags[tag];
-          } else{
-            this.terms.tags[tag] += trialTerms.tags[tag];
-          }
-        });
-      });
+      this._loadDiseaseTermsFromTrial(trial);
     };
 
     rs.pipe(js).on("data", _loadTerms).on("end", () => {
       logger.info("Loaded terms from \"trials.json\".");
       return callback();
+    });
+  }
+
+  _loadDiseaseTermsFromTrial(trial) {
+    trial.diseases.forEach((disease) => {
+      let trialTerms = {
+        diseases: {}
+      };
+      disease.synonyms.forEach((synonym) => {
+        synonym = synonym.toLowerCase();
+        if(typeof trialTerms.diseases[synonym] === "undefined") {
+          trialTerms.diseases[synonym] = 1;
+        } else{
+          trialTerms.diseases[synonym]++;
+        }
+      });
+      Object.keys(trialTerms.diseases).forEach((disease) => {
+        if(typeof this.terms.diseases[disease] === "undefined") {
+          this.terms.diseases[disease] = trialTerms.diseases[disease];
+        } else{
+          this.terms.diseases[disease] += trialTerms.diseases[disease];
+        }
+      });
     });
   }
 
@@ -87,13 +92,13 @@ class TermIndexer extends AbstractIndexer {
       });
     };
 
-    let maxTagCount = _.max(_.values(this.terms.tags));
-    Object.keys(this.terms.tags).forEach((tag) => {
-      let count = this.terms.tags[tag];
+    let maxTagCount = _.max(_.values(this.terms.diseases));
+    Object.keys(this.terms.diseases).forEach((disease) => {
+      let count = this.terms.diseases[disease];
       let count_normalized = count / maxTagCount;
       _pushToQ({
-        "text": tag,
-        "classification": "tag",
+        "text": disease,
+        "classification": "disease",
         "count": count,
         "count_normalized": count_normalized
       });
