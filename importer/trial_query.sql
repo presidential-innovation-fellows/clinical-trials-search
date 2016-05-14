@@ -56,10 +56,8 @@ SELECT
     ),
     'anatomic_sites', (
       SELECT
-        json_build_array(
-          json_agg(
-            anatomic_site.anatomic_site_name
-          )
+        json_agg(
+          anatomic_site.anatomic_site_name
         )
       FROM
         dw_study_anatomic_site anatomic_site
