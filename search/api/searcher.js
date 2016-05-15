@@ -15,13 +15,19 @@ class Searcher {
     });
   }
 
+  // TODO: make or implement a query builder
   _searchTermsQuery(q) {
-    return {
+    let query = {
+      "size": 5,
       "query": {
         "function_score": {
           "query": {
-            "match": {
-              "text": q.term
+            "bool": {
+              "should": [{
+                "match": {
+                  "text": q.term
+                }
+              }]
             }
           },
           "functions": [{
@@ -33,6 +39,14 @@ class Searcher {
         }
       }
     };
+    if(q.classification) {
+      query.query.function_score.query.bool["must"] = [{
+        "term": {
+          "classification": q.classification
+        }
+      }];
+    }
+    return query;
   }
 
   searchTerms(q, callback) {
@@ -45,7 +59,7 @@ class Searcher {
         logger.error(err);
         return callback(err);
       }
-      return callback(null, res);
+      // return callback(null, res);
       let formattedRes = {
         total: res.hits.total,
         terms: _.map(res.hits.hits, (hit) => {
