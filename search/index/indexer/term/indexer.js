@@ -51,23 +51,42 @@ class TermIndexer extends AbstractIndexer {
     });
   }
 
+  _getKeyTerm(text) {
+    return text.replace(/[^a-zA-Z0-9 ]/g, " ").toLowerCase();
+  }
+
+  _toTitleCase(str) {
+    return str.replace(/\w\S*/g,
+      function(txt){
+        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+      }
+    );
+  }
+
   _loadDiseaseTermsFromTrial(trial) {
     if(!trial.diseases) { return; }
     let diseaseTerms = {};
     trial.diseases.forEach((disease) => {
       if(!disease.synonyms) { return; }
       disease.synonyms.forEach((synonym) => {
-        synonym = synonym.toLowerCase();
-        if(typeof diseaseTerms[synonym] === "undefined") {
-          diseaseTerms[synonym] = 1;
+        let key = this._getKeyTerm(synonym);
+        if(typeof diseaseTerms[key] === "undefined") {
+          diseaseTerms[key] = {
+            count: 1,
+            name: synonym
+          };
         }
       });
     });
     Object.keys(diseaseTerms).forEach((diseaseTerm) => {
       if(typeof this.terms.diseases[diseaseTerm] === "undefined") {
-        this.terms.diseases[diseaseTerm] = diseaseTerms[diseaseTerm];
+        this.terms.diseases[diseaseTerm] = {
+          count: diseaseTerms[diseaseTerm].count,
+          name: diseaseTerms[diseaseTerm].name
+        };
       } else{
-        this.terms.diseases[diseaseTerm] += diseaseTerms[diseaseTerm];
+        this.terms.diseases[diseaseTerm].count +=
+          diseaseTerms[diseaseTerm].count;
       }
     });
   }
@@ -81,18 +100,26 @@ class TermIndexer extends AbstractIndexer {
         org.city,
         org.state_or_province,
         org.country
-      ]).join(", ").toLowerCase();
+      ]).join(", ");
       if(location) {
-        if(typeof locationTerms[location] === "undefined") {
-          locationTerms[location] = 1;
+        let key = this._getKeyTerm(location);
+        if(typeof locationTerms[key] === "undefined") {
+          locationTerms[key] = {
+            count: 1,
+            name: location
+          };
         }
       }
     });
     Object.keys(locationTerms).forEach((locationTerm) => {
       if(typeof this.terms.locations[locationTerm] === "undefined") {
-        this.terms.locations[locationTerm] = locationTerms[locationTerm];
+        this.terms.locations[locationTerm] = {
+          count: locationTerms[locationTerm].count,
+          name: locationTerms[locationTerm].name
+        };
       } else{
-        this.terms.locations[locationTerm] += locationTerms[locationTerm];
+        this.terms.locations[locationTerm].count +=
+          locationTerms[locationTerm].count;
       }
     });
   }
@@ -102,18 +129,26 @@ class TermIndexer extends AbstractIndexer {
     let organizationTerms = {};
     trial.sites.forEach((site) => {
       let org = site.org;
-      let organization = org.name.toLowerCase();
+      let organization = org.name;
       if(organization) {
-        if(typeof organizationTerms[organization] === "undefined") {
-          organizationTerms[organization] = 1;
+        let key = this._getKeyTerm(organization);
+        if(typeof organizationTerms[key] === "undefined") {
+          organizationTerms[key] = {
+            count: 1,
+            name: organization
+          };
         }
       }
     });
     Object.keys(organizationTerms).forEach((organizationTerm) => {
       if(typeof this.terms.organizations[organizationTerm] === "undefined") {
-        this.terms.organizations[organizationTerm] = organizationTerms[organizationTerm];
+        this.terms.organizations[organizationTerm] = {
+          count: organizationTerms[organizationTerm].count,
+          name: organizationTerms[organizationTerm].name
+        };
       } else{
-        this.terms.organizations[organizationTerm] += organizationTerms[organizationTerm];
+        this.terms.organizations[organizationTerm].count +=
+          organizationTerms[organizationTerm].count;
       }
     });
   }
@@ -125,16 +160,24 @@ class TermIndexer extends AbstractIndexer {
       let org = site.org;
       let organizationFamily = org.name.toLowerCase();
       if(organizationFamily) {
-        if(typeof organizationFamilyTerms[organizationFamily] === "undefined") {
-          organizationFamilyTerms[organizationFamily] = 1;
+        let key = this._getKeyTerm(organizationFamily);
+        if(typeof organizationFamilyTerms[key] === "undefined") {
+          organizationFamilyTerms[key] = {
+            count: 1,
+            name: this._toTitleCase(organizationFamily)
+          };
         }
       }
     });
     Object.keys(organizationFamilyTerms).forEach((organizationFamilyTerm) => {
       if(typeof this.terms.organizationFamilies[organizationFamilyTerm] === "undefined") {
-        this.terms.organizationFamilies[organizationFamilyTerm] = organizationFamilyTerms[organizationFamilyTerm];
+        this.terms.organizationFamilies[organizationFamilyTerm] = {
+          count: organizationFamilyTerms[organizationFamilyTerm].count,
+          name: organizationFamilyTerms[organizationFamilyTerm].name
+        };
       } else{
-        this.terms.organizationFamilies[organizationFamilyTerm] += organizationFamilyTerms[organizationFamilyTerm];
+        this.terms.organizationFamilies[organizationFamilyTerm].count +=
+          organizationFamilyTerms[organizationFamilyTerm].count;
       }
     });
   }
@@ -144,7 +187,7 @@ class TermIndexer extends AbstractIndexer {
     let termsRoot = params.termsRoot;
     let indexCounter = 0;
     const _indexTerm = (term, next) => {
-      let id = `${term.text}_${term.classification}`;
+      let id = `${this._getKeyTerm(term.text)}_${term.classification}`;
       logger.info(`Indexing term (${id}).`);
       this.indexDocument({
         "index": this.esIndex,
@@ -166,12 +209,17 @@ class TermIndexer extends AbstractIndexer {
       });
     };
 
-    let maxTermCount = _.max(_.values(this.terms[termsRoot]));
+    let maxTermCount = _.max(
+      _.map(_.values(this.terms[termsRoot]), (term) => {
+        return term.count;
+      }));
     Object.keys(this.terms[termsRoot]).forEach((term) => {
-      let count = this.terms[termsRoot][term];
+      let termObj = this.terms[termsRoot][term];
+      let name = termObj["name"];
+      let count = termObj["count"];
       let count_normalized = count / maxTermCount;
       _pushToQ({
-        "text": term,
+        "text": name,
         "classification": termType,
         "count": count,
         "count_normalized": count_normalized
