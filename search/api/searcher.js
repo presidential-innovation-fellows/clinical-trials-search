@@ -33,7 +33,7 @@ class Searcher {
           "functions": [{
             "field_value_factor": {
               "field": "count_normalized",
-              "factor": 2.5
+              "factor": 1.5
             }
           }]
         }
