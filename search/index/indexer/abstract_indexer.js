@@ -4,8 +4,8 @@ const async               = require("async");
 const JSONStream          = require("JSONStream");
 const ElasticSearch       = require("elasticsearch");
 
-const Logger              = require("./logger");
-const CONFIG              = require("./config.json");
+const Logger              = require("../../../logger");
+const CONFIG              = require("../../config.json");
 
 let logger = new Logger();
 

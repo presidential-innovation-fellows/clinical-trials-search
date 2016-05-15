@@ -1,18 +1,17 @@
 {
-  "name": "import",
+  "name": "search-indexer",
   "version": "0.0.0",
   "description": "",
-  "main": "import_from_sql.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Michael Balint <michael.balint@pif.gov> (https://presidentialinnovationfellows.gov/)",
   "dependencies": {
     "JSONStream": "^1.1.1",
-    "bunyan": "^1.8.1",
+    "async": "^2.0.0-rc.4",
+    "elasticsearch": "11.0.1",
     "event-stream": "^3.3.2",
-    "pg": "^4.5.5",
-    "pg-native": "^1.10.0",
-    "pg-query-stream": "^1.0.0"
+    "lodash": "^4.12.0"
   }
 }

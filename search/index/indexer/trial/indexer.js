@@ -4,11 +4,11 @@ const async               = require("async");
 const JSONStream          = require("JSONStream");
 
 const AbstractIndexer     = require("../abstract_indexer");
-const Logger              = require("../logger");
+const Logger              = require("../../../../logger");
 
 let logger = new Logger();
 
-const CONFIG = require("../config.json");
+const CONFIG = require("../../../config.json");
 const ES_MAPPING = require("./mapping.json");
 const ES_SETTINGS = require("./settings.json");
 const ES_PARAMS = {
@@ -17,12 +17,12 @@ const ES_PARAMS = {
   "esMapping": ES_MAPPING,
   "esSettings": ES_SETTINGS
 };
+const TRIALS_FILEPATH = path.join(__dirname, '../../../../import/trials.json');
 
 class TrialIndexer extends AbstractIndexer {
 
   indexFromTrialsJsonDump(callback) {
-    let rs = fs.createReadStream(
-      path.join(__dirname, '../../../importer/trials.json'));
+    let rs = fs.createReadStream(TRIALS_FILEPATH);
     let js = JSONStream.parse("*");
 
     let indexCounter = 0;
