@@ -24,9 +24,16 @@ function renderSuggestion(suggestion, { value, valueBeforeUpDown }) {
   const matches = AutosuggestHighlight.match(suggestionText, query);
   const parts = AutosuggestHighlight.parse(suggestionText, matches);
 
+  let classificationText = {
+    "organization": "hospital/center",
+    "organization_family": "network/organization",
+    "disease": "disease",
+    "location": "location"
+  }[suggestion.classification];
+
   return (
     <span className={'suggestion-content ' + suggestion.classification}>
-      <span className="name">
+      <span className="text">
         {
           parts.map((part, index) => {
             const className = part.highlight ? 'suggester-highlight' : null;
@@ -37,6 +44,7 @@ function renderSuggestion(suggestion, { value, valueBeforeUpDown }) {
           })
         }
       </span>
+      <span className="suggestion-classification">&nbsp;({classificationText})</span>
     </span>
   );
 }

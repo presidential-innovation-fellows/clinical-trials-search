@@ -9,9 +9,9 @@ class AppComponent extends React.Component {
     return (
       <div className="index">
         <div className="main-container">
-          <a href="https://www.cancer.gov">
-            <img className="nci-logo" src="images/nci-logo-full.svg"/>
-          </a>
+          <div className="logo-container">
+            Search Clinical Trials
+          </div>
           <div className="search-container">
             <SuggesterComponent />
           </div>
