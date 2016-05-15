@@ -76,6 +76,41 @@ class Searcher {
     return callback(null, "response text");
   }
 
+  // TODO: make or implement a query builder
+  _searchClinicalTrialById(nciId) {
+    return {
+      "query": {
+        "bool": {
+          "must": [{
+            "match": {
+              "nci_id": nciId
+            }
+          }]
+        }
+      }
+    };
+  }
+
+  getClinicalTrialById(nciId, callback) {
+    this.client.search({
+      index: 'cancer-clinical-trials',
+      type: 'trial',
+      body: this._searchClinicalTrialById(nciId)
+    }, (err, res) => {
+      if(err) {
+        logger.error(err);
+        return callback(err);
+      }
+      // return callback(null, res);
+      if(!res.hits || !res.hits.hits) {
+        return callback(null, {});
+      }
+      // TODO: format
+      let formattedRes = res.hits.hits[0]._source;
+      return callback(null, formattedRes);
+    });
+  }
+
 }
 
 let searcher = new Searcher();

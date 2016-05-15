@@ -2,9 +2,12 @@ const express = require("express");
 const searcher = require("../searcher");
 const router = express.Router();
 
-/* GET home page. */
-router.get('/', (req, res, next) => {
-  res.render('index', { title: 'Express' });
+router.get('/clinical-trial/:id', (req, res, next) => {
+  let nciId = req.params.id;
+  searcher.getClinicalTrialById(nciId, (err, clinicalTrial) => {
+    // TODO: add error handling
+    res.json(clinicalTrial);
+  });
 });
 
 router.get('/search/terms', (req, res, next) => {

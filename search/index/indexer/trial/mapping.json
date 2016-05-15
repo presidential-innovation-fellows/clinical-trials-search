@@ -153,10 +153,12 @@
         "type": "string"
       },
       "nci_id": {
-        "type": "string"
+        "type": "string",
+        "index":"not_analyzed"
       },
       "nct_id": {
-        "type": "string"
+        "type": "string",
+        "index":"not_analyzed"
       },
       "official_title": {
         "type": "string"
