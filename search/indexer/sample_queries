@@ -28,12 +28,12 @@ curl -XPOST "http://localhost:9200/cancer-clinical-trials/_search" -d '
       ]
 }}}'
 
-curl -XPOST "http://localhost:9200/cancer-clinical-trials/_search" -d '
+curl -XPOST "http://localhost:9200/cancer-terms/_search?pretty" -d '
 {
-  "fields": ["nci_id", "diseases.disease_suggest"],
+  "fields": ["text", "classification", "count", "count_normalized"],
   "query": {
     "match": {
-      "diseases.disease_suggest": "progressive disease"
+      "text": "progressive disease"
     }
   }
 }'

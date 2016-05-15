@@ -17,7 +17,6 @@ SELECT
             'generic_contact', site.generic_contact,
             'org', (
               SELECT
-                json_agg(
                   json_build_object(
                     'address_line_1', org.address_line_1,
                     'address_line_2', org.address_line_2,
@@ -36,7 +35,6 @@ SELECT
                     'family', org.family,
                     'org_to_family_relationship', org.org_to_family_relationship
                   )
-                )
               FROM
                 dw_organization org
               WHERE
