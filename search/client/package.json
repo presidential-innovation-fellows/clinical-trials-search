@@ -71,6 +71,8 @@
     "react-autosuggest": "^3.7.3",
     "react-dom": "^15.0.0",
     "react-redux": "^4.4.5",
+    "react-router": "^2.4.0",
+    "react-router-redux": "^4.0.4",
     "redux": "^3.5.2"
   }
 }

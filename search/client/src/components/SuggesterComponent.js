@@ -25,15 +25,15 @@ function renderSuggestion(suggestion, { value, valueBeforeUpDown }) {
   const parts = AutosuggestHighlight.parse(suggestionText, matches);
 
   let classificationText = {
-    "organization": "hospital/center",
-    "organization_family": "network/organization",
-    "disease": "disease",
-    "location": "location"
+    'organization': 'hospital/center',
+    'organization_family': 'network/organization',
+    'disease': 'disease',
+    'location': 'location'
   }[suggestion.classification];
 
   return (
     <span className={'suggestion-content ' + suggestion.classification}>
-      <span className="text">
+      <span className='text'>
         {
           parts.map((part, index) => {
             const className = part.highlight ? 'suggester-highlight' : null;
@@ -44,7 +44,7 @@ function renderSuggestion(suggestion, { value, valueBeforeUpDown }) {
           })
         }
       </span>
-      <span className="suggestion-classification">&nbsp;({classificationText})</span>
+      <span className='suggestion-classification'>&nbsp;({classificationText})</span>
     </span>
   );
 }
@@ -59,8 +59,7 @@ class SuggesterComponent extends React.Component {
 
     this.state = {
       value: '',
-      suggestions: [],
-      isLoading: false
+      suggestions: []
     };
 
     this.onChange = this.onChange.bind(this);
@@ -68,9 +67,7 @@ class SuggesterComponent extends React.Component {
   }
 
   loadSuggestions(value) {
-    this.setState({
-      isLoading: true
-    });
+    this.setState({});
 
     let queryUrl =
       `http://localhost:3000/search/terms?term=${escapeRegexCharacters(value)}`;
@@ -79,13 +76,10 @@ class SuggesterComponent extends React.Component {
       // console.log(suggestions);
       if (value === this.state.value) {
         this.setState({
-          isLoading: false,
           suggestions
         });
       } else { // Ignore suggestions if input value changed
-        this.setState({
-          isLoading: false
-        });
+        this.setState({});
       }
     });
 
@@ -106,13 +100,12 @@ class SuggesterComponent extends React.Component {
   }
 
   render() {
-    const { value, suggestions, isLoading } = this.state;
+    const { value, suggestions } = this.state;
     const inputProps = {
-      placeholder: "enter a disease, location, or organization",
+      placeholder: 'enter a disease, location, or organization',
       value,
       onChange: this.onChange
     };
-    const status = (isLoading ? 'Loading...' : 'Type to load suggestions');
 
     return (
       <div>
@@ -121,8 +114,8 @@ class SuggesterComponent extends React.Component {
                      getSuggestionValue={getSuggestionValue}
                      renderSuggestion={renderSuggestion}
                      inputProps={inputProps} />
-        <div className="search-icon">
-          <img src="images/search-icon.svg" />
+        <div className='search-icon'>
+          <img src='images/search-icon.svg' />
         </div>
       </div>
     );

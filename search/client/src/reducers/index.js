@@ -8,5 +8,5 @@
  */
 import { combineReducers } from 'redux';
 /* Populated by react-webpack-redux:reducer */
-const reducers = {};
+const reducers = { search: require('../reducers/search.js') };
 module.exports = combineReducers(reducers);
