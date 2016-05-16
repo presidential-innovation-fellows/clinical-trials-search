@@ -6,7 +6,6 @@ import { syncHistoryWithStore } from 'react-router-redux'
 import configureStore from './stores';
 import App from './components/App';
 import Home from './components/Home';
-import Main from './components/Main';
 import ClinicalTrial from './components/ClinicalTrial';
 
 const store = configureStore();
