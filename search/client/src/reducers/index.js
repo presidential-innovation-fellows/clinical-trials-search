@@ -6,7 +6,5 @@
  *          This modifications only run once when the generator is invoked - if
  *          you edit them, they are not updated again.
  */
-import { combineReducers } from 'redux';
-/* Populated by react-webpack-redux:reducer */
-const reducers = { search: require('../reducers/search.js') };
-module.exports = combineReducers(reducers);
+// import { combineReducers } from 'redux';
+module.exports = { search: require('../reducers/search.js') };

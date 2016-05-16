@@ -1,13 +1,12 @@
 'use strict';
 
 import React from 'react';
-import $ from 'jquery';
+import fetch from 'isomorphic-fetch';
 import Autosuggest from 'react-autosuggest';
 import AutosuggestHighlight from 'autosuggest-highlight';
 
 require('styles//Suggester.sass');
 
-// https://developer.mozilla.org/en/docs/Web/JavaScript/Guide/Regular_Expressions#Using_Special_Characters
 function escapeRegexCharacters(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
@@ -69,20 +68,20 @@ class SuggesterComponent extends React.Component {
   loadSuggestions(value) {
     this.setState({});
 
-    let queryUrl =
-      `http://localhost:3000/search/terms?term=${escapeRegexCharacters(value)}`;
-    $.getJSON(queryUrl, (data) => {
-      var suggestions = data.terms;
-      // console.log(suggestions);
-      if (value === this.state.value) {
-        this.setState({
-          suggestions
-        });
-      } else { // Ignore suggestions if input value changed
-        this.setState({});
-      }
-    });
-
+    let term = escapeRegexCharacters(value);
+    fetch(`http://localhost:3000/search/terms?term=${term}`)
+      .then(response => response.json())
+      .then((json) => {
+        var suggestions = json.terms;
+        // console.log(suggestions);
+        if (value === this.state.value) {
+          this.setState({
+            suggestions
+          });
+        } else { // Ignore suggestions if input value changed
+          this.setState({});
+        }
+      });
   }
 
   onChange(event, { newValue }) {
@@ -108,7 +107,7 @@ class SuggesterComponent extends React.Component {
     };
 
     return (
-      <div>
+      <div className="suggestion-component">
         <Autosuggest suggestions={suggestions}
                      onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
                      getSuggestionValue={getSuggestionValue}

@@ -12,14 +12,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Main from '../components/Main';
 /* Populated by react-webpack-redux:reducer */
-class App extends Component {
-  static propTypes = {
-    history: PropTypes.object.isRequired,
-    routes: PropTypes.object.isRequired,
-    routerKey: PropTypes.number,
-    store: PropTypes.object.isRequired
-  }
-
+class Root extends Component {
   render() {
     const {actions, search} = this.props;
     return <Main actions={actions} search={search}/>;
@@ -30,7 +23,7 @@ class App extends Component {
  * HINT: if you adjust the initial type of your reducer, you will also have to
  *       adjust it here.
  */
-App.propTypes = {
+Root.propTypes = {
   actions: PropTypes.object.isRequired,
   search: PropTypes.object.isRequired
 };
@@ -45,4 +38,4 @@ function mapDispatchToProps(dispatch) {
   const actionMap = { actions: bindActionCreators(actions, dispatch) };
   return actionMap;
 }
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(Root);

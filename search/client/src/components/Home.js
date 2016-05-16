@@ -5,7 +5,7 @@ import React from 'react';
 import { Link, browserHistory } from 'react-router'
 import SuggesterComponent from './SuggesterComponent';
 
-class AppComponent extends React.Component {
+class Home extends React.Component {
   render() {
     return (
       <div className="index">
@@ -17,13 +17,15 @@ class AppComponent extends React.Component {
             <SuggesterComponent />
           </div>
         </div>
-        <Link to="/clinical-trial">clinical-trial</Link>
+        <Link to="/clinical-trial/NCI-2013-02049">clinical-trial NCI-2013-02049</Link>
+        { ' : ' }
+        <Link to="/clinical-trial/NCI-2015-00701">clinical-trial NCI-2015-00701</Link>
       </div>
     );
   }
 }
 
-AppComponent.defaultProps = {
+Home.defaultProps = {
 };
 
-export default AppComponent;
+export default Home;
