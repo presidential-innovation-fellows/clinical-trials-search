@@ -52,7 +52,10 @@ class TermIndexer extends AbstractIndexer {
   }
 
   _getKeyTerm(text) {
-    return text.replace(/[^a-zA-Z0-9 ]/g, " ").toLowerCase();
+    return text
+      .replace(/[^a-zA-Z0-9 ]/g, " ")
+      .replace(/ /g,"_")
+      .toLowerCase();
   }
 
   _toTitleCase(str) {
