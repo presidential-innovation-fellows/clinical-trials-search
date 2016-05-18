@@ -25,6 +25,21 @@ router.get('/search/terms', (req, res, next) => {
   });
 });
 
+router.get('/search/trials', (req, res, next) => {
+  let q = {
+    disease: req.query.disease,
+    location: req.query.location,
+    organization: req.query.organization,
+    from: req.query.from,
+    size: req.query.size
+  };
+
+  searcher.searchTrials(q, (err, trials) => {
+    // TODO: add error handling
+    res.json(trials);
+  })
+});
+
 const respondInvalidQuery = (res) => {
   return res.status(400).send("Invalid query.");
 }
