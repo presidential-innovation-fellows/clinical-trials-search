@@ -6,6 +6,7 @@ import { syncHistoryWithStore } from 'react-router-redux'
 import configureStore from './stores';
 import App from './components/App';
 import Home from './components/Home';
+import Search from './components/Search';
 import ClinicalTrial from './components/ClinicalTrial';
 
 const store = configureStore();
@@ -18,6 +19,7 @@ render(
     <Router history={history}>
       <Route path="/" component={App}>
         <IndexRoute component={Home}/>
+        <Route path="search" component={Search}/>
         <Route path="clinical-trial/:id" component={ClinicalTrial}/>
       </Route>
     </Router>

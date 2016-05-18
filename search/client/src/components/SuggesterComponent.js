@@ -4,6 +4,7 @@ import React from 'react';
 import fetch from 'isomorphic-fetch';
 import Autosuggest from 'react-autosuggest';
 import AutosuggestHighlight from 'autosuggest-highlight';
+import { browserHistory } from 'react-router';
 
 require('styles//Suggester.sass');
 
@@ -13,12 +14,12 @@ function escapeRegexCharacters(str) {
 
 // function renderSuggestion(suggestion) {
 //   return (
-//     <span>{suggestion.text}, {suggestion.classification}</span>
+//     <span>{suggestion.name}, {suggestion.classification}</span>
 //   );
 // }
 
 function renderSuggestion(suggestion, { value, valueBeforeUpDown }) {
-  const suggestionText = suggestion.text;
+  const suggestionText = suggestion.name;
   const query = (valueBeforeUpDown || value).trim();
   const matches = AutosuggestHighlight.match(suggestionText, query);
   const parts = AutosuggestHighlight.parse(suggestionText, matches);
@@ -49,7 +50,7 @@ function renderSuggestion(suggestion, { value, valueBeforeUpDown }) {
 }
 
 function getSuggestionValue(suggestion) { // when suggestion selected, this function tells
-  return suggestion.text;                 // what should be the value of the input
+  return suggestion.name;                 // what should be the value of the input
 }
 
 class SuggesterComponent extends React.Component {
@@ -63,6 +64,7 @@ class SuggesterComponent extends React.Component {
 
     this.onChange = this.onChange.bind(this);
     this.onSuggestionsUpdateRequested = this.onSuggestionsUpdateRequested.bind(this);
+    this.onSuggestionSelected = this.onSuggestionSelected.bind(this);
   }
 
   loadSuggestions(value) {
@@ -73,7 +75,6 @@ class SuggesterComponent extends React.Component {
       .then(response => response.json())
       .then((json) => {
         var suggestions = json.terms;
-        // console.log(suggestions);
         if (value === this.state.value) {
           this.setState({
             suggestions
@@ -90,8 +91,10 @@ class SuggesterComponent extends React.Component {
     });
   }
 
-  onSuggestionSelected(event, { suggestionValue }) {
-    this.loadSuggestions(suggestionValue);
+  onSuggestionSelected(event, { suggestion, suggestionValue }) {
+    // this.loadSuggestions(suggestionValue);
+    let query = `${suggestion.classification}=${encodeURIComponent(suggestion.name_raw)}`;
+    browserHistory.push(`/search?${query}`);
   }
 
   onSuggestionsUpdateRequested({ value }) {
@@ -110,6 +113,7 @@ class SuggesterComponent extends React.Component {
       <div className="suggestion-component">
         <Autosuggest suggestions={suggestions}
                      onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
+                     onSuggestionSelected={this.onSuggestionSelected}
                      getSuggestionValue={getSuggestionValue}
                      renderSuggestion={renderSuggestion}
                      inputProps={inputProps} />

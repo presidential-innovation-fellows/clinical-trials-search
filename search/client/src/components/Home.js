@@ -17,9 +17,6 @@ class Home extends React.Component {
             <SuggesterComponent />
           </div>
         </div>
-        <Link to="/clinical-trial/NCI-2013-02049">clinical-trial NCI-2013-02049</Link>
-        { ' : ' }
-        <Link to="/clinical-trial/NCI-2015-00701">clinical-trial NCI-2015-00701</Link>
       </div>
     );
   }
