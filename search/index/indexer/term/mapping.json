@@ -1,10 +1,14 @@
 {
   "term": {
     "properties": {
-      "text": {
+      "name": {
         "type": "string",
         "analyzer": "edge_ngram_analyzer",
         "search_analyzer": "standard"
+      },
+      "name_raw": {
+        "type": "string",
+        "index": "not_analyzed"
       },
       "classification": {
         "type": "string"

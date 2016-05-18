@@ -27,8 +27,8 @@ class TermIndexer extends AbstractIndexer {
     this.terms = {
       diseases: {},
       locations: {},
-      organizations: {},
-      organizationFamilies: {}
+      organizations: {}
+      // organizationFamilies: {}
     };
   }
 
@@ -42,28 +42,13 @@ class TermIndexer extends AbstractIndexer {
       this._loadDiseaseTermsFromTrial(trial);
       this._loadLocationTermsFromTrial(trial);
       this._loadOrganizationTermsFromTrial(trial);
-      this._loadOrganizationFamilyTermsFromTrial(trial);
+      // this._loadOrganizationFamilyTermsFromTrial(trial);
     };
 
     rs.pipe(js).on("data", _loadTerms).on("end", () => {
       logger.info("Loaded terms from \"trials.json\".");
       return callback();
     });
-  }
-
-  _getKeyTerm(text) {
-    return text
-      .replace(/[^a-zA-Z0-9 ]/g, " ")
-      .replace(/ /g,"_")
-      .toLowerCase();
-  }
-
-  _toTitleCase(str) {
-    return str.replace(/\w\S*/g,
-      function(txt){
-        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-      }
-    );
   }
 
   _loadDiseaseTermsFromTrial(trial) {
@@ -190,7 +175,7 @@ class TermIndexer extends AbstractIndexer {
     let termsRoot = params.termsRoot;
     let indexCounter = 0;
     const _indexTerm = (term, next) => {
-      let id = `${this._getKeyTerm(term.text)}_${term.classification}`;
+      let id = `${term.name_raw}_${term.classification}`;
       logger.info(`Indexing term (${id}).`);
       this.indexDocument({
         "index": this.esIndex,
@@ -222,7 +207,8 @@ class TermIndexer extends AbstractIndexer {
       let count = termObj["count"];
       let count_normalized = count / maxTermCount;
       _pushToQ({
-        "text": name,
+        "name": name,
+        "name_raw": term,
         "classification": termType,
         "count": count,
         "count_normalized": count_normalized
@@ -233,10 +219,13 @@ class TermIndexer extends AbstractIndexer {
     indexQ.drain = () => {
       logger.info(`Waiting ${CONFIG.QUEUE_GRACE_PERIOD/1000} seconds for queue to complete...`);
       setTimeout(() => {
-        if(!queueCompleted) {
+        let qSize = indexQ.length() + indexQ.running();
+        if(!queueCompleted && qSize === 0) {
           logger.info(`Indexed all ${indexCounter} ${termType} terms.`);
           queueCompleted = true;
           return callback();
+        } else {
+          logger.info(`Queue wasn't fully drained - proceeding...`);
         }
       }, CONFIG.QUEUE_GRACE_PERIOD);
     }
@@ -259,8 +248,8 @@ class TermIndexer extends AbstractIndexer {
       (response, next) => { indexer.loadTermsFromTrialsJsonDump(next); },
       (next) => { indexer.indexTerms({ termType: "disease", termsRoot: "diseases" }, next)},
       (next) => { indexer.indexTerms({ termType: "location", termsRoot: "locations" }, next)},
-      (next) => { indexer.indexTerms({ termType: "organization", termsRoot: "organizations" }, next)},
-      (next) => { indexer.indexTerms({ termType: "organization_family", termsRoot: "organizationFamilies" }, next)}
+      (next) => { indexer.indexTerms({ termType: "organization", termsRoot: "organizations" }, next)}
+      // (next) => { indexer.indexTerms({ termType: "organization_family", termsRoot: "organizationFamilies" }, next)}
     ], (err) => {
       if(err) { logger.error(err); }
       logger.info(`Finished indexing (${indexer.esType}) indices.`);

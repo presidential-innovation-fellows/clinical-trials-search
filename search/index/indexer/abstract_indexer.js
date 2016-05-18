@@ -1,6 +1,7 @@
 const fs                  = require("fs");
 const path                = require("path");
 const async               = require("async");
+const _                   = require("lodash");
 const JSONStream          = require("JSONStream");
 const ElasticSearch       = require("elasticsearch");
 
@@ -20,6 +21,21 @@ class AbstractIndexer {
       host: `${CONFIG.ES_HOST}:${CONFIG.ES_PORT}`,
       log: Logger
     });
+  }
+
+  _getKeyTerm(text) {
+    return text
+      .replace(/[^a-zA-Z0-9 ]/g, " ")
+      .replace(/ /g,"_")
+      .toLowerCase();
+  }
+
+  _toTitleCase(str) {
+    return str.replace(/\w\S*/g,
+      function(txt){
+        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+      }
+    );
   }
 
   deleteIndex(callback) {

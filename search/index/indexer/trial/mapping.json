@@ -91,29 +91,52 @@
           }
         }
       },
+      "diseases_raw": {
+        "type": "string",
+        "index": "not_analyzed"
+      },
       "eligibility": {
         "type": "nested",
         "properties": {
-          "gender": {
-            "type": "string"
+          "structured": {
+            "type": "nested",
+            "properties": {
+              "gender": {
+                "type": "string"
+              },
+              "max_age": {
+                "type": "string"
+              },
+              "max_age_number": {
+                "type": "long"
+              },
+              "max_age_unit": {
+                "type": "string"
+              },
+              "min_age": {
+                "type": "string"
+              },
+              "min_age_number": {
+                "type": "long"
+              },
+              "min_age_unit": {
+                "type": "string"
+              }
+            }
           },
-          "max_age": {
-            "type": "string"
-          },
-          "max_age_number": {
-            "type": "long"
-          },
-          "max_age_unit": {
-            "type": "string"
-          },
-          "min_age": {
-            "type": "string"
-          },
-          "min_age_number": {
-            "type": "long"
-          },
-          "min_age_unit": {
-            "type": "string"
+          "unstructured": {
+            "type": "nested",
+            "properties": {
+              "display_order": {
+                "type": "integer"
+              },
+              "inclusion_indicator": {
+                "type": "boolean"
+              },
+              "description": {
+                "type": "string"
+              }
+            }
           }
         }
       },
@@ -154,11 +177,11 @@
       },
       "nci_id": {
         "type": "string",
-        "index":"not_analyzed"
+        "index": "not_analyzed"
       },
       "nct_id": {
         "type": "string",
-        "index":"not_analyzed"
+        "index": "not_analyzed"
       },
       "official_title": {
         "type": "string"
@@ -247,6 +270,14 @@
           }
         }
       },
+      "locations_raw": {
+        "type": "string",
+        "index": "not_analyzed"
+      },
+      "organizations_raw": {
+        "type": "string",
+        "index": "not_analyzed"
+      },
       "sponsor": {
         "type": "nested",
         "properties": {
@@ -270,6 +301,33 @@
       "start_date": {
         "type": "date",
         "format": "strict_date_optional_time||epoch_millis"
+      },
+      "completion_date": {
+        "type": "date",
+        "format": "strict_date_optional_time||epoch_millis"
+      },
+      "arms": {
+        "type": "nested",
+        "properties": {
+          "arm_name": {
+            "type": "string"
+          },
+          "arm_type": {
+            "type": "string"
+          },
+          "intervention_name": {
+            "type": "string"
+          },
+          "intervention_type": {
+            "type": "string"
+          }
+        }
+      },
+      "accepts_healthy_volunteers_indicator": {
+        "type": "string"
+      },
+      "current_trial_status": {
+        "type": "string"
       }
     }
   }
