@@ -1,0 +1,22 @@
+Technical
+=========
+
+1.) condition / cancer type = anatomic sites lookup (based upon distinct anatomic site names in pg)
+2.) location geo-encoding
+3.) front-end react filter logic
+4.) targets (based on biomarkers?)
+5.) unstructured eligibility criteria display on detailed page
+6.) break out react components
+7.) actually use redux flow and manage reducer and store state
+8.) add treatment type and name (ex: name of drug) based on arm data
+9.) deploy to a live dev server (and password protect access)
+10.) write tests
+11.) small cell lung cancer (non-small cell lung cancer)
+
+Design
+======
+
+1.) what are the use-cases for searching clinical trials? major vs edge?
+2.) what order should we put filters?
+3.) what data needs to be reformulated to be more helpful (ex: lay titles, description)?
+4.) what other information would be helpful on the search results and detailed description page?
