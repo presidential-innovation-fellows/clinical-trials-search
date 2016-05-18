@@ -15,6 +15,13 @@ class Searcher {
     });
   }
 
+  _getKeyTerm(text) {
+    return text
+      .replace(/[^a-zA-Z0-9 ]/g, " ")
+      .replace(/ /g,"_")
+      .toLowerCase();
+  }
+
   // TODO: make or implement a query builder
   _searchTermsQuery(q) {
     let query = {
@@ -25,7 +32,7 @@ class Searcher {
             "bool": {
               "should": [{
                 "match": {
-                  "text": q.term
+                  "name": q.term
                 }
               }]
             }
@@ -63,17 +70,69 @@ class Searcher {
       let formattedRes = {
         total: res.hits.total,
         terms: _.map(res.hits.hits, (hit) => {
-          return _.pick(hit._source, [
-            "text", "classification", "count", "count_normalized"
-          ]);
+          return hit._source;
         })
       }
       return callback(null, formattedRes);
     });
   }
 
+  // TODO: make or implement a query builder
+  _searchTrialsQuery(q) {
+    let query = {
+      "query": {
+        "bool": {
+          "should": []
+        }
+      }
+    };
+    if (q.disease) {
+      query.query.bool.should.push({
+        "match": {
+          "diseases_raw": this._getKeyTerm(q.disease)
+        }
+      });
+    }
+    if (q.location) {
+      query.query.bool.should.push({
+        "match": {
+          "locations_raw": this._getKeyTerm(q.location)
+        }
+      });
+    }
+    if (q.organization) {
+      query.query.bool.should.push({
+        "match": {
+          "organizations_raw": this._getKeyTerm(q.organization)
+        }
+      });
+    }
+    q.size = q.size ? q.size : 10;
+    query.size = q.size > 50 ? 50 : q.size;
+    query.from = q.from ? q.from : 0;
+    console.log(JSON.stringify(query));
+    return query;
+  }
+
   searchTrials(q, callback) {
-    return callback(null, "response text");
+    this.client.search({
+      index: 'cancer-clinical-trials',
+      type: 'trial',
+      body: this._searchTrialsQuery(q)
+    }, (err, res) => {
+      if(err) {
+        logger.error(err);
+        return callback(err);
+      }
+      // return callback(null, res);
+      let formattedRes = {
+        total: res.hits.total,
+        trials: _.map(res.hits.hits, (hit) => {
+          return hit._source;
+        })
+      }
+      return callback(null, formattedRes);
+    });
   }
 
   // TODO: make or implement a query builder
@@ -102,7 +161,7 @@ class Searcher {
         return callback(err);
       }
       // return callback(null, res);
-      if(!res.hits || !res.hits.hits) {
+      if(!res.hits || !res.hits.hits || !res.hits.hits[0]) {
         return callback(null, {});
       }
       // TODO: format
