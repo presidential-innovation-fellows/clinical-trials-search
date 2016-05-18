@@ -130,13 +130,31 @@ SELECT
     ),
     'eligibility', (
       json_build_object(
-        'gender', study.eligible_gender,
-        'max_age', study.eligible_max_age,
-        'max_age_number', study.eligible_max_age_number,
-        'max_age_unit', study.eligible_max_age_unit,
-        'min_age', study.eligible_min_age,
-        'min_age_number', study.eligible_min_age_number,
-        'min_age_unit', study.eligible_min_age_unit
+        'structured', (
+          json_build_object(
+            'gender', study.eligible_gender,
+            'max_age', study.eligible_max_age,
+            'max_age_number', study.eligible_max_age_number,
+            'max_age_unit', study.eligible_max_age_unit,
+            'min_age', study.eligible_min_age,
+            'min_age_number', study.eligible_min_age_number,
+            'min_age_unit', study.eligible_min_age_unit
+          )
+        ),
+        'unstructured', (
+          SELECT
+            json_agg(
+              json_build_object(
+                'display_order', eligibility.display_order,
+                'inclusion_indicator', eligibility.inclusion_indicator,
+                'description', eligibility.description
+              )
+            )
+          FROM
+            dw_study_eligibility_criteria eligibility
+          WHERE
+            study.nci_id = eligibility.nci_id
+        )
       )
     ),
     'irb', (
@@ -154,6 +172,31 @@ SELECT
         'irb_zip_code', study.irb_zip_code
       )
     ),
+    'arms', (
+      SELECT
+        json_agg(
+          json_build_object(
+            'arm_name', arm.arm_name,
+            'arm_type', arm.arm_type,
+            'intervention_name', arm.intervention_name,
+            'intervention_type', arm.intervention_type
+          )
+        )
+      FROM (
+        SELECT DISTINCT
+          nci_id,
+          arm_name,
+          arm_type,
+          intervention_name,
+          intervention_type
+        FROM
+          dw_study_arm_and_intervention
+        WHERE
+          study.nci_id = dw_study_arm_and_intervention.nci_id
+      ) AS arm
+      WHERE
+        study.nci_id = arm.nci_id
+    ),
     'phase', study.phase,
     'sponsor', (
       json_build_object(
@@ -165,7 +208,10 @@ SELECT
       )
     ),
     'start_date', study.start_date,
-    'funding', study.summary_4_funding_category
+    'completion_date', study.completion_date,
+    'funding', study.summary_4_funding_category,
+    'accepts_healthy_volunteers_indicator', study.accepts_healthy_volunteers_indicator,
+    'current_trial_status', study.current_trial_status
   ) as trial_json_object
 FROM
   dw_study study
