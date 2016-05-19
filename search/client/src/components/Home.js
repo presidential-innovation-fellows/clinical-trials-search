@@ -1,5 +1,4 @@
 require('normalize.css/normalize.css');
-require('styles/App.sass');
 
 import React from 'react';
 import { Link, browserHistory } from 'react-router'

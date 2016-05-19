@@ -6,8 +6,6 @@ import Autosuggest from 'react-autosuggest';
 import AutosuggestHighlight from 'autosuggest-highlight';
 import { browserHistory } from 'react-router';
 
-require('styles//Suggester.sass');
-
 function escapeRegexCharacters(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }

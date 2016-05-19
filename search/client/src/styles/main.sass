@@ -1,9 +1,37 @@
+/* Import Vendor Assets */
+@import "bourbon/bourbon"
+@import "neat/neat"
+@import "uswds/uswds.min"
+
+// Variables
+@import "utils/all"
+
+/* Import Custom Assets */
+@import "extends/all"
+
+/* Import React Component Styles */
+@import "components/all"
+
 /* Base Application Styles */
 
-body
-  font-family: Helvetica, sans-serif
+body,
+li,
+p,
+ul
+  font-family: $base-font-family
+
+ul
+  display: block
+  li
+    display: block
+
+    &::after
+      display: none
+    &::before
+      display: none
 
 .app-container
+  background-color: $base-background-color
   // display: flex
 
 .main-container

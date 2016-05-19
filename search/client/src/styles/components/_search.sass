@@ -1,0 +1,83 @@
+.clinical-trials
+  @include span-columns(4 of 6)
+  margin: 0 auto
+
+.clinical-trial-brief
+  @extend %card
+  margin-bottom: 2em
+
+  a
+    font-weight: normal
+    font-size: 1.25em
+
+  b
+    color: lighten($dark-gray, 10)
+
+  h3
+    margin: 0 0 0.5em
+
+  li
+    color: darken($medium-gray, 10)
+    margin-bottom: 0.1em
+    margin-top: 0
+
+  ul
+    margin-bottom: 0
+
+.page-header
+  color: $dark-gray
+  margin-bottom: 4em
+  text-align: center
+
+  h1
+    font-family: $base-font-family
+    margin: 0
+
+.advanced-search
+  border-top: 2px solid $light-gray
+  margin-top: 1.5em
+  padding: 0.75em 0
+
+  label
+    margin: 0
+
+  li
+    margin-bottom: 1em
+
+.sidebar
+  @extend %card
+  @include span-columns(2 of 6)
+  color: darken($medium-gray, 10)
+
+  label
+    margin-top: 0.75em
+
+  legend
+    color: darken($medium-gray, 30)
+    font-size: 1.1em
+    font-weight: normal
+    margin: 1em 0 0.5em
+
+  h2
+    color: lighten($dark-gray, 10)
+    font-size: 1.25em
+    margin: 0 0 0.5em
+
+  h3
+    color: lighten($dark-gray, 10)
+    font-size: 1.1em
+    font-weight: normal
+    margin: 0 0 0.5em
+
+  .phases
+    max-width: 15em
+
+    label
+      margin: 0
+
+    li
+      @include span-columns(6)
+      margin-bottom: 0.25em
+
+      &:nth-child(2n)
+        @include omega
