@@ -99,7 +99,7 @@ class Search extends Component {
                 <b>Status:</b> {trial.current_trial_status}
               </div>
               <div>
-                <b>Phase:</b> <span>{trial.phase.split("_").join(", ")}</span>
+                <b>Phase:</b> <span>{trial.phase.phase.split("_").join(", ")}</span>
               </div>
               <div>
                 <b>Treatment:</b> <span>{trial.treatments.join(", ")}</span>
