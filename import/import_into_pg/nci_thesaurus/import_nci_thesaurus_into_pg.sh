@@ -1,0 +1,3 @@
+# don't forget to add header to nci_thesaurus.csv...
+# code  concept_name  parents synonyms  definition
+csvsql --insert nci_thesaurus.csv -t --db postgresql://localhost:5432/ctrp-data-warehouse
