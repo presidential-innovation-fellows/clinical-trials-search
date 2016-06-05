@@ -8,9 +8,9 @@ const QueryStream    = require("pg-query-stream");
 const JSONStream     = require("JSONStream");
 const es             = require("event-stream");
 const Transform      = require("stream").Transform;
-const Logger         = require("../../logger");
+const Logger         = require("../../logger/logger");
 
-let logger = new Logger();
+let logger = new Logger({name: "EXPORT_THESAURUS_FROM_PG_SCRIPT"});
 
 // a transform stream to strip the "thesaurus_json_object" outer json
 // container from the results

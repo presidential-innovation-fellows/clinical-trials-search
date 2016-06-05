@@ -1,17 +1,23 @@
 const _                   = require("lodash");
 const ElasticSearch       = require("elasticsearch");
 
-const Logger              = require("../../logger");
+const Logger              = require("../../logger/logger");
 const CONFIG              = require("../config.json");
 
-let logger = new Logger();
+let logger = new Logger({name: "SEARCH_API_SEARCHER"});
+
+class SearchLogger extends Logger {
+  get DEFAULT_LOGGER_NAME() {
+    return "SEARCH_API_SEARCHER_ELASTICSEARCH";
+  }
+}
 
 class Searcher {
 
   constructor() {
     this.client = new ElasticSearch.Client({
       host: `${CONFIG.ES_HOST}:${CONFIG.ES_PORT}`,
-      log: Logger
+      log: SearchLogger
     });
   }
 

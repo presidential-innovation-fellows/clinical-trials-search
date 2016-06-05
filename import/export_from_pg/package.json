@@ -1,11 +1,11 @@
 {
   "name": "export-from-pg",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "import_from_sql.js",
   "scripts": {
-    "export-trials": "node export_trials_from_pg.js | ../../node_modules/bunyan/bin/bunyan",
-    "export-thesaurus": "node export_thesaurus_from_pg.js ../../node_modules/bunyan/bin/bunyan"
+    "export-trials": "node export_trials_from_pg.js | ../../logger/node_modules/bunyan/bin/bunyan",
+    "export-thesaurus": "node export_thesaurus_from_pg.js | ../../logger/node_modules/bunyan/bin/bunyan"
   },
   "author": "Michael Balint <michael.balint@pif.gov> (https://presidentialinnovationfellows.gov/)",
   "dependencies": {

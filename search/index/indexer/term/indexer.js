@@ -5,9 +5,9 @@ const _                   = require("lodash");
 const JSONStream          = require("JSONStream");
 
 const AbstractIndexer     = require("../abstract_indexer");
-const Logger              = require("../../../../logger");
+const Logger              = require("../../../../logger/logger");
 
-let logger = new Logger();
+let logger = new Logger({name: "SEARCH_INDEXER_TERM"});
 
 const CONFIG = require("../../../config.json");
 const ES_MAPPING = require("./mapping.json");
