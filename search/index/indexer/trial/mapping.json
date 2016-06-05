@@ -165,7 +165,7 @@
           }
         }
       },
-      "diseases_raw": {
+      "disease_keys": {
         "type": "string",
         "analyzer": "keyword_ci_analyzer"
       },
@@ -261,7 +261,7 @@
       "lead_org": {
         "type": "string"
       },
-      "locations_raw": {
+      "location_keys": {
         "type": "string",
         "analyzer": "keyword_ci_analyzer"
       },
@@ -303,7 +303,7 @@
       "official_title": {
         "type": "string"
       },
-      "organizations_raw": {
+      "organization_keys": {
         "type": "string",
         "analyzer": "keyword_ci_analyzer"
       },

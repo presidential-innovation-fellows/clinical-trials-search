@@ -15,7 +15,8 @@ const ES_PARAMS = {
   "esMapping": ES_MAPPING,
   "esSettings": ES_SETTINGS
 };
-const TRIALS_FILEPATH = path.join(__dirname, '../../../../import/export_from_pg/trials.json');
+const TRIALS_FILEPATH = path.join(__dirname,
+  '../../../../import/export_from_pg/trials.json');
 
 class TermIndexer extends AbstractIndexer {
 
@@ -39,7 +40,8 @@ class TermIndexer extends AbstractIndexer {
     let js = JSONStream.parse("*");
 
     let _loadTerms = (trial) => {
-      this.logger.info(`Loading terms from trial with nci_id (${trial.nci_id}).`);
+      this.logger.info(
+        `Loading terms from trial with nci_id (${trial.nci_id}).`);
       this._loadDiseaseTermsFromTrial(trial);
       this._loadLocationTermsFromTrial(trial);
       this._loadOrganizationTermsFromTrial(trial);
@@ -58,11 +60,11 @@ class TermIndexer extends AbstractIndexer {
     trial.diseases.forEach((disease) => {
       if(!disease.synonyms) { return; }
       disease.synonyms.forEach((synonym) => {
-        let key = this._getKeyTerm(synonym);
+        let key = this._transformStringToKey(synonym);
         if(typeof diseaseTerms[key] === "undefined") {
           diseaseTerms[key] = {
             count: 1,
-            name: synonym
+            term: synonym
           };
         }
       });
@@ -71,7 +73,7 @@ class TermIndexer extends AbstractIndexer {
       if(typeof this.terms.diseases[diseaseTerm] === "undefined") {
         this.terms.diseases[diseaseTerm] = {
           count: diseaseTerms[diseaseTerm].count,
-          name: diseaseTerms[diseaseTerm].name
+          term: diseaseTerms[diseaseTerm].term
         };
       } else{
         this.terms.diseases[diseaseTerm].count +=
@@ -91,11 +93,11 @@ class TermIndexer extends AbstractIndexer {
         org.country
       ]).join(", ");
       if(location) {
-        let key = this._getKeyTerm(location);
+        let key = this._transformStringToKey(location);
         if(typeof locationTerms[key] === "undefined") {
           locationTerms[key] = {
             count: 1,
-            name: location
+            term: location
           };
         }
       }
@@ -104,7 +106,7 @@ class TermIndexer extends AbstractIndexer {
       if(typeof this.terms.locations[locationTerm] === "undefined") {
         this.terms.locations[locationTerm] = {
           count: locationTerms[locationTerm].count,
-          name: locationTerms[locationTerm].name
+          term: locationTerms[locationTerm].term
         };
       } else{
         this.terms.locations[locationTerm].count +=
@@ -120,11 +122,11 @@ class TermIndexer extends AbstractIndexer {
       let org = site.org;
       let organization = org.name;
       if(organization) {
-        let key = this._getKeyTerm(organization);
+        let key = this._transformStringToKey(organization);
         if(typeof organizationTerms[key] === "undefined") {
           organizationTerms[key] = {
             count: 1,
-            name: organization
+            term: organization
           };
         }
       }
@@ -133,7 +135,7 @@ class TermIndexer extends AbstractIndexer {
       if(typeof this.terms.organizations[organizationTerm] === "undefined") {
         this.terms.organizations[organizationTerm] = {
           count: organizationTerms[organizationTerm].count,
-          name: organizationTerms[organizationTerm].name
+          term: organizationTerms[organizationTerm].term
         };
       } else{
         this.terms.organizations[organizationTerm].count +=
@@ -149,11 +151,11 @@ class TermIndexer extends AbstractIndexer {
       let org = site.org;
       let organizationFamily = org.name.toLowerCase();
       if(organizationFamily) {
-        let key = this._getKeyTerm(organizationFamily);
+        let key = this._transformStringToKey(organizationFamily);
         if(typeof organizationFamilyTerms[key] === "undefined") {
           organizationFamilyTerms[key] = {
             count: 1,
-            name: this._toTitleCase(organizationFamily)
+            term: this._toTitleCase(organizationFamily)
           };
         }
       }
@@ -162,7 +164,7 @@ class TermIndexer extends AbstractIndexer {
       if(typeof this.terms.organizationFamilies[organizationFamilyTerm] === "undefined") {
         this.terms.organizationFamilies[organizationFamilyTerm] = {
           count: organizationFamilyTerms[organizationFamilyTerm].count,
-          name: organizationFamilyTerms[organizationFamilyTerm].name
+          term: organizationFamilyTerms[organizationFamilyTerm].term
         };
       } else{
         this.terms.organizationFamilies[organizationFamilyTerm].count +=
@@ -176,7 +178,7 @@ class TermIndexer extends AbstractIndexer {
     let termsRoot = params.termsRoot;
     let indexCounter = 0;
     const _indexTerm = (term, done) => {
-      let id = `${term.name_raw}_${term.classification}`;
+      let id = `${term.term_key}_${term.classification}`;
       this.logger.info(`Indexing term (${id}).`);
       this.indexDocument({
         "index": this.esIndex,
@@ -207,14 +209,14 @@ class TermIndexer extends AbstractIndexer {
       _.map(_.values(this.terms[termsRoot]), (term) => {
         return term.count;
       }));
-    Object.keys(this.terms[termsRoot]).forEach((term) => {
-      let termObj = this.terms[termsRoot][term];
-      let name = termObj["name"];
+    Object.keys(this.terms[termsRoot]).forEach((termKey) => {
+      let termObj = this.terms[termsRoot][termKey];
+      let term = termObj["term"];
       let count = termObj["count"];
       let count_normalized = count / maxTermCount;
       _pushToQ({
-        "name": name,
-        "name_raw": term,
+        "term": term,
+        "term_key": termKey,
         "classification": termType,
         "count": count,
         "count_normalized": count_normalized
@@ -226,7 +228,8 @@ class TermIndexer extends AbstractIndexer {
       // ugly, but prevents us from proceeding unless we are truly done with the queue
       // backups can occur when we are trying to index too much concurrently, so better
       // be safe than sorry
-      this.logger.info(`Waiting ${CONFIG.QUEUE_GRACE_PERIOD/1000} seconds for queue to complete...`);
+      this.logger.info(
+        `Waiting ${CONFIG.QUEUE_GRACE_PERIOD/1000} seconds for queue to complete...`);
       setTimeout(() => {
         let qSize = indexQ.length() + indexQ.running();
         if(!queueCompleted && qSize === 0) {
