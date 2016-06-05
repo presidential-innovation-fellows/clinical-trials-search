@@ -175,7 +175,7 @@ class TermIndexer extends AbstractIndexer {
     let termType = params.termType;
     let termsRoot = params.termsRoot;
     let indexCounter = 0;
-    const _indexTerm = (term, next) => {
+    const _indexTerm = (term, done) => {
       let id = `${term.name_raw}_${term.classification}`;
       this.logger.info(`Indexing term (${id}).`);
       this.indexDocument({
@@ -186,11 +186,16 @@ class TermIndexer extends AbstractIndexer {
       }, (err, response, status) => {
         if(err) { this.logger.error(err); }
         indexCounter++;
-        return next(err, response);
+        // set timeout to avoid overloading elasticsearch
+        setTimeout(() => {
+          return done(err, response);
+        }, CONFIG.INDEXING_DOC_DELAY_PERIOD);
       });
     };
 
-    let indexQ = async.queue(_indexTerm, CONFIG.ES_CONCURRENCY);
+    // set concurrency to a relatively low number (< 10) to avoid overloading
+    // elasticsearch
+    let indexQ = async.queue(_indexTerm, CONFIG.INDEXING_CONCURRENCY);
 
     const _pushToQ = (term) => {
       indexQ.push(term, (err) => {
@@ -218,6 +223,9 @@ class TermIndexer extends AbstractIndexer {
 
     let queueCompleted = false;
     indexQ.drain = () => {
+      // ugly, but prevents us from proceeding unless we are truly done with the queue
+      // backups can occur when we are trying to index too much concurrently, so better
+      // be safe than sorry
       this.logger.info(`Waiting ${CONFIG.QUEUE_GRACE_PERIOD/1000} seconds for queue to complete...`);
       setTimeout(() => {
         let qSize = indexQ.length() + indexQ.running();

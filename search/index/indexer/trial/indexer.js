@@ -136,11 +136,16 @@ class TrialIndexer extends AbstractIndexer {
       }, (err, response, status) => {
         if(err) { this.logger.error(err); }
         indexCounter++;
-        return done(err, response);
+        // set timeout to avoid overloading elasticsearch
+        setTimeout(() => {
+          return done(err, response);
+        }, CONFIG.INDEXING_DOC_DELAY_PERIOD);
       });
     };
 
-    let indexQ = async.queue(_indexTrial, CONFIG.ES_CONCURRENCY);
+    // set concurrency to a relatively low number (< 10) to avoid overloading
+    // elasticsearch
+    let indexQ = async.queue(_indexTrial, CONFIG.INDEXING_CONCURRENCY);
 
     const _pushToQ = (trial) => {
       indexQ.push(trial, (err) => {
@@ -152,6 +157,9 @@ class TrialIndexer extends AbstractIndexer {
 
     let queueCompleted = false;
     indexQ.drain = () => {
+      // ugly, but prevents us from proceeding unless we are truly done with the queue
+      // backups can occur when we are trying to index too much concurrently, so better
+      // be safe than sorry
       this.logger.info(`Waiting ${CONFIG.QUEUE_GRACE_PERIOD/1000} seconds for queue to complete...`);
       setTimeout(() => {
         let qSize = indexQ.length() + indexQ.running();
