@@ -30,7 +30,7 @@ class TermIndexer extends AbstractIndexer {
       diseases: {},
       locations: {},
       organizations: {},
-      anatomic_sites: {}
+      anatomicSites: {}
       // organizationFamilies: {}
     };
   }
@@ -43,9 +43,10 @@ class TermIndexer extends AbstractIndexer {
     let _loadTerms = (trial) => {
       this.logger.info(
         `Loading terms from trial with nci_id (${trial.nci_id}).`);
-      this._loadDiseaseTermsFromTrial(trial);
-      // this._loadLocationTermsFromTrial(trial);
-      // this._loadOrganizationTermsFromTrial(trial);
+      this.loadDiseaseTermsFromTrial(trial);
+      this.loadLocationTermsFromTrial(trial);
+      this.loadOrganizationTermsFromTrial(trial);
+      this.loadAnatomicSiteTermsFromTrial(trial);
       // this._loadOrganizationFamilyTermsFromTrial(trial);
     };
 
@@ -80,114 +81,107 @@ class TermIndexer extends AbstractIndexer {
     });
   }
 
-  _loadDiseaseTermsFromTrial(trial) {
+  loadDiseaseTermsFromTrial(trial) {
+    if(!trial.diseases) { return; }
+
     const termType = "diseases";
     const extractTermsToArr = () => {
       let terms = [];
       trial.diseases.forEach((disease) => {
         if(!disease.synonyms) { return; }
+
         disease.synonyms.forEach((synonym) => {
           terms.push(synonym);
         });
       });
       return terms;
     };
-    if(!trial[termType]) { return; }
+
     this._loadTermsFromTrialForTermType(termType, extractTermsToArr);
   }
 
-  _loadLocationTermsFromTrial(trial) {
+  loadLocationTermsFromTrial(trial) {
     if(!trial.sites) { return; }
-    let locationTerms = {};
-    trial.sites.forEach((site) => {
-      let org = site.org;
-      let location = _.compact([
-        org.city,
-        org.state_or_province,
-        org.country
-      ]).join(", ");
-      if(location) {
-        let key = this._transformStringToKey(location);
-        if(typeof locationTerms[key] === "undefined") {
-          locationTerms[key] = {
-            count: 1,
-            term: location
-          };
+
+    const termType = "locations";
+    const extractTermsToArr = () => {
+      let terms = [];
+      trial.sites.forEach((site) => {
+        let org = site.org;
+        let location = _.compact([
+          org.city,
+          org.state_or_province,
+          org.country
+        ]).join(", ");
+
+        if(location) {
+          terms.push(location);
         }
-      }
-    });
-    Object.keys(locationTerms).forEach((locationTerm) => {
-      if(typeof this.terms.locations[locationTerm] === "undefined") {
-        this.terms.locations[locationTerm] = {
-          count: locationTerms[locationTerm].count,
-          term: locationTerms[locationTerm].term
-        };
-      } else{
-        this.terms.locations[locationTerm].count +=
-          locationTerms[locationTerm].count;
-      }
-    });
+      });
+      return terms;
+    };
+
+    this._loadTermsFromTrialForTermType(termType, extractTermsToArr);
   }
 
-  _loadOrganizationTermsFromTrial(trial) {
+  loadOrganizationTermsFromTrial(trial) {
     if(!trial.sites) { return; }
-    let organizationTerms = {};
-    trial.sites.forEach((site) => {
-      let org = site.org;
-      let organization = org.name;
-      if(organization) {
-        let key = this._transformStringToKey(organization);
-        if(typeof organizationTerms[key] === "undefined") {
-          organizationTerms[key] = {
-            count: 1,
-            term: organization
-          };
+
+    const termType = "organizations";
+    const extractTermsToArr = () => {
+      let terms = [];
+      trial.sites.forEach((site) => {
+        let org = site.org;
+        let organization = org.name;
+
+        if(organization) {
+          terms.push(organization);
         }
-      }
-    });
-    Object.keys(organizationTerms).forEach((organizationTerm) => {
-      if(typeof this.terms.organizations[organizationTerm] === "undefined") {
-        this.terms.organizations[organizationTerm] = {
-          count: organizationTerms[organizationTerm].count,
-          term: organizationTerms[organizationTerm].term
-        };
-      } else{
-        this.terms.organizations[organizationTerm].count +=
-          organizationTerms[organizationTerm].count;
-      }
-    });
+      });
+      return terms;
+    };
+
+    this._loadTermsFromTrialForTermType(termType, extractTermsToArr);
   }
 
-  _loadOrganizationFamilyTermsFromTrial(trial) {
+  loadOrganizationFamilyTermsFromTrial(trial) {
     if(!trial.sites) { return; }
-    let organizationFamilyTerms = {};
-    trial.sites.forEach((site) => {
-      let org = site.org;
-      let organizationFamily = org.name.toLowerCase();
-      if(organizationFamily) {
-        let key = this._transformStringToKey(organizationFamily);
-        if(typeof organizationFamilyTerms[key] === "undefined") {
-          organizationFamilyTerms[key] = {
-            count: 1,
-            term: this._toTitleCase(organizationFamily)
-          };
+
+    const termType = "organizationFamilies";
+    const extractTermsToArr = () => {
+      let terms = [];
+      trial.sites.forEach((site) => {
+        let org = site.org;
+        let organizationFamily = org.name.toLowerCase();
+
+        if(organizationFamily) {
+          terms.push(organizationFamily);
         }
-      }
-    });
-    Object.keys(organizationFamilyTerms).forEach((organizationFamilyTerm) => {
-      if(typeof this.terms.organizationFamilies[organizationFamilyTerm] === "undefined") {
-        this.terms.organizationFamilies[organizationFamilyTerm] = {
-          count: organizationFamilyTerms[organizationFamilyTerm].count,
-          term: organizationFamilyTerms[organizationFamilyTerm].term
-        };
-      } else{
-        this.terms.organizationFamilies[organizationFamilyTerm].count +=
-          organizationFamilyTerms[organizationFamilyTerm].count;
-      }
-    });
+      });
+      return terms;
+    };
+
+    this._loadTermsFromTrialForTermType(termType, extractTermsToArr);
   }
 
-  indexTerms(params, callback) {
+  loadAnatomicSiteTermsFromTrial(trial) {
+    if(!trial.anatomic_sites) { return; }
+
+    const termType = "anatomicSites";
+    const extractTermsToArr = () => {
+      let terms = [];
+      trial.anatomic_sites.forEach((anatomicSite) => {
+        if(anatomicSite) {
+          terms.push(anatomicSite);
+        }
+      });
+      return terms;
+    };
+
+    this._loadTermsFromTrialForTermType(termType, extractTermsToArr);
+  }
+
+  indexTermsForType(params, callback) {
     let termType = params.termType;
     let termsRoot = params.termsRoot;
     let indexCounter = 0;
@@ -257,6 +251,16 @@ class TermIndexer extends AbstractIndexer {
     }
   }
 
+  indexTerms(callback) {
+    async.waterfall([
+      (next) => { this.indexTermsForType({ termType: "disease", termsRoot: "diseases" }, next)},
+      (next) => { this.indexTermsForType({ termType: "location", termsRoot: "locations" }, next)},
+      (next) => { this.indexTermsForType({ termType: "organization", termsRoot: "organizations" }, next)},
+      // (next) => { this.indexTermsForType({ termType: "organization_family", termsRoot: "organizationFamilies" }, next)},
+      (next) => { this.indexTermsForType({ termType: "anatomic_site", termsRoot: "anatomicSites" }, next)}
+    ], callback)
+  }
+
   static init(callback) {
     let indexer = new TermIndexer(ES_PARAMS);
     indexer.logger.info(`Started indexing (${indexer.esType}) indices.`);
@@ -272,10 +276,7 @@ class TermIndexer extends AbstractIndexer {
       (response, next) => { indexer.initIndex(next); },
       (response, next) => { indexer.initMapping(next); },
       (response, next) => { indexer.loadTermsFromTrialsJsonDump(next); },
-      (next) => { indexer.indexTerms({ termType: "disease", termsRoot: "diseases" }, next)},
-      // (next) => { indexer.indexTerms({ termType: "location", termsRoot: "locations" }, next)},
-      // (next) => { indexer.indexTerms({ termType: "organization", termsRoot: "organizations" }, next)}
-      // (next) => { indexer.indexTerms({ termType: "organization_family", termsRoot: "organizationFamilies" }, next)}
+      (next) => { indexer.indexTerms(next) }
     ], (err) => {
       if(err) { indexer.logger.error(err); }
       indexer.logger.info(`Finished indexing (${indexer.esType}) indices.`);
