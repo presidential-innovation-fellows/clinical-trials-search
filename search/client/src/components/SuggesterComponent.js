@@ -14,12 +14,12 @@ function escapeRegexCharacters(str) {
 
 // function renderSuggestion(suggestion) {
 //   return (
-//     <span>{suggestion.name}, {suggestion.classification}</span>
+//     <span>{suggestion.term}, {suggestion.classification}</span>
 //   );
 // }
 
 function renderSuggestion(suggestion, { value, valueBeforeUpDown }) {
-  const suggestionText = suggestion.name;
+  const suggestionText = suggestion.term;
   const query = (valueBeforeUpDown || value).trim();
   const matches = AutosuggestHighlight.match(suggestionText, query);
   const parts = AutosuggestHighlight.parse(suggestionText, matches);
@@ -50,7 +50,7 @@ function renderSuggestion(suggestion, { value, valueBeforeUpDown }) {
 }
 
 function getSuggestionValue(suggestion) { // when suggestion selected, this function tells
-  return suggestion.name;                 // what should be the value of the input
+  return suggestion.term;                 // what should be the value of the input
 }
 
 class SuggesterComponent extends React.Component {
@@ -93,7 +93,7 @@ class SuggesterComponent extends React.Component {
 
   onSuggestionSelected(event, { suggestion, suggestionValue }) {
     // this.loadSuggestions(suggestionValue);
-    let query = `${suggestion.classification}=${encodeURIComponent(suggestion.name_raw)}`;
+    let query = `${suggestion.classification}=${encodeURIComponent(suggestion.term_key)}`;
     browserHistory.push(`/search?${query}`);
   }
 
