@@ -39,3 +39,5 @@ jspm_packages
 trials.json
 thesaurus.json
 .DS_STORE
+ctrp_data_warehouse.sql
+nci_thesaurus.csv
