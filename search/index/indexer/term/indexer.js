@@ -5,6 +5,7 @@ const _                   = require("lodash");
 const JSONStream          = require("JSONStream");
 
 const AbstractIndexer     = require("../abstract_indexer");
+const Utils               = require("../../../../utils/utils");
 
 const CONFIG = require("../../../config.json");
 const ES_MAPPING = require("./mapping.json");
@@ -17,6 +18,8 @@ const ES_PARAMS = {
 };
 const TRIALS_FILEPATH = path.join(__dirname,
   '../../../../import/export_from_pg/trials.json');
+
+const transformStringToKey = Utils.transformStringToKey;
 
 class TermIndexer extends AbstractIndexer {
 
@@ -60,7 +63,7 @@ class TermIndexer extends AbstractIndexer {
     let terms = {};
     let termsArr = extractTermsToArr();
     termsArr.forEach((term) => {
-      let termKey = this._transformStringToKey(term);
+      let termKey = transformStringToKey(term);
       if(typeof terms[termKey] === "undefined") {
         terms[termKey] = {
           count: 1,

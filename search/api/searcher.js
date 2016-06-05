@@ -21,14 +21,6 @@ class Searcher {
     });
   }
 
-  _getKeyTerm(text) {
-    return text
-      .replace(/[^a-zA-Z0-9 ]/g, " ")
-      .replace(/ /g,"_")
-      .toLowerCase();
-  }
-
-  // TODO: make or implement a query builder
   _searchTermsQuery(q) {
     let query = {
       "size": 5,
@@ -95,21 +87,21 @@ class Searcher {
     if (q.disease) {
       query.query.bool.should.push({
         "match": {
-          "disease_keys": this._getKeyTerm(q.disease)
+          "disease_keys": this.transformStringToKey(q.disease)
         }
       });
     }
     if (q.location) {
       query.query.bool.should.push({
         "match": {
-          "location_keys": this._getKeyTerm(q.location)
+          "location_keys": this.transformStringToKey(q.location)
         }
       });
     }
     if (q.organization) {
       query.query.bool.should.push({
         "match": {
-          "organization_keys": this._getKeyTerm(q.organization)
+          "organization_keys": this.transformStringToKey(q.organization)
         }
       });
     }

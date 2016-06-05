@@ -5,6 +5,7 @@ const _                   = require("lodash");
 const JSONStream          = require("JSONStream");
 
 const AbstractIndexer     = require("../abstract_indexer");
+const Utils               = require("../../../../utils/utils");
 
 const CONFIG = require("../../../config.json");
 const ES_MAPPING = require("./mapping.json");
@@ -17,6 +18,9 @@ const ES_PARAMS = {
 };
 const TRIALS_FILEPATH = path.join(__dirname,
   '../../../../import/export_from_pg/trials.json');
+
+
+const transformStringToKey = Utils.transformStringToKey;
 
 class TrialIndexer extends AbstractIndexer {
 
@@ -38,7 +42,7 @@ class TrialIndexer extends AbstractIndexer {
     trial.diseases.forEach((disease) => {
       trial.disease_keys = trial.disease_keys.concat(
         disease.synonyms.map((synonym) => {
-          return this._transformStringToKey(synonym);
+          return transformStringToKey(synonym);
         })
       );
     });
@@ -53,7 +57,7 @@ class TrialIndexer extends AbstractIndexer {
           org.state_or_province,
           org.country
         ]).join(", ");
-        return this._transformStringToKey(location);
+        return transformStringToKey(location);
       });
     }
   }
@@ -63,7 +67,7 @@ class TrialIndexer extends AbstractIndexer {
       trial.organization_keys = trial.sites.map((site) => {
         let org = site.org;
         let organization = org.name;
-        return this._transformStringToKey(organization);
+        return transformStringToKey(organization);
       });
     }
   }

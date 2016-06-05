@@ -26,13 +26,6 @@ class AbstractIndexer {
     });
   }
 
-  _transformStringToKey(text) {
-    return text
-      .replace(/[^a-zA-Z0-9 ]/g, " ")
-      .replace(/ /g,"_")
-      .toLowerCase();
-  }
-
   _toTitleCase(str) {
     return str.replace(/\w\S*/g,
       function(txt){
