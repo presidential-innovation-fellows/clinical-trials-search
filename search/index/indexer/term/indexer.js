@@ -5,9 +5,6 @@ const _                   = require("lodash");
 const JSONStream          = require("JSONStream");
 
 const AbstractIndexer     = require("../abstract_indexer");
-const Logger              = require("../../../../logger/logger");
-
-let logger = new Logger({name: "SEARCH_INDEXER_TERM"});
 
 const CONFIG = require("../../../config.json");
 const ES_MAPPING = require("./mapping.json");
@@ -22,6 +19,10 @@ const TRIALS_FILEPATH = path.join(__dirname, '../../../../import/export_from_pg/
 
 class TermIndexer extends AbstractIndexer {
 
+  get LOGGER_NAME() {
+    return "term-indexer";
+  }
+
   constructor(params) {
     super(params);
     this.terms = {
@@ -33,12 +34,12 @@ class TermIndexer extends AbstractIndexer {
   }
 
   loadTermsFromTrialsJsonDump(callback) {
-    logger.info("Loading terms from \"trials.json\".");
+    this.logger.info("Loading terms from \"trials.json\".");
     let rs = fs.createReadStream(TRIALS_FILEPATH);
     let js = JSONStream.parse("*");
 
     let _loadTerms = (trial) => {
-      logger.info(`Loading terms from trial with nci_id (${trial.nci_id}).`);
+      this.logger.info(`Loading terms from trial with nci_id (${trial.nci_id}).`);
       this._loadDiseaseTermsFromTrial(trial);
       this._loadLocationTermsFromTrial(trial);
       this._loadOrganizationTermsFromTrial(trial);
@@ -46,7 +47,7 @@ class TermIndexer extends AbstractIndexer {
     };
 
     rs.pipe(js).on("data", _loadTerms).on("end", () => {
-      logger.info("Loaded terms from \"trials.json\".");
+      this.logger.info("Loaded terms from \"trials.json\".");
       return callback();
     });
   }
@@ -176,14 +177,14 @@ class TermIndexer extends AbstractIndexer {
     let indexCounter = 0;
     const _indexTerm = (term, next) => {
       let id = `${term.name_raw}_${term.classification}`;
-      logger.info(`Indexing term (${id}).`);
+      this.logger.info(`Indexing term (${id}).`);
       this.indexDocument({
         "index": this.esIndex,
         "type": this.esType,
         "id": id,
         "body": term
       }, (err, response, status) => {
-        if(err) { logger.error(err); }
+        if(err) { this.logger.error(err); }
         indexCounter++;
         return next(err, response);
       });
@@ -193,7 +194,7 @@ class TermIndexer extends AbstractIndexer {
 
     const _pushToQ = (term) => {
       indexQ.push(term, (err) => {
-        if(err) { logger.error(err); }
+        if(err) { this.logger.error(err); }
       });
     };
 
@@ -217,15 +218,15 @@ class TermIndexer extends AbstractIndexer {
 
     let queueCompleted = false;
     indexQ.drain = () => {
-      logger.info(`Waiting ${CONFIG.QUEUE_GRACE_PERIOD/1000} seconds for queue to complete...`);
+      this.logger.info(`Waiting ${CONFIG.QUEUE_GRACE_PERIOD/1000} seconds for queue to complete...`);
       setTimeout(() => {
         let qSize = indexQ.length() + indexQ.running();
         if(!queueCompleted && qSize === 0) {
-          logger.info(`Indexed all ${indexCounter} ${termType} terms.`);
+          this.logger.info(`Indexed all ${indexCounter} ${termType} terms.`);
           queueCompleted = true;
           return callback();
         } else {
-          logger.info(`Queue wasn't fully drained - proceeding...`);
+          this.logger.info(`Queue wasn't fully drained - proceeding...`);
         }
       }, CONFIG.QUEUE_GRACE_PERIOD);
     }
@@ -233,7 +234,7 @@ class TermIndexer extends AbstractIndexer {
 
   static init(callback) {
     let indexer = new TermIndexer(ES_PARAMS);
-    logger.info(`Started indexing (${indexer.esType}) indices.`);
+    indexer.logger.info(`Started indexing (${indexer.esType}) indices.`);
     async.waterfall([
       (next) => { indexer.indexExists(next); },
       (exists, next) => {
@@ -251,8 +252,8 @@ class TermIndexer extends AbstractIndexer {
       (next) => { indexer.indexTerms({ termType: "organization", termsRoot: "organizations" }, next)}
       // (next) => { indexer.indexTerms({ termType: "organization_family", termsRoot: "organizationFamilies" }, next)}
     ], (err) => {
-      if(err) { logger.error(err); }
-      logger.info(`Finished indexing (${indexer.esType}) indices.`);
+      if(err) { indexer.logger.error(err); }
+      indexer.logger.info(`Finished indexing (${indexer.esType}) indices.`);
       callback(err);
     });
   }

@@ -5,9 +5,6 @@ const _                   = require("lodash");
 const JSONStream          = require("JSONStream");
 
 const AbstractIndexer     = require("../abstract_indexer");
-const Logger              = require("../../../../logger/logger");
-
-let logger = new Logger({name: "SEARCH_INDEXER_TRIAL"});
 
 const CONFIG = require("../../../config.json");
 const ES_MAPPING = require("./mapping.json");
@@ -22,6 +19,10 @@ const TRIALS_FILEPATH = path.join(__dirname, '../../../../import/export_from_pg/
 const NCI_THESAURUS_FILEPATH = path.join(__dirname, '../../../../import/export_from_pg/thesaurus.json');
 
 class TrialIndexer extends AbstractIndexer {
+
+  get LOGGER_NAME() {
+    return "trial-indexer";
+  }
 
   _addFieldsToTrial(trial) {
 
@@ -99,11 +100,11 @@ class TrialIndexer extends AbstractIndexer {
 
     _recurseNciThesaurus(reverseTree);
 
-    // logger.debug("tree", JSON.stringify(reverseTree));
+    // this.logger.debug("tree", JSON.stringify(reverseTree));
   }
 
   loadNciThesaurus(callback) {
-    logger.info("Loading the nci thesaurus into memory...");
+    this.logger.info("Loading the nci thesaurus into memory...");
     const nciThesaurusArray = require(NCI_THESAURUS_FILEPATH);
 
     let nciThesaurus = {};
@@ -113,7 +114,7 @@ class TrialIndexer extends AbstractIndexer {
         "parents": row.parents,
         "synonyms": row.synonyms
       };
-      // logger.info(`Loaded nci thesaurus code ${row.code} into memory.`);
+      // this.logger.info(`Loaded nci thesaurus code ${row.code} into memory.`);
     });
     this.nciThesaurus = nciThesaurus;
     return callback();
@@ -125,7 +126,7 @@ class TrialIndexer extends AbstractIndexer {
 
     let indexCounter = 0;
     const _indexTrial = (trial, done) => {
-      logger.info(`Indexing clinical trial with nci_id (${trial.nci_id}).`);
+      this.logger.info(`Indexing clinical trial with nci_id (${trial.nci_id}).`);
 
       this.indexDocument({
         "index": this.esIndex,
@@ -133,7 +134,7 @@ class TrialIndexer extends AbstractIndexer {
         "id": trial.nci_id,
         "body": this._addFieldsToTrial(trial)
       }, (err, response, status) => {
-        if(err) { logger.error(err); }
+        if(err) { this.logger.error(err); }
         indexCounter++;
         return done(err, response);
       });
@@ -143,7 +144,7 @@ class TrialIndexer extends AbstractIndexer {
 
     const _pushToQ = (trial) => {
       indexQ.push(trial, (err) => {
-        if(err) { logger.error(err); }
+        if(err) { this.logger.error(err); }
       });
     }
 
@@ -151,15 +152,15 @@ class TrialIndexer extends AbstractIndexer {
 
     let queueCompleted = false;
     indexQ.drain = () => {
-      logger.info(`Waiting ${CONFIG.QUEUE_GRACE_PERIOD/1000} seconds for queue to complete...`);
+      this.logger.info(`Waiting ${CONFIG.QUEUE_GRACE_PERIOD/1000} seconds for queue to complete...`);
       setTimeout(() => {
         let qSize = indexQ.length() + indexQ.running();
         if(!queueCompleted && qSize === 0) {
-          logger.info(`Indexed all ${indexCounter} trials in "trials.json".`);
+          this.logger.info(`Indexed all ${indexCounter} trials in "trials.json".`);
           queueCompleted = true;
           return callback();
         } else {
-          logger.info(`Queue wasn't fully drained - proceeding...`);
+          this.logger.info(`Queue wasn't fully drained - proceeding...`);
         }
       }, CONFIG.QUEUE_GRACE_PERIOD);
     }
@@ -167,7 +168,7 @@ class TrialIndexer extends AbstractIndexer {
 
   static init(callback) {
     let indexer = new TrialIndexer(ES_PARAMS);
-    logger.info(`Started indexing (${indexer.esType}) indices.`);
+    indexer.logger.info(`Started indexing (${indexer.esType}) indices.`);
     async.waterfall([
       // (next) => { indexer.loadNciThesaurus(next); },
       (next) => { indexer.indexExists(next); },
@@ -179,11 +180,11 @@ class TrialIndexer extends AbstractIndexer {
         }
       },
       (response, next) => { indexer.initIndex(next); },
-      // (response, next) => { indexer.initMapping(next); },
+      (response, next) => { indexer.initMapping(next); },
       (response, next) => { indexer.indexFromTrialsJsonDump(next); }
     ], (err) => {
-      if(err) { logger.error(err); }
-      logger.info(`Finished indexing (${indexer.esType}) indices.`);
+      if(err) { indexer.logger.error(err); }
+      indexer.logger.info(`Finished indexing (${indexer.esType}) indices.`);
       return callback(err);
     });
   }

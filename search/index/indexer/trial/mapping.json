@@ -1,8 +1,10 @@
 {
   "trial": {
     "properties": {
+      "accepts_healthy_volunteers_indicator": {
+        "type": "string"
+      },
       "accruals": {
-        "type": "nested",
         "properties": {
           "accrual_count": {
             "type": "long"
@@ -18,8 +20,51 @@
           }
         }
       },
+      "acronym": {
+        "type": "string"
+      },
       "anatomic_sites": {
         "type": "string"
+      },
+      "arms": {
+        "type": "nested",
+        "properties": {
+          "arm_name": {
+            "type": "string"
+          },
+          "arm_type": {
+            "type": "string"
+          },
+          "intervention_name": {
+            "type": "string"
+          },
+          "intervention_type": {
+            "type": "string"
+          }
+        }
+      },
+      "bio_specimen": {
+        "type": "nested",
+        "properties": {
+          "f1": {
+            "type": "string"
+          },
+          "f2": {
+            "type": "string"
+          },
+          "f3": {
+            "type": "string"
+          },
+          "f4": {
+            "type": "string"
+          },
+          "f5": {
+            "type": "string"
+          },
+          "f6": {
+            "type": "string"
+          }
+        }
       },
       "biomarkers": {
         "type": "nested",
@@ -30,16 +75,28 @@
           "assay_type_code": {
             "type": "string"
           },
+          "assay_type_description": {
+            "type": "string"
+          },
           "assay_use": {
             "type": "string"
           },
           "evaluation_type_code": {
             "type": "string"
           },
+          "evaluation_type_other_text": {
+            "type": "string"
+          },
+          "hugo_biomarker_code": {
+            "type": "string"
+          },
           "long_name": {
             "type": "string"
           },
           "name": {
+            "type": "string"
+          },
+          "specimen_type_other_text": {
             "type": "string"
           },
           "status_code": {
@@ -53,11 +110,28 @@
           }
         }
       },
+      "brief_summary": {
+        "type": "string"
+      },
       "brief_title": {
         "type": "string"
       },
-      "brief_summary": {
+      "central_contact": {
+        "type": "object"
+      },
+      "classification_code": {
         "type": "string"
+      },
+      "completion_date": {
+        "type": "date",
+        "format": "strict_date_optional_time||epoch_millis"
+      },
+      "current_trial_status": {
+        "type": "string"
+      },
+      "date_last_created": {
+        "type": "date",
+        "format": "strict_date_optional_time||epoch_millis"
       },
       "detail_description": {
         "type": "string"
@@ -93,7 +167,7 @@
       },
       "diseases_raw": {
         "type": "string",
-        "index": "not_analyzed"
+        "analyzer": "keyword_ci_analyzer"
       },
       "eligibility": {
         "type": "nested",
@@ -127,20 +201,29 @@
           "unstructured": {
             "type": "nested",
             "properties": {
+              "description": {
+                "type": "string"
+              },
               "display_order": {
-                "type": "integer"
+                "type": "long"
               },
               "inclusion_indicator": {
                 "type": "boolean"
-              },
-              "description": {
-                "type": "string"
               }
             }
           }
         }
       },
-      "funding": {
+      "expanded_access_indicator": {
+        "type": "string"
+      },
+      "fdaregulated_indicator": {
+        "type": "string"
+      },
+      "funding_category": {
+        "type": "string"
+      },
+      "interventional_model": {
         "type": "string"
       },
       "irb": {
@@ -172,22 +255,128 @@
           }
         }
       },
+      "keyword_text": {
+        "type": "string"
+      },
       "lead_org": {
         "type": "string"
       },
-      "nci_id": {
+      "locations_raw": {
         "type": "string",
-        "index": "not_analyzed"
+        "analyzer": "keyword_ci_analyzer"
+      },
+      "masking": {
+        "type": "nested",
+        "properties": {
+          "masking": {
+            "type": "string"
+          },
+          "masking_allocation_code": {
+            "type": "string"
+          },
+          "masking_role_caregiver": {
+            "type": "string"
+          },
+          "masking_role_investigator": {
+            "type": "string"
+          },
+          "masking_role_outcome_assessor": {
+            "type": "string"
+          },
+          "masking_role_subject": {
+            "type": "string"
+          }
+        }
+      },
+      "minimum_target_accrual_number": {
+        "type": "long"
+      },
+      "nci_id": {
+        "type": "string"
       },
       "nct_id": {
-        "type": "string",
-        "index": "not_analyzed"
+        "type": "string"
+      },
+      "number_of_arms": {
+        "type": "long"
       },
       "official_title": {
         "type": "string"
       },
+      "organizations_raw": {
+        "type": "string",
+        "analyzer": "keyword_ci_analyzer"
+      },
+      "oversight_authority": {
+        "type": "nested",
+        "properties": {
+          "oversight_authority_country": {
+            "type": "string"
+          },
+          "oversight_authority_organization_name": {
+            "type": "string"
+          }
+        }
+      },
       "phase": {
+        "type": "nested",
+        "properties": {
+          "phase": {
+            "type": "string"
+          },
+          "phase_additional_qualifier_code": {
+            "type": "string"
+          }
+        }
+      },
+      "primary_purpose": {
+        "type": "nested",
+        "properties": {
+          "primary_purpose_additional_qualifier_code": {
+            "type": "string"
+          },
+          "primary_purpose_code": {
+            "type": "string"
+          },
+          "primary_purpose_other_text": {
+            "type": "string"
+          }
+        }
+      },
+      "principal_investigator": {
         "type": "string"
+      },
+      "program_code": {
+        "type": "string"
+      },
+      "responsible_party": {
+        "type": "nested",
+        "properties": {
+          "f1": {
+            "type": "string"
+          },
+          "f2": {
+            "type": "string"
+          },
+          "f3": {
+            "type": "string"
+          },
+          "f4": {
+            "type": "string"
+          },
+          "f5": {
+            "type": "string"
+          },
+          "f6": {
+            "type": "string"
+          },
+          "f7": {
+            "type": "string"
+          },
+          "f8": {
+            "type": "string"
+          }
+        }
       },
       "sites": {
         "type": "nested",
@@ -252,6 +441,9 @@
               "status_date": {
                 "type": "date",
                 "format": "strict_date_optional_time||epoch_millis"
+              },
+              "tty": {
+                "type": "string"
               }
             }
           },
@@ -270,20 +462,9 @@
           }
         }
       },
-      "locations_raw": {
-        "type": "string",
-        "index": "not_analyzed"
-      },
-      "organizations_raw": {
-        "type": "string",
-        "index": "not_analyzed"
-      },
       "sponsor": {
         "type": "nested",
         "properties": {
-          "responsible_party_name": {
-            "type": "string"
-          },
           "sponsor": {
             "type": "string"
           },
@@ -302,31 +483,13 @@
         "type": "date",
         "format": "strict_date_optional_time||epoch_millis"
       },
-      "completion_date": {
-        "type": "date",
-        "format": "strict_date_optional_time||epoch_millis"
-      },
-      "arms": {
-        "type": "nested",
-        "properties": {
-          "arm_name": {
-            "type": "string"
-          },
-          "arm_type": {
-            "type": "string"
-          },
-          "intervention_name": {
-            "type": "string"
-          },
-          "intervention_type": {
-            "type": "string"
-          }
-        }
-      },
-      "accepts_healthy_volunteers_indicator": {
+      "study_population_description": {
         "type": "string"
       },
-      "current_trial_status": {
+      "study_protocol_type": {
+        "type": "string"
+      },
+      "study_subtype_code": {
         "type": "string"
       }
     }

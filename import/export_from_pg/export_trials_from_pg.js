@@ -10,7 +10,7 @@ const es             = require("event-stream");
 const Transform      = require("stream").Transform;
 const Logger         = require("../../logger");
 
-let logger = new Logger({name: "EXPORT_TRIALS_FROM_PG_SCRIPT"});
+let logger = new Logger({name: "export-trials"});
 
 // a transform stream to strip the "trial_json_object" outer json
 // container from the results

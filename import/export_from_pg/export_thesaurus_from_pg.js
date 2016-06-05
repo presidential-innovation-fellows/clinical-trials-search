@@ -10,7 +10,7 @@ const es             = require("event-stream");
 const Transform      = require("stream").Transform;
 const Logger         = require("../../logger/logger");
 
-let logger = new Logger({name: "EXPORT_THESAURUS_FROM_PG_SCRIPT"});
+let logger = new Logger({name: "export-thesaurus"});
 
 // a transform stream to strip the "thesaurus_json_object" outer json
 // container from the results

@@ -58,7 +58,7 @@ app.use(function(err, req, res, next) {
   });
 });
 
-let logger = new Logger({name: "SEARCH_API"});
+let logger = new Logger({name: "search-api"});
 app.use(bunyanMiddleware({
   headerName: 'X-Request-Id',
   propertyName: 'reqId',

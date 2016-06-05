@@ -5,14 +5,17 @@ const _                   = require("lodash");
 const JSONStream          = require("JSONStream");
 const ElasticSearch       = require("elasticsearch");
 
-const Logger              = require("../../../logger");
+const Logger              = require("../../../logger/logger");
 const CONFIG              = require("../../config.json");
-
-let logger = new Logger();
 
 class AbstractIndexer {
 
+  get LOGGER_NAME() {
+    return "abstract-indexer";
+  }
+
   constructor(params) {
+    this.logger = new Logger({name: this.LOGGER_NAME});
     this.esIndex = params.esIndex;
     this.esType = params.esType;
     this.esMapping = params.esMapping;
@@ -39,22 +42,22 @@ class AbstractIndexer {
   }
 
   deleteIndex(callback) {
-    logger.info(`Deleting index (${this.esIndex}).`);
+    this.logger.info(`Deleting index (${this.esIndex}).`);
     this.client.indices.delete({
       index: this.esIndex
     }, (err, response, status) => {
-      if(err) { logger.error(err); }
+      if(err) { this.logger.error(err); }
       return callback(err, response);
     });
   }
 
   initIndex(callback) {
-    logger.info(`Creating index (${this.esIndex}).`);
+    this.logger.info(`Creating index (${this.esIndex}).`);
     this.client.indices.create({
       index: this.esIndex,
       body: this.esSettings
     }, (err, response, status) => {
-      if(err) { logger.error(err); }
+      if(err) { this.logger.error(err); }
       return callback(err, response);
     });
   }
@@ -63,26 +66,26 @@ class AbstractIndexer {
     this.client.indices.exists({
       index: this.esIndex
     }, (err, response, status) => {
-      if(err) { logger.error(err); }
+      if(err) { this.logger.error(err); }
       return callback(err, response);
     });
   }
 
   indexDocument(doc, callback) {
     this.client.index(doc, (err, response, status) => {
-      if(err) { logger.error(err); }
+      if(err) { this.logger.error(err); }
       return callback(err, response);
     });
   }
 
   initMapping(callback) {
-    logger.info(`Updating mapping for index (${this.esIndex}).`);
+    this.logger.info(`Updating mapping for index (${this.esIndex}).`);
     return this.client.indices.putMapping({
       index: this.esIndex,
       type: this.esType,
       body: this.esMapping
     }, (err, response, status) => {
-      if(err) { logger.error(err); }
+      if(err) { this.logger.error(err); }
       return callback(err, response);
     });
   }

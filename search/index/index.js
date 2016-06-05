@@ -3,7 +3,7 @@ const TrialIndexer          = require("./indexer/trial/indexer");
 const TermIndexer           = require("./indexer/term/indexer");
 const Logger                = require("../../logger/logger");
 
-let logger = new Logger({name: "SEARCH_INDEX"});
+let logger = new Logger({name: "indexer"});
 
 logger.info("Started indexing.");
 async.waterfall([

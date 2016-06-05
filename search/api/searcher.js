@@ -4,11 +4,11 @@ const ElasticSearch       = require("elasticsearch");
 const Logger              = require("../../logger/logger");
 const CONFIG              = require("../config.json");
 
-let logger = new Logger({name: "SEARCH_API_SEARCHER"});
+let logger = new Logger({name: "searcher"});
 
 class SearchLogger extends Logger {
   get DEFAULT_LOGGER_NAME() {
-    return "SEARCH_API_SEARCHER_ELASTICSEARCH";
+    return "searcher-elasticsearch";
   }
 }
 
