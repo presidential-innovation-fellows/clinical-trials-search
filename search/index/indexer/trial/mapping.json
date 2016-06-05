@@ -152,7 +152,8 @@
             "type": "string"
           },
           "disease_menu_display_name": {
-            "type": "string"
+            "type": "string",
+            "analyzer": "keyword_ci_analyzer"
           },
           "disease_preferred_name": {
             "type": "string"

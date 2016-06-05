@@ -29,7 +29,8 @@ class TermIndexer extends AbstractIndexer {
     this.terms = {
       diseases: {},
       locations: {},
-      organizations: {}
+      organizations: {},
+      anatomic_sites: {}
       // organizationFamilies: {}
     };
   }
@@ -43,8 +44,8 @@ class TermIndexer extends AbstractIndexer {
       this.logger.info(
         `Loading terms from trial with nci_id (${trial.nci_id}).`);
       this._loadDiseaseTermsFromTrial(trial);
-      this._loadLocationTermsFromTrial(trial);
-      this._loadOrganizationTermsFromTrial(trial);
+      // this._loadLocationTermsFromTrial(trial);
+      // this._loadOrganizationTermsFromTrial(trial);
       // this._loadOrganizationFamilyTermsFromTrial(trial);
     };
 
@@ -54,32 +55,45 @@ class TermIndexer extends AbstractIndexer {
     });
   }
 
-  _loadDiseaseTermsFromTrial(trial) {
-    if(!trial.diseases) { return; }
-    let diseaseTerms = {};
-    trial.diseases.forEach((disease) => {
-      if(!disease.synonyms) { return; }
-      disease.synonyms.forEach((synonym) => {
-        let key = this._transformStringToKey(synonym);
-        if(typeof diseaseTerms[key] === "undefined") {
-          diseaseTerms[key] = {
-            count: 1,
-            term: synonym
-          };
-        }
-      });
-    });
-    Object.keys(diseaseTerms).forEach((diseaseTerm) => {
-      if(typeof this.terms.diseases[diseaseTerm] === "undefined") {
-        this.terms.diseases[diseaseTerm] = {
-          count: diseaseTerms[diseaseTerm].count,
-          term: diseaseTerms[diseaseTerm].term
+  _loadTermsFromTrialForTermType(termType, extractTermsToArr) {
+    let terms = {};
+    let termsArr = extractTermsToArr();
+    termsArr.forEach((term) => {
+      let termKey = this._transformStringToKey(term);
+      if(typeof terms[termKey] === "undefined") {
+        terms[termKey] = {
+          count: 1,
+          term: term
         };
-      } else{
-        this.terms.diseases[diseaseTerm].count +=
-          diseaseTerms[diseaseTerm].count;
       }
     });
+    Object.keys(terms).forEach((termKey) => {
+      if(typeof this.terms[termType][termKey] === "undefined") {
+        this.terms[termType][termKey] = {
+          count: terms[termKey].count,
+          term: terms[termKey].term
+        };
+      } else {
+        this.terms[termType][termKey].count +=
+          terms[termKey].count;
+      }
+    });
+  }
+
+  _loadDiseaseTermsFromTrial(trial) {
+    const termType = "diseases";
+    const extractTermsToArr = () => {
+      let terms = [];
+      trial.diseases.forEach((disease) => {
+        if(!disease.synonyms) { return; }
+        disease.synonyms.forEach((synonym) => {
+          terms.push(synonym);
+        });
+      });
+      return terms;
+    };
+    if(!trial[termType]) { return; }
+    this._loadTermsFromTrialForTermType(termType, extractTermsToArr);
   }
 
   _loadLocationTermsFromTrial(trial) {
@@ -259,8 +273,8 @@ class TermIndexer extends AbstractIndexer {
       (response, next) => { indexer.initMapping(next); },
       (response, next) => { indexer.loadTermsFromTrialsJsonDump(next); },
       (next) => { indexer.indexTerms({ termType: "disease", termsRoot: "diseases" }, next)},
-      (next) => { indexer.indexTerms({ termType: "location", termsRoot: "locations" }, next)},
-      (next) => { indexer.indexTerms({ termType: "organization", termsRoot: "organizations" }, next)}
+      // (next) => { indexer.indexTerms({ termType: "location", termsRoot: "locations" }, next)},
+      // (next) => { indexer.indexTerms({ termType: "organization", termsRoot: "organizations" }, next)}
       // (next) => { indexer.indexTerms({ termType: "organization_family", termsRoot: "organizationFamilies" }, next)}
     ], (err) => {
       if(err) { indexer.logger.error(err); }

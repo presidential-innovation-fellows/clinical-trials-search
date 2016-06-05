@@ -38,7 +38,7 @@ class Searcher {
             "bool": {
               "should": [{
                 "match": {
-                  "name": q.term
+                  "term": q.term
                 }
               }]
             }
@@ -95,21 +95,21 @@ class Searcher {
     if (q.disease) {
       query.query.bool.should.push({
         "match": {
-          "diseases_raw": this._getKeyTerm(q.disease)
+          "disease_keys": this._getKeyTerm(q.disease)
         }
       });
     }
     if (q.location) {
       query.query.bool.should.push({
         "match": {
-          "locations_raw": this._getKeyTerm(q.location)
+          "location_keys": this._getKeyTerm(q.location)
         }
       });
     }
     if (q.organization) {
       query.query.bool.should.push({
         "match": {
-          "organizations_raw": this._getKeyTerm(q.organization)
+          "organization_keys": this._getKeyTerm(q.organization)
         }
       });
     }
