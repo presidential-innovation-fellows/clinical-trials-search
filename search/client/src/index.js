@@ -8,7 +8,6 @@ import App from './components/App';
 import Home from './components/Home';
 import Search from './components/Search';
 import ClinicalTrial from './components/ClinicalTrial';
-require('styles/main.sass');
 
 const store = configureStore();
 

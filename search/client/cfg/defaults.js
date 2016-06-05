@@ -45,17 +45,13 @@ function getDefaultModules() {
         loader: 'style-loader!css-loader!stylus-loader'
       },
       {
-        test: /\.(png|jpg|gif)$/,
+        test: /\.(png|jpg|gif|woff|woff2)$/,
         loader: 'url-loader?limit=8192'
       },
       {
         test: /\.(mp4|ogg|svg)$/,
         loader: 'file-loader'
-      },
-      {
-        test   : /\.(ttf|eot|woff(2)?)(\?[a-z0-9=&.]+)?$/,
-        loader : 'file-loader'
-      },
+      }
     ]
   };
 }

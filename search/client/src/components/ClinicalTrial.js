@@ -2,6 +2,8 @@ import React, { Component, PropTypes } from 'react';
 import { Link } from 'react-router';
 import fetch from 'isomorphic-fetch';
 
+require('styles//ClinicalTrial.sass');
+
 function createMarkup(text) {
   if(!text) { return {__html: ""}; }
   return {__html: text.replace(/(?:\r\n|\r|\n)/g, '<br />')};
