@@ -18,8 +18,8 @@ const ES_PARAMS = {
   "esMapping": ES_MAPPING,
   "esSettings": ES_SETTINGS
 };
-const TRIALS_FILEPATH = path.join(__dirname, '../../../../import/trials.json');
-const NCI_THESAURUS_FILEPATH = path.join(__dirname, '../../../../import/thesaurus.json');
+const TRIALS_FILEPATH = path.join(__dirname, '../../../../import/export_from_pg/trials.json');
+const NCI_THESAURUS_FILEPATH = path.join(__dirname, '../../../../import/export_from_pg/thesaurus.json');
 
 class TrialIndexer extends AbstractIndexer {
 
