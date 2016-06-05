@@ -28,7 +28,8 @@ function renderSuggestion(suggestion, { value, valueBeforeUpDown }) {
     'organization': 'hospital/center',
     'organization_family': 'network/organization',
     'disease': 'disease',
-    'location': 'location'
+    'location': 'location',
+    'anatomic_site': 'anatomic site'
   }[suggestion.classification];
 
   return (
