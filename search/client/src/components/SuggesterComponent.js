@@ -94,7 +94,7 @@ class SuggesterComponent extends React.Component {
 
   onSuggestionSelected(event, { suggestion, suggestionValue }) {
     // this.loadSuggestions(suggestionValue);
-    let query = `${suggestion.classification}=${encodeURIComponent(suggestion.term_key)}`;
+    let query = `${suggestion.classification}_keys=${encodeURIComponent(suggestion.term_key)}`;
     browserHistory.push(`/search?${query}`);
   }
 

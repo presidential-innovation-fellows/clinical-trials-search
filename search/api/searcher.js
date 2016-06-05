@@ -1,10 +1,14 @@
 const _                   = require("lodash");
 const ElasticSearch       = require("elasticsearch");
+const Bodybuilder         = require("bodybuilder");
 
 const Logger              = require("../../logger/logger");
+const Utils               = require("../../utils/utils");
 const CONFIG              = require("../config.json");
 
 let logger = new Logger({name: "searcher"});
+
+const transformStringToKey = Utils.transformStringToKey;
 
 class SearchLogger extends Logger {
   get DEFAULT_LOGGER_NAME() {
@@ -75,40 +79,34 @@ class Searcher {
     });
   }
 
-  // TODO: make or implement a query builder
   _searchTrialsQuery(q) {
-    let query = {
-      "query": {
-        "bool": {
-          "should": []
-        }
+    let body = new Bodybuilder();
+
+    const _addArrayFilter = (field, queryString) => {
+      let filters = JSON.parse(queryString);
+      if(filters instanceof Array) {
+        filters.forEach((filter) => {
+          body.filter("term", field, transformStringToKey(filter));
+        });
       }
     };
-    if (q.disease) {
-      query.query.bool.should.push({
-        "match": {
-          "disease_keys": this.transformStringToKey(q.disease)
-        }
-      });
-    }
-    if (q.location) {
-      query.query.bool.should.push({
-        "match": {
-          "location_keys": this.transformStringToKey(q.location)
-        }
-      });
-    }
-    if (q.organization) {
-      query.query.bool.should.push({
-        "match": {
-          "organization_keys": this.transformStringToKey(q.organization)
-        }
-      });
-    }
+
+    [
+      "disease_keys", "location_keys", "organization_keys"
+    ].forEach((field) => {
+      if(q[field]) {
+        _addArrayFilter(field, q[field]);
+      }
+    });
+
     q.size = q.size ? q.size : 10;
-    query.size = q.size > 50 ? 50 : q.size;
-    query.from = q.from ? q.from : 0;
-    console.log(JSON.stringify(query));
+    let size = q.size > 50 ? 50 : q.size;
+    let from = q.from ? q.from : 0;
+    body.size(size);
+    body.from(from);
+
+    let query = body.build("v2");
+
     return query;
   }
 
@@ -133,26 +131,24 @@ class Searcher {
     });
   }
 
-  // TODO: make or implement a query builder
-  _searchClinicalTrialById(nciId) {
-    return {
-      "query": {
-        "bool": {
-          "must": [{
-            "match": {
-              "nci_id": nciId
-            }
-          }]
-        }
-      }
-    };
+  _searchClinicalTrialById(id) {
+    let body = new Bodybuilder();
+
+    if(id.substr(0, 4) === "NCI-")
+      body.query("match", "nci_id", id);
+    else if(id.substr(0, 3) === "NCT")
+      body.query("match", "nct_id", id);
+
+    let query = body.build("v2");
+    return query;
   }
 
-  getClinicalTrialById(nciId, callback) {
+  // queries on either nci or nct id
+  getClinicalTrialById(id, callback) {
     this.client.search({
       index: 'cancer-clinical-trials',
       type: 'trial',
-      body: this._searchClinicalTrialById(nciId)
+      body: this._searchClinicalTrialById(id)
     }, (err, res) => {
       if(err) {
         logger.error(err);
