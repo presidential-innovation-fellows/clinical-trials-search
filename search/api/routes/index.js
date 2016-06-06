@@ -1,16 +1,46 @@
 const express = require("express");
 const searcher = require("../searcher");
+const Logger = require('../../logger/logger');
 const router = express.Router();
 
+/* get a clinical trial by nci or nct id */
 router.get('/clinical-trial/:id', (req, res, next) => {
-  let nciId = req.params.id;
-  searcher.getClinicalTrialById(nciId, (err, clinicalTrial) => {
-    // TODO: add error handling
-    res.json(clinicalTrial);
+  let id = req.params.id;
+  searcher.getTrialById(id, (err, trial) => {
+    // TODO: add better error handling
+    if(err) {
+      req.log.error(err);
+      return res.sendStatus(500);
+    }
+    // TODO: format trial
+    res.json(trial);
   });
 });
 
-router.get('/search/terms', (req, res, next) => {
+/* get clinical trials that match supplied search criteria */
+router.get('/clinical-trials', (req, res, next) => {
+  let q = {
+    disease_keys: req.query.disease_keys,
+    location_keys: req.query.location_keys,
+    organization_keys: req.query.organization_keys,
+    test: req.query.test,
+    from: req.query.from,
+    size: req.query.size
+  };
+
+  searcher.searchTrials(q, (err, trials) => {
+    // TODO: add better error handling
+    if(err) {
+      req.log.error(err);
+      return res.sendStatus(500);
+    }
+    // TODO: format trials
+    res.json(trials);
+  })
+});
+
+/* get key terms that can be used to search through clinical trials */
+router.get('/terms', (req, res, next) => {
   let queryTerm = req.query.term;
   if(!queryTerm) { respondInvalidQuery(res); }
   let queryClassification = req.query.classification;
@@ -20,24 +50,13 @@ router.get('/search/terms', (req, res, next) => {
     classification: queryClassification
   }
   searcher.searchTerms(q, (err, terms) => {
-    // TODO: add error handling
+    // TODO: add better error handling
+    if(err) {
+      req.log.error(err);
+      return res.sendStatus(500);
+    }
     res.json(terms);
   });
-});
-
-router.get('/search/trials', (req, res, next) => {
-  let q = {
-    disease: req.query.disease,
-    location: req.query.location,
-    organization: req.query.organization,
-    from: req.query.from,
-    size: req.query.size
-  };
-
-  searcher.searchTrials(q, (err, trials) => {
-    // TODO: add error handling
-    res.json(trials);
-  })
 });
 
 const respondInvalidQuery = (res) => {
