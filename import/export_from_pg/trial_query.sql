@@ -2,15 +2,36 @@ SELECT
   json_build_object(
     'nci_id', study.nci_id,
     'nct_id', study.nct_id,
+    'protocol_id', study.lead_org_id,
+    'other_ids', (
+      SELECT
+        json_agg(
+          json_build_object(
+            'name', other_identifier.name,
+            'value', other_identifier.value
+          )
+        )
+      FROM
+        dw_study_other_identifier other_identifier
+      WHERE
+        study.nci_id = other_identifier.nci_id
+    ),
+
     'date_last_created', study.date_last_created,
     'date_last_updated', study.date_last_updated,
     'current_trial_status', study.current_trial_status,
+    'current_trial_status_date', study.current_trial_status_date,
     'start_date', study.start_date,
+    'start_date_type_code', study.start_date_type_code,
     'completion_date', study.completion_date,
+    'completion_date_type_code', study.completion_date_type_code,
     'brief_title', study.brief_title,
     'official_title', study.official_title,
     'acronym', study.acronym,
-    'keyword_text', study.keyword_text,
+    -- 'keyword_text', study.keyword_text,
+    'keywords', (
+      string_to_array(study.keyword_text, ', ')
+    ),
     'brief_summary', study.brief_summary,
     'detail_description', study.detail_description,
     'classification_code', study.classification_code,
@@ -19,7 +40,6 @@ SELECT
     'expanded_access_indicator', study.expanded_access_indicator,
     'accepts_healthy_volunteers_indicator', study.accepts_healthy_volunteers_indicator,
     'fdaregulated_indicator', study.fdaregulated_indicator,
-    'program_code', study.program_code,
     'study_protocol_type', study.study_protocol_type,
     'study_subtype_code', study.study_subtype_code,
     'study_population_description', study.study_population_description,
@@ -53,12 +73,6 @@ SELECT
       )
     ),
 
-    'oversight_authority', (
-      json_build_object(
-        'oversight_authority_country', study.oversight_authority_country,
-        'oversight_authority_organization_name', study.oversight_authority_organization_name
-      )
-    ),
     'principal_investigator', study.principal_investigator,
     'central_contact', (
       json_build_object(
@@ -69,35 +83,6 @@ SELECT
       )
     ),
     'lead_org', study.lead_org,
-    'responsible_party', (
-      'responsible_party_name', study.responsible_party_name,
-      'responsible_party_type', study.resp_party_type,
-      'responsible_party_generic_contact', study.responsible_party_generic_contact,
-      'responsible_party_personal_contact', study.responsible_party_personal_contact
-    ),
-    'sponsor', (
-      json_build_object(
-        'sponsor', study.sponsor,
-        'sponsor_org_family', study.sponsor_org_family,
-        'sponsor_resp_party_email', study.sponsor_resp_party_email,
-        'sponsor_resp_party_phone', study.sponsor_resp_party_phone
-      )
-    ),
-    'irb', (
-      json_build_object(
-        'irb_approval_number', study.irb_approval_number,
-        'irb_approval_status', study.irb_approval_status,
-        'irb_city', study.irb_city,
-        'irb_country', study.irb_country,
-        'irb_email', study.irb_email,
-        'irb_name', study.irb_name,
-        'irb_organization_affiliation', study.irb_organization_affiliation,
-        'irb_phone', study.irb_phone,
-        'irb_state_or_province', study.irb_state_or_province,
-        'irb_street_address', study.irb_street_address,
-        'irb_zip_code', study.irb_zip_code
-      )
-    ),
     'sites', (
       SELECT
         json_agg(
@@ -190,7 +175,10 @@ SELECT
             'assay_type_description', biomarker.assay_type_description,
             'assay_use', biomarker.assay_use,
             'long_name', biomarker.long_name,
-            'name', biomarker.name,
+            'name', split_part(biomarker.name, ' (', 1),
+            'synonyms', (
+              string_to_array(replace(split_part(biomarker.name, '(', 2), ')', ''), '; ')
+            ),
             'status_code', biomarker.status_code,
             'tissue_collection_method_code', biomarker.tissue_collection_method_code,
             'tissue_specimen_type_code', biomarker.tissue_specimen_type_code,
@@ -283,5 +271,5 @@ SELECT
 FROM
   dw_study study
 WHERE
-  lower(current_trial_status) = 'active' AND
+  -- lower(current_trial_status) = 'active' AND
   lower(processing_status) LIKE 'abstraction verified%';
