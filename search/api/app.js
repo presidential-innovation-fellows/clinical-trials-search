@@ -11,6 +11,16 @@ var routes = require('./routes/index');
 
 var app = express();
 
+// logging setup
+let logger = new Logger({name: "search-api"});
+app.use(bunyanMiddleware({
+  headerName: 'X-Request-Id',
+  propertyName: 'reqId',
+  logName: 'req_id',
+  obscureHeaders: [],
+  logger: logger
+}));
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -23,8 +33,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 
-
-
+// routing
 app.use('/', routes);
 
 // catch 404 and forward to error handler
@@ -57,15 +66,6 @@ app.use(function(err, req, res, next) {
     error: {}
   });
 });
-
-let logger = new Logger({name: "search-api"});
-app.use(bunyanMiddleware({
-  headerName: 'X-Request-Id',
-  propertyName: 'reqId',
-  logName: 'req_id',
-  obscureHeaders: [],
-  logger: logger
-}));
 
 logger.info("Started API server at http://localhost:8000/");
 
