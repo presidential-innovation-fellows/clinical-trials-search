@@ -82,12 +82,14 @@ class Searcher {
   _searchTrialsQuery(q) {
     let body = new Bodybuilder();
 
-    const _addArrayFilter = (field, queryString) => {
-      let filters = JSON.parse(queryString);
-      if(filters instanceof Array) {
-        filters.forEach((filter) => {
-          body.filter("term", field, transformStringToKey(filter));
+    const _addFilter = (field, filter) => {
+      if(filter instanceof Array) {
+        filter.forEach((filterElement) => {
+          body.filter("term", field, transformStringToKey(filterElement));
         });
+      } else {
+
+        body.filter("term", field, filter);
       }
     };
 
@@ -95,7 +97,7 @@ class Searcher {
       "disease_keys", "location_keys", "organization_keys"
     ].forEach((field) => {
       if(q[field]) {
-        _addArrayFilter(field, q[field]);
+        _addFilter(field, q[field]);
       }
     });
 
@@ -111,6 +113,7 @@ class Searcher {
   }
 
   searchTrials(q, callback) {
+    logger.info(`Searching for ${JSON.stringify(q)}`);
     this.client.search({
       index: 'cancer-clinical-trials',
       type: 'trial',
@@ -131,7 +134,7 @@ class Searcher {
     });
   }
 
-  _searchClinicalTrialById(id) {
+  _searchTrialById(id) {
     let body = new Bodybuilder();
 
     if(id.substr(0, 4) === "NCI-")
@@ -144,11 +147,11 @@ class Searcher {
   }
 
   // queries on either nci or nct id
-  getClinicalTrialById(id, callback) {
+  getTrialById(id, callback) {
     this.client.search({
       index: 'cancer-clinical-trials',
       type: 'trial',
-      body: this._searchClinicalTrialById(id)
+      body: this._searchTrialById(id)
     }, (err, res) => {
       if(err) {
         logger.error(err);
