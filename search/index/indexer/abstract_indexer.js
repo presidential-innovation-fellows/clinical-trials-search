@@ -8,6 +8,12 @@ const ElasticSearch       = require("elasticsearch");
 const Logger              = require("../../../logger/logger");
 const CONFIG              = require("../../config.json");
 
+class ElasticSearchLogger extends Logger {
+  get DEFAULT_LOGGER_NAME() {
+    return "elasticsearch";
+  }
+}
+
 class AbstractIndexer {
 
   get LOGGER_NAME() {
@@ -22,7 +28,7 @@ class AbstractIndexer {
     this.esSettings = params.esSettings;
     this.client = new ElasticSearch.Client({
       host: `${CONFIG.ES_HOST}:${CONFIG.ES_PORT}`,
-      log: Logger
+      log: ElasticSearchLogger
     });
   }
 
