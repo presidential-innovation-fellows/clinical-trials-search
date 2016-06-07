@@ -17,6 +17,7 @@ SELECT
         study.nci_id = other_identifier.nci_id
     ),
 
+    'amendment_date', study.amendment_date,
     'date_last_created', study.date_last_created,
     'date_last_updated', study.date_last_updated,
     'current_trial_status', study.current_trial_status,
@@ -249,7 +250,11 @@ SELECT
             'arm_name', arm.arm_name,
             'arm_type', arm.arm_type,
             'intervention_name', arm.intervention_name,
-            'intervention_type', arm.intervention_type
+            'intervention_type', arm.intervention_type,
+            'date_created_arm', arm.date_created_arm,
+            'date_updated_arm', arm.date_updated_arm,
+            'date_created_intervention', arm.date_created_intervention,
+            'date_updated_intervention', arm.date_updated_intervention
           )
         )
       FROM (
