@@ -36,8 +36,14 @@ jspm_packages
 # Optional REPL history
 .node_repl_history
 
+# Swap files
+*.swp
+
+# Mac files
+.DS_STORE
+
+# Large data files
 trials.json
 thesaurus.json
-.DS_STORE
 ctrp_data_warehouse.sql
 nci_thesaurus.csv
