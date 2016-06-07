@@ -13,13 +13,13 @@ var app = express();
 
 // logging setup
 let logger = new Logger({name: "search-api"});
-app.use(bunyanMiddleware({
-  headerName: 'X-Request-Id',
-  propertyName: 'reqId',
-  logName: 'req_id',
-  obscureHeaders: [],
-  logger: logger
-}));
+// app.use(bunyanMiddleware({
+//   headerName: 'X-Request-Id',
+//   propertyName: 'reqId',
+//   logName: 'req_id',
+//   obscureHeaders: [],
+//   logger: logger
+// }));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
