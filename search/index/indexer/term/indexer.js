@@ -2,6 +2,7 @@ const fs                  = require("fs");
 const path                = require("path");
 const async               = require("async");
 const _                   = require("lodash");
+const Writable            = require("stream").Writable;
 const JSONStream          = require("JSONStream");
 
 const AbstractIndexer     = require("../abstract_indexer");
@@ -21,6 +22,39 @@ const TRIALS_FILEPATH = path.join(__dirname,
 
 const transformStringToKey = Utils.transformStringToKey;
 
+class TermIndexerStream extends Writable {
+
+  constructor(termIndexer) {
+    super({objectMode: true});
+    this.termIndexer = termIndexer;
+    this.logger = termIndexer.logger;
+    this.indexCounter = termIndexer.indexCounter;
+  }
+
+  _indexTerm(termDoc, done) {
+    let id = `${termDoc.term_key}_${termDoc.classification}`;
+    this.logger.info(`Indexing term (${id}).`);
+    this.termIndexer.indexDocument({
+      "index": this.termIndexer.esIndex,
+      "type": this.termIndexer.esType,
+      "id": id,
+      "body": termDoc
+    }, (err, response, status) => {
+      if(err) { this.logger.error(err); }
+      this.termIndexer.indexCounter++;
+
+      return done(err, response);
+    });
+  };
+
+  _write(term, enc, next) {
+    this._indexTerm(term, (err, response) => {
+      return next(null, response);
+    });
+  }
+
+}
+
 class TermIndexer extends AbstractIndexer {
 
   get LOGGER_NAME() {
@@ -36,6 +70,7 @@ class TermIndexer extends AbstractIndexer {
       anatomicSites: {}
       // organizationFamilies: {}
     };
+    this.indexCounter = 0;
   }
 
   loadTermsFromTrialsJsonDump(callback) {
@@ -187,71 +222,28 @@ class TermIndexer extends AbstractIndexer {
   indexTermsForType(params, callback) {
     let termType = params.termType;
     let termsRoot = params.termsRoot;
-    let indexCounter = 0;
-    const _indexTerm = (term, done) => {
-      let id = `${term.term_key}_${term.classification}`;
-      this.logger.info(`Indexing term (${id}).`);
-      this.indexDocument({
-        "index": this.esIndex,
-        "type": this.esType,
-        "id": id,
-        "body": term
-      }, (err, response, status) => {
-        if(err) { this.logger.error(err); }
-        indexCounter++;
-        // set timeout to avoid overloading elasticsearch
-        setTimeout(() => {
-          return done(err, response);
-        }, CONFIG.INDEXING_DOC_DELAY_PERIOD);
-      });
-    };
-
-    // set concurrency to a relatively low number (< 10) to avoid overloading
-    // elasticsearch
-    let indexQ = async.queue(_indexTerm, CONFIG.INDEXING_CONCURRENCY);
-
-    const _pushToQ = (term) => {
-      indexQ.push(term, (err) => {
-        if(err) { this.logger.error(err); }
-      });
-    };
+    this.indexCounter = 0;
 
     let maxTermCount = _.max(
       _.map(_.values(this.terms[termsRoot]), (term) => {
         return term.count;
-      }));
+      })
+    );
+    let is = new TermIndexerStream(this);
     Object.keys(this.terms[termsRoot]).forEach((termKey) => {
       let termObj = this.terms[termsRoot][termKey];
       let term = termObj["term"];
       let count = termObj["count"];
       let count_normalized = count / maxTermCount;
-      _pushToQ({
+      let doc = {
         "term": term,
         "term_key": termKey,
         "classification": termType,
         "count": count,
         "count_normalized": count_normalized
-      });
+      };
+      is.write(doc);
     });
-
-    let queueCompleted = false;
-    indexQ.drain = () => {
-      // ugly, but prevents us from proceeding unless we are truly done with the queue
-      // backups can occur when we are trying to index too much concurrently, so better
-      // be safe than sorry
-      this.logger.info(
-        `Waiting ${CONFIG.QUEUE_GRACE_PERIOD/1000} seconds for queue to complete...`);
-      setTimeout(() => {
-        let qSize = indexQ.length() + indexQ.running();
-        if(!queueCompleted && qSize === 0) {
-          this.logger.info(`Indexed all ${indexCounter} ${termType} terms.`);
-          queueCompleted = true;
-          return callback();
-        } else {
-          this.logger.info(`Queue wasn't fully drained - proceeding...`);
-        }
-      }, CONFIG.QUEUE_GRACE_PERIOD);
-    }
   }
 
   indexTerms(callback) {
