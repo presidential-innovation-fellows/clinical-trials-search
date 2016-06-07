@@ -14,7 +14,7 @@ let logger = new Logger({name: "export-thesaurus"});
 
 // a transform stream to strip the "thesaurus_json_object" outer json
 // container from the results
-class StripThesaurusContainer extends Transform {
+class StripThesaurusContainerStream extends Transform {
   _transform(data, enc, next) {
     data = data.toString();
     let thesaurusContainer = '{"thesaurus_json_object":';
@@ -47,7 +47,7 @@ client.connect((err) => {
     // set up the streams
     let qs = client.query(new QueryStream(queryString, null, {batchSize: 10}));
     let js = JSONStream.stringify();
-    let ts = new StripThesaurusContainer();
+    let ts = new StripThesaurusContainerStream();
     let ws = fs.createWriteStream('thesaurus.json');
     // run the query and write the results to file via piping the streams
     qs.pipe(js).pipe(ts).pipe(ws).on("finish", () => {

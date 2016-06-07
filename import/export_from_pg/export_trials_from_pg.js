@@ -14,7 +14,7 @@ let logger = new Logger({name: "export-trials"});
 
 // a transform stream to strip the "trial_json_object" outer json
 // container from the results
-class StripTrialContainer extends Transform {
+class StripTrialContainerStream extends Transform {
   _transform(data, enc, next) {
     data = data.toString();
     let trialContainer = '{"trial_json_object":';
@@ -47,7 +47,7 @@ client.connect((err) => {
     // set up the streams
     let qs = client.query(new QueryStream(queryString, null, {batchSize: 20}));
     let js = JSONStream.stringify();
-    let ts = new StripTrialContainer();
+    let ts = new StripTrialContainerStream();
     let ws = fs.createWriteStream('trials.json');
     // run the query and write the results to file via piping the streams
     qs.pipe(js).pipe(ts).pipe(ws).on("finish", () => {
