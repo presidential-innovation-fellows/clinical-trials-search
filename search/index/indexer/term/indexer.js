@@ -47,8 +47,8 @@ class TermIndexerStream extends Writable {
     });
   };
 
-  _write(term, enc, next) {
-    this._indexTerm(term, (err, response) => {
+  _write(termDoc, enc, next) {
+    this._indexTerm(termDoc, (err, response) => {
       return next(null, response);
     });
   }
@@ -220,6 +220,8 @@ class TermIndexer extends AbstractIndexer {
   }
 
   indexTermsForType(params, callback) {
+    let is = new TermIndexerStream(this);
+
     let termType = params.termType;
     let termsRoot = params.termsRoot;
     this.indexCounter = 0;
@@ -229,7 +231,6 @@ class TermIndexer extends AbstractIndexer {
         return term.count;
       })
     );
-    let is = new TermIndexerStream(this);
     Object.keys(this.terms[termsRoot]).forEach((termKey) => {
       let termObj = this.terms[termsRoot][termKey];
       let term = termObj["term"];
@@ -243,6 +244,12 @@ class TermIndexer extends AbstractIndexer {
         "count_normalized": count_normalized
       };
       is.write(doc);
+    });
+    is.end();
+
+    is.on("finish", () => {
+      this.logger.info(`Indexed ${this.indexCounter} ${this.esType} ${termType} documents.`);
+      return callback();
     });
   }
 

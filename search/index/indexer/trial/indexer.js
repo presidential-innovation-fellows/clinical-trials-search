@@ -28,7 +28,6 @@ class TrialIndexerStream extends Writable {
     super({objectMode: true});
     this.trialIndexer = trialIndexer;
     this.logger = trialIndexer.logger;
-    this.indexCounter = trialIndexer.indexCounter;
   }
 
   _addFieldsToTrial(trial) {
@@ -85,7 +84,7 @@ class TrialIndexerStream extends Writable {
       "body": this._addFieldsToTrial(trial)
     }, (err, response, status) => {
       if(err) { this.logger.error(err); }
-      this.indexCounter++;
+      this.trialIndexer.indexCounter++;
 
       return done(err, response);
     });
@@ -114,11 +113,8 @@ class TrialIndexer extends AbstractIndexer {
     let js = JSONStream.parse("*");
     let is = new TrialIndexerStream(this);
 
-    rs.pipe(js).pipe(is).on("end", () => {
+    rs.pipe(js).pipe(is).on("finish", () => {
       this.logger.info(`Indexed ${this.indexCounter} ${this.esType} documents.`);
-      callback();
-    }).on("error", (err) => {
-      this.logger.error(err);
       callback();
     });
   }
