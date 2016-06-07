@@ -72,7 +72,7 @@ class SuggesterComponent extends React.Component {
     this.setState({});
 
     let term = escapeRegexCharacters(value);
-    fetch(`http://localhost:3000/search/terms?term=${term}`)
+    fetch(`http://localhost:3000/terms?term=${term}`)
       .then(response => response.json())
       .then((json) => {
         var suggestions = json.terms;

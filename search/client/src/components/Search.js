@@ -43,7 +43,7 @@ class Search extends Component {
     query.from = from;
     this.setState({isLoading: true});
     // fetch(`http://localhost:3000/search/trials`)
-    fetch(`http://localhost:3000/search/trials?${serialize(query)}`)
+    fetch(`http://localhost:3000/trials?${serialize(query)}`)
       .then(response => response.json())
       .then((json) => {
         let numTrialsLoaded = from + size;
