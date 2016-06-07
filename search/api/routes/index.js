@@ -1,6 +1,6 @@
 const express = require("express");
 const searcher = require("../searcher");
-const Logger = require('../../logger/logger');
+const Logger = require('../../../logger/logger');
 const router = express.Router();
 
 /* get a clinical trial by nci or nct id */
