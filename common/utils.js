@@ -1,10 +1,17 @@
+const latinize                    = require("latinize");
+
 module.exports = class Utils {
 
   static transformStringToKey(text) {
-    return text
+
+    return latinize(text)
       .replace(/[^a-zA-Z0-9 ]/g, " ")
-      .replace(/ /g,"_")
-      .toLowerCase();
+      .replace(/\s\s+/g, " ")
+      .replace(/ /g, "_")
+      .toLowerCase()
+      .replace("and_", "")
+      .replace("of_", "")
+      .replace("the_", "");
   }
 
   static getFlattenedMappingProperties(mapping) {

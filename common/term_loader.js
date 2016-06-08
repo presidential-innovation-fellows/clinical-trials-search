@@ -12,8 +12,8 @@ class TermLoader {
       diseases: {},
       locations: {},
       organizations: {},
-      anatomicSites: {}
-      // organizationFamilies: {}
+      anatomicSites: {},
+      organizationFamilies: {}
     };
     this.indexCounter = 0;
   }
@@ -25,52 +25,99 @@ class TermLoader {
     let _loadTerms = (trial) => {
       logger.info(
         `Loading terms from trial with nci_id (${trial.nci_id}).`);
-      this.loadDiseaseTermsFromTrial(trial);
-      this.loadLocationTermsFromTrial(trial);
-      this.loadOrganizationTermsFromTrial(trial);
-      this.loadAnatomicSiteTermsFromTrial(trial);
-      // this._loadOrganizationFamilyTermsFromTrial(trial);
+      this._loadDiseaseTermsFromTrial(trial);
+      this._loadLocationTermsFromTrial(trial);
+      this._loadOrganizationTermsFromTrial(trial);
+      this._loadAnatomicSiteTermsFromTrial(trial);
+      this._loadOrganizationFamilyTermsFromTrial(trial);
     };
 
     rs.pipe(js).on("data", _loadTerms).on("end", () => {
       logger.info("Loaded terms from \"trials.json\" stream.");
-      return callback();
+      return this._calcMostFrequentTerm(callback);
     });
+  }
+
+  _calcMostFrequentTerm(callback) {
+    _.forOwn(this["terms"], (termTypeObj, termTypeKey) => {
+      _.forOwn(termTypeObj, (termObj, termKey) => {
+        let maxTerm = { term: null, count: 0 };
+        _.forOwn(termObj["terms"], (count, term) => {
+          if (count > maxTerm["count"]) {
+            maxTerm = { term, count };
+          }
+        });
+        this["terms"][termTypeKey][termKey] = {
+          term: maxTerm["term"],
+          terms: termObj["terms"],
+          count: termObj["count"]
+        };
+
+        // logger.info(maxTerm["term"], this["terms"][termTypeKey][maxTerm["term"]]);
+      });
+    });
+    return callback();
   }
 
   _loadTermsFromTrialForTermType(termType, extractTermsToArr) {
+    /*
+      Produces this.terms = {
+        term_one: {
+          count: 10,
+          terms: {
+            "Term One": 26,
+            "term one": 14
+          }
+        }
+      }
+    */
     let terms = {};
     let termsArr = extractTermsToArr();
+
     termsArr.forEach((term) => {
       let termKey = Utils.transformStringToKey(term);
-      if(typeof terms[termKey] === "undefined") {
+      if (typeof terms[termKey] === "undefined") {
         terms[termKey] = {
           count: 1,
-          term: term
+          terms: {}
         };
+
+      }
+      if (typeof terms[termKey]["terms"][term] === "undefined") {
+        terms[termKey]["terms"][term] = 1;
+      } else {
+        terms[termKey]["terms"][term]++;
       }
     });
+
     Object.keys(terms).forEach((termKey) => {
-      if(typeof this.terms[termType][termKey] === "undefined") {
+      if (typeof this.terms[termType][termKey] === "undefined") {
         this.terms[termType][termKey] = {
-          count: terms[termKey].count,
-          term: terms[termKey].term
+          count: 0,
+          terms: {}
         };
-      } else {
-        this.terms[termType][termKey].count +=
-          terms[termKey].count;
       }
+      this.terms[termType][termKey]["count"] +=
+        terms[termKey]["count"];
+
+      Object.keys(terms[termKey]["terms"]).forEach((term) => {
+        if (typeof this.terms[termType][termKey]["terms"][term] === "undefined") {
+          this.terms[termType][termKey]["terms"][term] = 0;
+        }
+        this.terms[termType][termKey]["terms"][term] +=
+          terms[termKey]["terms"][term];
+      });
     });
   }
 
-  loadDiseaseTermsFromTrial(trial) {
-    if(!trial.diseases) { return; }
+  _loadDiseaseTermsFromTrial(trial) {
+    if (!trial.diseases) { return; }
 
     const termType = "diseases";
     const extractTermsToArr = () => {
       let terms = [];
       trial.diseases.forEach((disease) => {
-        if(!disease.synonyms) { return; }
+        if (!disease.synonyms) { return; }
 
         disease.synonyms.forEach((synonym) => {
           terms.push(synonym);
@@ -82,8 +129,8 @@ class TermLoader {
     this._loadTermsFromTrialForTermType(termType, extractTermsToArr);
   }
 
-  loadLocationTermsFromTrial(trial) {
-    if(!trial.sites) { return; }
+  _loadLocationTermsFromTrial(trial) {
+    if (!trial.sites) { return; }
 
     const termType = "locations";
     const extractTermsToArr = () => {
@@ -96,7 +143,7 @@ class TermLoader {
           org.country
         ]).join(", ");
 
-        if(location) {
+        if (location) {
           terms.push(location);
         }
       });
@@ -106,8 +153,8 @@ class TermLoader {
     this._loadTermsFromTrialForTermType(termType, extractTermsToArr);
   }
 
-  loadOrganizationTermsFromTrial(trial) {
-    if(!trial.sites) { return; }
+  _loadOrganizationTermsFromTrial(trial) {
+    if (!trial.sites) { return; }
 
     const termType = "organizations";
     const extractTermsToArr = () => {
@@ -116,7 +163,7 @@ class TermLoader {
         let org = site.org;
         let organization = org.name;
 
-        if(organization) {
+        if (organization) {
           terms.push(organization);
         }
       });
@@ -126,17 +173,17 @@ class TermLoader {
     this._loadTermsFromTrialForTermType(termType, extractTermsToArr);
   }
 
-  loadOrganizationFamilyTermsFromTrial(trial) {
-    if(!trial.sites) { return; }
+  _loadOrganizationFamilyTermsFromTrial(trial) {
+    if (!trial.sites) { return; }
 
     const termType = "organizationFamilies";
     const extractTermsToArr = () => {
       let terms = [];
       trial.sites.forEach((site) => {
         let org = site.org;
-        let organizationFamily = org.name.toLowerCase();
+        let organizationFamily = org.family;
 
-        if(organizationFamily) {
+        if (organizationFamily) {
           terms.push(organizationFamily);
         }
       });
@@ -146,14 +193,14 @@ class TermLoader {
     this._loadTermsFromTrialForTermType(termType, extractTermsToArr);
   }
 
-  loadAnatomicSiteTermsFromTrial(trial) {
-    if(!trial.anatomic_sites) { return; }
+  _loadAnatomicSiteTermsFromTrial(trial) {
+    if (!trial.anatomic_sites) { return; }
 
     const termType = "anatomicSites";
     const extractTermsToArr = () => {
       let terms = [];
       trial.anatomic_sites.forEach((anatomicSite) => {
-        if(anatomicSite) {
+        if (anatomicSite) {
           terms.push(anatomicSite);
         }
       });
