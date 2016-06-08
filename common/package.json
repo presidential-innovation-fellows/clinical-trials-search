@@ -1,0 +1,8 @@
+{
+  "name": "utils",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "bunyan": "1.8.1"
+  }
+}

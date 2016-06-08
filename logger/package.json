@@ -1,8 +1,0 @@
-{
-  "name": "logger",
-  "version": "0.0.1",
-  "author": "Michael Balint <michael.balint@pif.gov> (https://presidentialinnovationfellows.gov/)",
-  "dependencies": {
-    "bunyan": "1.8.1"
-  }
-}

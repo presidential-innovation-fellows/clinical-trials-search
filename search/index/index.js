@@ -1,7 +1,7 @@
 const async                 = require("async");
 const TrialIndexer          = require("./indexer/trial/indexer");
 const TermIndexer           = require("./indexer/term/indexer");
-const Logger                = require("../../logger/logger");
+const Logger                = require("../../common/logger");
 
 let logger = new Logger({name: "indexer"});
 

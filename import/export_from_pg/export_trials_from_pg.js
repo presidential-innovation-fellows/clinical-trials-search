@@ -8,7 +8,7 @@ const QueryStream    = require("pg-query-stream");
 const JSONStream     = require("JSONStream");
 const es             = require("event-stream");
 const Transform      = require("stream").Transform;
-const Logger         = require("../../logger/logger");
+const Logger         = require("../../common/logger");
 
 let logger = new Logger({name: "export-trials"});
 

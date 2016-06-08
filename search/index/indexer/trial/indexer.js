@@ -7,7 +7,7 @@ const JSONStream          = require("JSONStream");
 const moment              = require("moment");
 
 const AbstractIndexer     = require("../abstract_indexer");
-const Utils               = require("../../../../utils/utils");
+const Utils               = require("../../../../common/utils");
 
 const CONFIG = require("../../../config.json");
 const ES_MAPPING = require("./mapping.json");

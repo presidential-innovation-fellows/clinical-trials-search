@@ -1,8 +1,8 @@
 const _                   = require("lodash");
 const express             = require("express");
 const searcher            = require("../search/searcher");
-const Logger              = require('../../../logger/logger');
-const Utils               = require("../../../utils/utils");
+const Logger              = require('../../../common/logger');
+const Utils               = require("../../../common/utils");
 const trialMapping        = require("../../index/indexer/trial/mapping.json");
 
 let logger = new Logger({name: "api-router"});

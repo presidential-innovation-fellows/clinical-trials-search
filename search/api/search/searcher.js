@@ -3,8 +3,8 @@ const ElasticSearch       = require("elasticsearch");
 const Bodybuilder         = require("bodybuilder");
 const moment              = require("moment");
 
-const Logger              = require("../../../logger/logger");
-const Utils               = require("../../../utils/utils");
+const Logger              = require("../../../common/logger");
+const Utils               = require("../../../common/utils");
 const CONFIG              = require("../../config.json");
 const trialMapping        = require("../../index/indexer/trial/mapping.json");
 

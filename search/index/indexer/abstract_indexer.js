@@ -5,7 +5,7 @@ const _                   = require("lodash");
 const JSONStream          = require("JSONStream");
 const ElasticSearch       = require("elasticsearch");
 
-const Logger              = require("../../../logger/logger");
+const Logger              = require("../../../common/logger");
 const CONFIG              = require("../../config.json");
 
 class ElasticSearchLogger extends Logger {
