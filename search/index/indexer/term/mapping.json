@@ -1,14 +1,19 @@
 {
   "term": {
     "properties": {
-      "term": {
+      "term_key": {
+        "type": "string",
+        "index": "not_analyzed"
+      },
+      "display_term": {
         "type": "string",
         "analyzer": "edge_ngram_analyzer",
         "search_analyzer": "standard"
       },
-      "term_key": {
+      "search_terms": {
         "type": "string",
-        "index": "not_analyzed"
+        "analyzer": "edge_ngram_analyzer",
+        "search_analyzer": "standard"
       },
       "classification": {
         "type": "string"
