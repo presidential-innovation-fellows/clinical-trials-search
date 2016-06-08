@@ -32,47 +32,9 @@ class TrialIndexerStream extends Writable {
   }
 
   _addFieldsToTrial(trial) {
-    this._addDiseaseKeysFieldToTrial(trial);
-    this._addLocationKeysFieldToTrial(trial);
-    this._addOrganizationKeysFieldToTrial(trial);
     this._addDateLastUpdatedAnythingFieldToTrial(trial);
 
     return trial;
-  }
-
-  _addDiseaseKeysFieldToTrial(trial) {
-    trial.disease_keys = [];
-    trial.diseases.forEach((disease) => {
-      trial.disease_keys = trial.disease_keys.concat(
-        disease.synonyms.map((synonym) => {
-          return transformStringToKey(synonym);
-        })
-      );
-    });
-  }
-
-  _addLocationKeysFieldToTrial(trial) {
-    if(trial.sites) {
-      trial.location_keys = trial.sites.map((site) => {
-        let org = site.org;
-        let location = _.compact([
-          org.city,
-          org.state_or_province,
-          org.country
-        ]).join(", ");
-        return transformStringToKey(location);
-      });
-    }
-  }
-
-  _addOrganizationKeysFieldToTrial(trial) {
-    if(trial.sites) {
-      trial.organization_keys = trial.sites.map((site) => {
-        let org = site.org;
-        let organization = org.name;
-        return transformStringToKey(organization);
-      });
-    }
   }
 
   // looks through all date fields, finds the latest one and uses that
