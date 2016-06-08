@@ -45,18 +45,6 @@
           },
           "intervention_type": {
             "type": "string"
-          },
-          "date_created_arm": {
-            "type": "strict_date_optional_time||epoch_millis"
-          },
-          "date_updated_arm": {
-            "type": "strict_date_optional_time||epoch_millis"
-          },
-          "date_created_intervention": {
-            "type": "strict_date_optional_time||epoch_millis"
-          },
-          "date_updated_intervention": {
-            "type": "strict_date_optional_time||epoch_millis"
           }
         }
       },
