@@ -75,14 +75,15 @@ class TermIndexer extends AbstractIndexer {
         return term.count;
       })
     );
-    Object.keys(this.terms[termsRoot]).forEach((termKey) => {
-      let termObj = this.terms[termsRoot][termKey];
+    _.forOwn(this.terms[termsRoot], (termObj, termKey) => {
       let term = termObj["term"];
+      let terms = Object.keys(termObj["terms"]);
       let count = termObj["count"];
       let count_normalized = count / maxTermCount;
       let doc = {
-        "term": term,
         "term_key": termKey,
+        "display_term": term,
+        "search_terms": terms,
         "classification": termType,
         "count": count,
         "count_normalized": count_normalized
@@ -102,7 +103,7 @@ class TermIndexer extends AbstractIndexer {
       (next) => { this.indexTermsForType({ termType: "disease", termsRoot: "diseases" }, next)},
       (next) => { this.indexTermsForType({ termType: "location", termsRoot: "locations" }, next)},
       (next) => { this.indexTermsForType({ termType: "organization", termsRoot: "organizations" }, next)},
-      // (next) => { this.indexTermsForType({ termType: "organization_family", termsRoot: "organizationFamilies" }, next)},
+      (next) => { this.indexTermsForType({ termType: "organization_family", termsRoot: "organizationFamilies" }, next)},
       (next) => { this.indexTermsForType({ termType: "anatomic_site", termsRoot: "anatomicSites" }, next)}
     ], callback)
   }
