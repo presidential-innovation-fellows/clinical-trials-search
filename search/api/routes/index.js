@@ -53,7 +53,7 @@ router.get('/clinical-trials', (req, res, next) => {
   queryParams = Object.keys(req.query);
   let invalidParams = _getInvalidTrialQueryParams(queryParams);
   if (invalidParams.length > 0) {
-    return res.status(500).send({
+    return res.status(400).send({
       "Error": "Invalid query params.",
       "Invalid Params": invalidParams
     });
