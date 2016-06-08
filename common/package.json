@@ -5,6 +5,7 @@
   "dependencies": {
     "JSONStream": "1.1.1",
     "bunyan": "1.8.1",
+    "latinize": "^0.2.0",
     "lodash": "4.13.1"
   }
 }
