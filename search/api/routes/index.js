@@ -1,7 +1,16 @@
-const express = require("express");
-const searcher = require("../searcher");
-const Logger = require('../../../logger/logger');
+const _                   = require("lodash");
+const express             = require("express");
+const searcher            = require("../search/searcher");
+const Logger              = require('../../../logger/logger');
+const Utils               = require("../../../utils/utils");
+const trialMapping        = require("../../index/indexer/trial/mapping.json");
+
+let logger = new Logger({name: "api-router"});
+
 const router = express.Router();
+
+const searchPropsByType =
+  Utils.getFlattenedMappingPropertiesByType(trialMapping["trial"]);
 
 /* get a clinical trial by nci or nct id */
 router.get('/clinical-trial/:id', (req, res, next) => {
@@ -17,16 +26,40 @@ router.get('/clinical-trial/:id', (req, res, next) => {
   });
 });
 
+const _getInvalidTrialQueryParams = (queryParams) => {
+  return _.without(queryParams, ["from", "size", "sort"])
+  .filter((queryParam) => {
+    let len = queryParam.length;
+    let op = queryParam.substring(len - 4, len);
+    let paramWithoutOp = queryParam.substring(0, len - 4);
+    if (searchPropsByType["string"][queryParam]) {
+      return false;
+    } else if (op === "_gte" || "_lte") {
+      if (
+        searchPropsByType["date"][paramWithoutOp] ||
+        searchPropsByType["long"][paramWithoutOp]
+      ) {
+        return false;
+      }
+    } else {
+      return true;
+    }
+  });
+}
+
 /* get clinical trials that match supplied search criteria */
 router.get('/clinical-trials', (req, res, next) => {
-  let q = {
-    disease_keys: req.query.disease_keys,
-    location_keys: req.query.location_keys,
-    organization_keys: req.query.organization_keys,
-    test: req.query.test,
-    from: req.query.from,
-    size: req.query.size
-  };
+  // validate query params...
+  queryParams = Object.keys(req.query);
+  let invalidParams = _getInvalidTrialQueryParams(queryParams);
+  if (invalidParams.length > 0) {
+    return res.status(500).send({
+      "Error": "Invalid query params.",
+      "Invalid Params": invalidParams
+    });
+  }
+
+  let q = req.query;
 
   searcher.searchTrials(q, (err, trials) => {
     // TODO: add better error handling
