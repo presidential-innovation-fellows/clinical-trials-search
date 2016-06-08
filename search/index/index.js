@@ -7,7 +7,7 @@ let logger = new Logger({name: "indexer"});
 
 logger.info("Started indexing.");
 async.waterfall([
-  // (next) => { TrialIndexer.init(next); },
+  (next) => { TrialIndexer.init(next); },
   (next) => { TermIndexer.init(next); }
 ], (err) => {
   logger.info("Finished indexing.");
