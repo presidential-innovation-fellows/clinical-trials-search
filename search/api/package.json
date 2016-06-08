@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www | ../../logger/node_modules/bunyan/bin/bunyan"
+    "start": "node ./bin/www | ../../common/node_modules/bunyan/bin/bunyan"
   },
   "dependencies": {
     "body-parser": "1.13.2",

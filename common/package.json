@@ -3,6 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "bunyan": "1.8.1"
+    "JSONStream": "1.1.1",
+    "bunyan": "1.8.1",
+    "lodash": "4.13.1"
   }
 }
