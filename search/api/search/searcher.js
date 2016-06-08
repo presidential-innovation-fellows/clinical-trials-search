@@ -175,15 +175,16 @@ class Searcher {
    ***********************************************************************/
 
   _searchTermsQuery(q) {
-    let query = {
-      "size": 5,
-      "query": {
+    // TODO: simplify
+    let query = { "size": 5 };
+    if(q.term) {
+      query.query = {
         "function_score": {
           "query": {
             "bool": {
               "should": [{
                 "match": {
-                  "term": q.term
+                  "search_terms": q.term
                 }
               }]
             }
@@ -195,9 +196,9 @@ class Searcher {
             }
           }]
         }
-      }
-    };
-    if(q.classification) {
+      };
+    }
+    if (q.classification) {
       query.query.function_score.query.bool["must"] = [{
         "term": {
           "classification": q.classification
