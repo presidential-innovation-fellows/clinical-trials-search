@@ -4,6 +4,7 @@ const async               = require("async");
 const _                   = require("lodash");
 const Writable            = require("stream").Writable;
 const JSONStream          = require("JSONStream");
+const moment              = require("moment");
 
 const AbstractIndexer     = require("../abstract_indexer");
 const Utils               = require("../../../../utils/utils");
@@ -34,6 +35,7 @@ class TrialIndexerStream extends Writable {
     this._addDiseaseKeysFieldToTrial(trial);
     this._addLocationKeysFieldToTrial(trial);
     this._addOrganizationKeysFieldToTrial(trial);
+    this._addDateLastUpdatedAnythingFieldToTrial(trial);
 
     return trial;
   }
@@ -71,6 +73,43 @@ class TrialIndexerStream extends Writable {
         return transformStringToKey(organization);
       });
     }
+  }
+
+  // looks through all date fields, finds the latest one and uses that
+  // for the "date_last_updated_anything" field
+  _addDateLastUpdatedAnythingFieldToTrial(trial) {
+    let updateDates = [];
+
+    const _addDateToArr = (stringDate) => {
+      let momentDate = moment(stringDate);
+      if(stringDate && momentDate.isValid()) updateDates.push(momentDate);
+    }
+
+    [
+      trial.amendment_date, trial.current_trial_status_date,
+      trial.date_last_created, trial.date_last_updated
+    ].forEach(_addDateToArr);
+
+    if(trial.diseases) {
+      trial.diseases.forEach((disease) => {
+        [
+          disease.date_last_created, disease.date_last_updated
+        ].forEach(_addDateToArr);
+      });
+    }
+
+    if(trial.sites) {
+      trial.sites.forEach((site) => {
+        _addDateToArr(site.recruitment_status_date);
+        if(site.org) {
+          _addDateToArr(site.org.status_date);
+        }
+      });
+    }
+
+    let updatedDate = moment.max(updateDates);
+
+    trial.date_last_updated_anything = updatedDate.utc().format("YYYY-MM-DD");
   }
 
   _indexTrial(trial, done) {
