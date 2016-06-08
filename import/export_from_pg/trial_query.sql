@@ -250,11 +250,11 @@ SELECT
             'arm_name', arm.arm_name,
             'arm_type', arm.arm_type,
             'intervention_name', arm.intervention_name,
-            'intervention_type', arm.intervention_type,
-            'date_created_arm', arm.date_created_arm,
-            'date_updated_arm', arm.date_updated_arm,
-            'date_created_intervention', arm.date_created_intervention,
-            'date_updated_intervention', arm.date_updated_intervention
+            'intervention_type', arm.intervention_type--,
+            -- 'date_created_arm', arm.date_created_arm,
+            -- 'date_updated_arm', arm.date_updated_arm,
+            -- 'date_created_intervention', arm.date_created_intervention,
+            -- 'date_updated_intervention', arm.date_updated_intervention
           )
         )
       FROM (
