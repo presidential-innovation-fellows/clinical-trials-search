@@ -75,7 +75,6 @@ router.get('/clinical-trials', (req, res, next) => {
 /* get key terms that can be used to search through clinical trials */
 router.get('/terms', (req, res, next) => {
   let queryTerm = req.query.term;
-  if(!queryTerm) { respondInvalidQuery(res); }
   let queryClassification = req.query.classification;
 
   let q = {
