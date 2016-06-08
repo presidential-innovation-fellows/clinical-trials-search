@@ -2,180 +2,228 @@
   "trial": {
     "properties": {
       "accepts_healthy_volunteers_indicator": {
-        "type": "string"
+        "type": "string",
+        "index": "not_analyzed"
       },
       "accruals": {
         "type": "nested",
+        "include_in_root": true,
         "properties": {
           "accrual_count": {
-            "type": "long"
+            "type": "long",
+            "index": "not_analyzed"
           },
           "count_type": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           },
           "org_name": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           },
           "org_org_family": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           }
         }
       },
       "acronym": {
-        "type": "string"
+        "type": "string",
+        "index": "not_analyzed"
       },
       "amendment_date": {
         "type": "date",
+        "index": "not_analyzed",
         "format": "strict_date_optional_time||epoch_millis"
       },
       "anatomic_sites": {
-        "type": "string"
+        "type": "string",
+        "index": "not_analyzed"
       },
       "arms": {
         "type": "nested",
+        "include_in_root": true,
         "properties": {
           "arm_name": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           },
           "arm_type": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           },
           "intervention_name": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           },
           "intervention_type": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           }
         }
       },
       "bio_specimen": {
         "type": "nested",
+        "include_in_root": true,
         "properties": {
           "f1": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           },
           "f2": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           },
           "f3": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           },
           "f4": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           },
           "f5": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           },
           "f6": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           }
         }
       },
       "biomarkers": {
         "type": "nested",
+        "include_in_root": true,
         "properties": {
           "assay_purpose": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           },
           "assay_type_code": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           },
           "assay_type_description": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           },
           "assay_use": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           },
           "evaluation_type_code": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           },
           "evaluation_type_other_text": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           },
           "hugo_biomarker_code": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           },
           "long_name": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           },
           "name": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           },
           "specimen_type_other_text": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           },
           "status_code": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           },
           "synonyms": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           },
           "tissue_collection_method_code": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           },
           "tissue_specimen_type_code": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           }
         }
       },
       "brief_summary": {
-        "type": "string"
+        "type": "string",
+        "index": "not_analyzed"
       },
       "brief_title": {
-        "type": "string"
+        "type": "string",
+        "index": "not_analyzed"
       },
       "central_contact": {
         "type": "nested",
+        "include_in_root": true,
         "properties": {
           "central_contact_email": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           },
           "central_contact_name": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           },
           "central_contact_phone": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           },
           "central_contact_type": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           }
         }
       },
       "classification_code": {
-        "type": "string"
+        "type": "string",
+        "index": "not_analyzed"
       },
       "completion_date": {
         "type": "date",
+        "index": "not_analyzed",
         "format": "strict_date_optional_time||epoch_millis"
       },
       "completion_date_type_code": {
-        "type": "string"
+        "type": "string",
+        "index": "not_analyzed"
       },
       "current_trial_status": {
-        "type": "string"
+        "type": "string",
+        "index": "not_analyzed"
       },
       "current_trial_status_date": {
         "type": "date",
+        "index": "not_analyzed",
         "format": "strict_date_optional_time||epoch_millis"
       },
       "date_last_created": {
         "type": "date",
+        "index": "not_analyzed",
         "format": "strict_date_optional_time||epoch_millis"
       },
       "date_last_updated": {
         "type": "date",
+        "index": "not_analyzed",
         "format": "strict_date_optional_time||epoch_millis"
       },
       "date_last_updated_anything": {
         "type": "date",
+        "index": "not_analyzed",
         "format": "strict_date_optional_time||epoch_millis"
       },
       "detail_description": {
-        "type": "string"
-      },
-      "disease_keys": {
         "type": "string",
-        "analyzer": "keyword_ci_analyzer"
+        "index": "not_analyzed"
       },
       "diseases": {
         "type": "nested",
@@ -183,71 +231,85 @@
         "properties": {
           "date_last_created": {
             "type": "date",
+            "index": "not_analyzed",
             "format": "strict_date_optional_time||epoch_millis"
           },
           "date_last_updated": {
             "type": "date",
+            "index": "not_analyzed",
             "format": "strict_date_optional_time||epoch_millis"
           },
           "disease_code": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           },
           "disease_menu_display_name": {
             "type": "string",
             "analyzer": "keyword_ci_analyzer"
           },
           "disease_preferred_name": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           },
           "nci_thesaurus_concept_id": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           },
           "synonyms": {
-            "type": "string"
+            "type": "string",
+            "analyzer": "keyword_ci_analyzer"
           }
         }
       },
-      "disease_keys": {
-        "type": "string",
-        "analyzer": "keyword_ci_analyzer"
-      },
       "eligibility": {
         "type": "nested",
+        "include_in_root": true,
         "properties": {
           "structured": {
             "type": "nested",
+            "include_in_root": true,
             "properties": {
               "gender": {
-                "type": "string"
+                "type": "string",
+                "index": "not_analyzed"
               },
               "max_age": {
-                "type": "string"
+                "type": "string",
+                "index": "not_analyzed"
               },
               "max_age_number": {
-                "type": "long"
+                "type": "long",
+                "index": "not_analyzed"
               },
               "max_age_unit": {
-                "type": "string"
+                "type": "string",
+                "index": "not_analyzed"
               },
               "min_age": {
-                "type": "string"
+                "type": "string",
+                "index": "not_analyzed"
               },
               "min_age_number": {
-                "type": "long"
+                "type": "long",
+                "index": "not_analyzed"
               },
               "min_age_unit": {
-                "type": "string"
+                "type": "string",
+                "index": "not_analyzed"
               }
             }
           },
           "unstructured": {
             "type": "nested",
+            "include_in_root": true,
             "properties": {
               "description": {
-                "type": "string"
+                "type": "string",
+                "index": "not_analyzed"
               },
               "display_order": {
-                "type": "long"
+                "type": "long",
+                "index": "not_analyzed"
               },
               "inclusion_indicator": {
                 "type": "boolean"
@@ -257,207 +319,264 @@
         }
       },
       "expanded_access_indicator": {
-        "type": "string"
+        "type": "string",
+        "index": "not_analyzed"
       },
       "fdaregulated_indicator": {
-        "type": "string"
+        "type": "string",
+        "index": "not_analyzed"
       },
       "funding_category": {
-        "type": "string"
+        "type": "string",
+        "index": "not_analyzed"
       },
       "interventional_model": {
-        "type": "string"
+        "type": "string",
+        "index": "not_analyzed"
       },
       "keywords": {
-        "type": "string"
+        "type": "string",
+        "index": "not_analyzed"
       },
       "lead_org": {
-        "type": "string"
-      },
-      "location_keys": {
         "type": "string",
-        "analyzer": "keyword_ci_analyzer"
+        "index": "not_analyzed"
       },
       "masking": {
         "type": "nested",
+        "include_in_root": true,
         "properties": {
           "masking": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           },
           "masking_allocation_code": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           },
           "masking_role_caregiver": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           },
           "masking_role_investigator": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           },
           "masking_role_outcome_assessor": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           },
           "masking_role_subject": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           }
         }
       },
       "minimum_target_accrual_number": {
-        "type": "long"
+        "type": "long",
+        "index": "not_analyzed"
       },
       "nci_id": {
-        "type": "string"
+        "type": "string",
+        "index": "not_analyzed"
       },
       "nct_id": {
-        "type": "string"
+        "type": "string",
+        "index": "not_analyzed"
       },
       "number_of_arms": {
-        "type": "long"
+        "type": "long",
+        "index": "not_analyzed"
       },
       "official_title": {
-        "type": "string"
-      },
-      "organization_keys": {
         "type": "string",
-        "analyzer": "keyword_ci_analyzer"
+        "index": "not_analyzed"
       },
       "other_ids": {
         "type": "nested",
+        "include_in_root": true,
         "properties": {
           "name": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           },
           "value": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           }
         }
       },
       "phase": {
         "type": "nested",
+        "include_in_root": true,
         "properties": {
           "phase": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           },
           "phase_additional_qualifier_code": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           },
           "phase_other_text": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           }
         }
       },
       "primary_purpose": {
         "type": "nested",
+        "include_in_root": true,
         "properties": {
           "primary_purpose_additional_qualifier_code": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           },
           "primary_purpose_code": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           },
           "primary_purpose_other_text": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           }
         }
       },
       "principal_investigator": {
-        "type": "string"
+        "type": "string",
+        "index": "not_analyzed"
       },
       "protocol_id": {
-        "type": "string"
+        "type": "string",
+        "index": "not_analyzed"
       },
       "sites": {
         "type": "nested",
+        "include_in_root": true,
         "properties": {
           "contact_email": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           },
           "contact_name": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           },
           "contact_phone": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           },
           "local_site_identifier": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           },
           "org": {
             "type": "nested",
+            "include_in_root": true,
             "properties": {
               "address_line_1": {
-                "type": "string"
+                "type": "string",
+                "index": "not_analyzed"
               },
               "address_line_2": {
-                "type": "string"
+                "type": "string",
+                "index": "not_analyzed"
               },
               "change_request_count": {
-                "type": "long"
+                "type": "long",
+                "index": "not_analyzed"
               },
               "city": {
-                "type": "string"
+                "type": "string",
+                "index": "not_analyzed"
               },
               "country": {
-                "type": "string"
+                "type": "string",
+                "index": "not_analyzed"
               },
               "email": {
-                "type": "string"
+                "type": "string",
+                "index": "not_analyzed"
               },
               "family": {
-                "type": "string"
+                "type": "string",
+                "index": "not_analyzed"
               },
               "fax": {
-                "type": "string"
+                "type": "string",
+                "index": "not_analyzed"
+              },
+              "location": {
+                "type": "string",
+                "index": "not_analyzed",
+                "index": "not_analyzed"
               },
               "name": {
-                "type": "string"
+                "type": "string",
+                "index": "not_analyzed"
               },
               "org_to_family_relationship": {
-                "type": "string"
+                "type": "string",
+                "index": "not_analyzed"
               },
               "phone": {
-                "type": "string"
+                "type": "string",
+                "index": "not_analyzed"
               },
               "postal_code": {
-                "type": "string"
+                "type": "string",
+                "index": "not_analyzed"
               },
               "state_or_province": {
-                "type": "string"
+                "type": "string",
+                "index": "not_analyzed"
               },
               "status": {
-                "type": "string"
+                "type": "string",
+                "index": "not_analyzed"
               },
               "status_date": {
                 "type": "date",
+                "index": "not_analyzed",
                 "format": "strict_date_optional_time||epoch_millis"
               },
               "tty": {
-                "type": "string"
+                "type": "string",
+                "index": "not_analyzed"
               }
             }
           },
           "program_code": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           },
           "recruitment_status": {
-            "type": "string"
+            "type": "string",
+            "index": "not_analyzed"
           },
           "recruitment_status_date": {
             "type": "date",
+            "index": "not_analyzed",
             "format": "strict_date_optional_time||epoch_millis"
           },
           "target_accrual": {
-            "type": "long"
+            "type": "long",
+            "index": "not_analyzed"
           }
         }
       },
       "start_date": {
         "type": "date",
+        "index": "not_analyzed",
         "format": "strict_date_optional_time||epoch_millis"
       },
       "start_date_type_code": {
-        "type": "string"
+        "type": "string",
+        "index": "not_analyzed"
       },
       "study_protocol_type": {
-        "type": "string"
+        "type": "string",
+        "index": "not_analyzed"
       }
     }
   }
