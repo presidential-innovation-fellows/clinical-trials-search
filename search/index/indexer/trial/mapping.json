@@ -125,7 +125,21 @@
         "type": "string"
       },
       "central_contact": {
-        "type": "object"
+        "type": "nested",
+        "properties": {
+          "central_contact_email": {
+            "type": "string"
+          },
+          "central_contact_name": {
+            "type": "string"
+          },
+          "central_contact_phone": {
+            "type": "string"
+          },
+          "central_contact_type": {
+            "type": "string"
+          }
+        }
       },
       "classification_code": {
         "type": "string"
@@ -149,6 +163,10 @@
         "format": "strict_date_optional_time||epoch_millis"
       },
       "date_last_updated": {
+        "type": "date",
+        "format": "strict_date_optional_time||epoch_millis"
+      },
+      "date_last_updated_anything": {
         "type": "date",
         "format": "strict_date_optional_time||epoch_millis"
       },
