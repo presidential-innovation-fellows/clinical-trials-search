@@ -184,7 +184,7 @@ class Searcher {
             "bool": {
               "should": [{
                 "match": {
-                  "search_terms": q.term
+                  "term": q.term
                 }
               }]
             }

@@ -77,13 +77,12 @@ class TermIndexer extends AbstractIndexer {
     );
     _.forOwn(this.terms[termsRoot], (termObj, termKey) => {
       let term = termObj["term"];
-      let terms = Object.keys(termObj["terms"]);
+      // let terms = termObj["terms"];
       let count = termObj["count"];
       let count_normalized = count / maxTermCount;
       let doc = {
         "term_key": termKey,
-        "display_term": term,
-        "search_terms": terms,
+        "term": term,
         "classification": termType,
         "count": count,
         "count_normalized": count_normalized

@@ -5,12 +5,7 @@
         "type": "string",
         "index": "not_analyzed"
       },
-      "display_term": {
-        "type": "string",
-        "analyzer": "edge_ngram_analyzer",
-        "search_analyzer": "standard"
-      },
-      "search_terms": {
+      "term": {
         "type": "string",
         "analyzer": "edge_ngram_analyzer",
         "search_analyzer": "standard"

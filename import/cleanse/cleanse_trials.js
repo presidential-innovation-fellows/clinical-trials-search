@@ -109,6 +109,7 @@ class TrialsCleanser {
         return callback(err);
       }
       this.terms = termLoader.terms;
+
       return callback();
     });
   }
@@ -119,7 +120,7 @@ class TrialsCleanser {
     let cs = new CleanseStream(this.terms);
     let jw = JSONStream.stringify();
     let ws = fs.createWriteStream("trials.json");
-
+    
     rs.pipe(js).pipe(cs).pipe(jw).pipe(ws).on("finish", callback);
   }
 
