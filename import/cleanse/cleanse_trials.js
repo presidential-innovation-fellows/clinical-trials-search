@@ -32,7 +32,8 @@ class CleanseStream extends Transform {
   _transformDiseases(trial) {
     if (!trial.diseases) { return; }
     trial.diseases = trial.diseases.map((disease) => {
-      disease.synonyms = this._cleanseTerms("diseases", disease.synonyms);
+      disease.disease_menu_display_name = this._cleanseTerms("diseases", [disease.disease_menu_display_name])[0];
+      // disease.synonyms = this._cleanseTerms("diseases", disease.synonyms);
       return disease;
     });
   }

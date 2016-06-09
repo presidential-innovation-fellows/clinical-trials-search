@@ -118,11 +118,13 @@ class TermLoader {
     const extractTermsToArr = () => {
       let terms = [];
       trial.diseases.forEach((disease) => {
-        if (!disease.synonyms) { return; }
-
-        disease.synonyms.forEach((synonym) => {
-          terms.push(synonym);
-        });
+        if (!disease.disease_menu_display_name) { return; }
+        terms.push(disease.disease_menu_display_name);
+        // if (!disease.synonyms) { return; }
+        //
+        // disease.synonyms.forEach((synonym) => {
+        //   terms.push(synonym);
+        // });
       });
       return terms;
     };
