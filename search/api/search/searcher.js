@@ -127,6 +127,27 @@ class Searcher {
     });
   }
 
+  _addBooleanFilters(body, q) {
+    const _addBooleanFilter = (field, filter) => {
+      const _stringToBool = (string) => {
+        return string === "true" || string === "1";
+      }
+      if(filter instanceof Array) {
+        filter.forEach((filterEl) => {
+          body.filter("term", field, _stringToBool(filterEl));
+        });
+      } else {
+        body.filter("term", field, _stringToBool(filter));
+      }
+    };
+
+    searchPropsByType["boolean"].forEach((field) => {
+      if(q[field]) {
+        _addBooleanFilter(field, q[field]);
+      }
+    });
+  }
+
   _addSizeFromParams(body, q) {
     q.size = q.size ? q.size : 10;
     let size = q.size > 50 ? 50 : q.size;
@@ -140,6 +161,7 @@ class Searcher {
 
     this._addStringFilters(body, q);
     this._addRangeFilters(body, q);
+    this._addBooleanFilters(body, q);
     this._addSizeFromParams(body, q);
 
     let query = body.build("v2");
