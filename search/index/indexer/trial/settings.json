@@ -1,21 +1,6 @@
 {
   "analysis": {
-    "filter": {
-      "edge_ngram_filter": {
-        "type": "edge_ngram",
-        "min_gram": 2,
-        "max_gram": 20
-      }
-    },
     "analyzer": {
-      "edge_ngram_analyzer": {
-        "type": "custom",
-        "tokenizer": "standard",
-        "filter": [
-          "lowercase",
-          "edge_ngram_filter"
-        ]
-      },
       "keyword_ci_analyzer": {
         "tokenizer": "keyword",
         "filter": "lowercase"

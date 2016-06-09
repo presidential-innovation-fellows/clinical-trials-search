@@ -7,8 +7,8 @@
       },
       "term": {
         "type": "string",
-        "analyzer": "edge_ngram_analyzer",
-        "search_analyzer": "standard"
+        "analyzer": "autocomplete_index",
+        "search_analyzer": "autocomplete_search"
       },
       "classification": {
         "type": "string"

@@ -203,7 +203,14 @@ class Searcher {
       body.query("match", "term", q.term);
     }
 
-    let classifications = ["disease", "location", "organization", "treatment"]; // defaults
+    // defaults
+    let classifications = [
+      "disease",
+      "location",
+      "organization",
+      "organization_family",
+      "treatment"
+    ];
     if (q.classification) {
       if (q.classification instanceof Array) {
         classifications = q.classification;
@@ -219,9 +226,10 @@ class Searcher {
     functionQuery.functions = [{
       "field_value_factor": {
         "field": "count_normalized",
-        "factor": 1.5
+        "factor": 4
       }
     }];
+    functionQuery.boost_mode = "avg";
     let query = {
       "query": { "function_score": functionQuery },
       "size": 5
