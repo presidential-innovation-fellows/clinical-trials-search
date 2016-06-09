@@ -175,36 +175,37 @@ class Searcher {
    ***********************************************************************/
 
   _searchTermsQuery(q) {
-    // TODO: simplify
-    let query = { "size": 5 };
-    if(q.term) {
-      query.query = {
-        "function_score": {
-          "query": {
-            "bool": {
-              "should": [{
-                "match": {
-                  "term": q.term
-                }
-              }]
-            }
-          },
-          "functions": [{
-            "field_value_factor": {
-              "field": "count_normalized",
-              "factor": 1.5
-            }
-          }]
-        }
-      };
+    let body = new Bodybuilder();
+
+    if (q.term) {
+      body.query("match", "term", q.term);
     }
+
+    let classifications = ["disease", "location", "organization", "treatment"]; // defaults
     if (q.classification) {
-      query.query.function_score.query.bool["must"] = [{
-        "term": {
-          "classification": q.classification
-        }
-      }];
+      if (q.classification instanceof Array) {
+        classifications = q.classification;
+      } else {
+        classifications = [q.classification];
+      }
     }
+    classifications.forEach((classification) => {
+      body.orFilter("term", "classification", classification);
+    });
+
+    let functionQuery = body.build("v2");
+    functionQuery.functions = [{
+      "field_value_factor": {
+        "field": "count_normalized",
+        "factor": 1.5
+      }
+    }];
+    let query = {
+      "query": { "function_score": functionQuery },
+      "size": 5
+    };
+
+    // logger.info(query);
     return query;
   }
 
