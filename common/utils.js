@@ -1,14 +1,13 @@
 const latinize                    = require("latinize");
 
-module.exports = class Utils {
+class Utils {
 
   static transformStringToKey(text) {
-
     return latinize(text)
-      .replace(/[^a-zA-Z0-9 ]/g, " ")
+      .toLowerCase()
+      .replace(/[^a-z0-9 ]/g, " ")
       .replace(/\s\s+/g, " ")
       .replace(/ /g, "_")
-      .toLowerCase()
       .replace("and_", "")
       .replace("of_", "")
       .replace("the_", "");
@@ -55,4 +54,6 @@ module.exports = class Utils {
     return props;
   }
 
-};
+}
+
+module.exports = Utils;
