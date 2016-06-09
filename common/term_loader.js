@@ -13,7 +13,8 @@ class TermLoader {
       locations: {},
       organizations: {},
       anatomicSites: {},
-      organizationFamilies: {}
+      organizationFamilies: {},
+      treatments: {}
     };
     this.indexCounter = 0;
   }
@@ -23,13 +24,14 @@ class TermLoader {
     let js = JSONStream.parse("*");
 
     let _loadTerms = (trial) => {
-      logger.info(
-        `Loading terms from trial with nci_id (${trial.nci_id}).`);
+      // logger.info(
+      //   `Loading terms from trial with nci_id (${trial.nci_id}).`);
       this._loadDiseaseTermsFromTrial(trial);
       this._loadLocationTermsFromTrial(trial);
       this._loadOrganizationTermsFromTrial(trial);
       this._loadAnatomicSiteTermsFromTrial(trial);
       this._loadOrganizationFamilyTermsFromTrial(trial);
+      this._loadTreatmentTermsFromTrial(trial);
     };
 
     rs.pipe(js).on("data", _loadTerms).on("end", () => {
@@ -81,7 +83,6 @@ class TermLoader {
           count: 1,
           terms: {}
         };
-
       }
       if (typeof terms[termKey]["terms"][term] === "undefined") {
         terms[termKey]["terms"][term] = 1;
@@ -202,6 +203,25 @@ class TermLoader {
       trial.anatomic_sites.forEach((anatomicSite) => {
         if (anatomicSite) {
           terms.push(anatomicSite);
+        }
+      });
+      return terms;
+    };
+
+    this._loadTermsFromTrialForTermType(termType, extractTermsToArr);
+  }
+
+  _loadTreatmentTermsFromTrial(trial) {
+    if (!trial.arms) { return; }
+
+    const termType = "treatments";
+    const extractTermsToArr = () => {
+      let terms = [];
+      trial.arms.forEach((arm) => {
+        let treatment = `${arm.intervention_name} {${arm.intervention_type}}`;
+
+        if (arm.intervention_name) {
+          terms.push(treatment);
         }
       });
       return terms;

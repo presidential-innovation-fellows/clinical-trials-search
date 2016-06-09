@@ -63,6 +63,16 @@ class TermIndexer extends AbstractIndexer {
     this.indexCounter = 0;
   }
 
+  _extractSubClassificationFromTerm(term) {
+    let match = term.match(/ \{(.*)\}/);
+    let subClassification = null;
+    if (match instanceof Array) {
+      term = term.replace(match[0], "");
+      subClassification = match[1];
+    }
+    return { term, subClassification };
+  }
+
   indexTermsForType(params, callback) {
     let is = new TermIndexerStream(this);
 
@@ -76,7 +86,7 @@ class TermIndexer extends AbstractIndexer {
       })
     );
     _.forOwn(this.terms[termsRoot], (termObj, termKey) => {
-      let term = termObj["term"];
+      let {term, subClassification} = this._extractSubClassificationFromTerm(termObj["term"]);
       // let terms = termObj["terms"];
       let count = termObj["count"];
       let count_normalized = count / maxTermCount;
@@ -87,6 +97,9 @@ class TermIndexer extends AbstractIndexer {
         "count": count,
         "count_normalized": count_normalized
       };
+      if (subClassification) {
+        doc["sub_classification"] = subClassification;
+      }
       is.write(doc);
     });
     is.end();
@@ -103,7 +116,8 @@ class TermIndexer extends AbstractIndexer {
       (next) => { this.indexTermsForType({ termType: "location", termsRoot: "locations" }, next)},
       (next) => { this.indexTermsForType({ termType: "organization", termsRoot: "organizations" }, next)},
       (next) => { this.indexTermsForType({ termType: "organization_family", termsRoot: "organizationFamilies" }, next)},
-      (next) => { this.indexTermsForType({ termType: "anatomic_site", termsRoot: "anatomicSites" }, next)}
+      (next) => { this.indexTermsForType({ termType: "anatomic_site", termsRoot: "anatomicSites" }, next)},
+      (next) => { this.indexTermsForType({ termType: "treatment", termsRoot: "treatments" }, next)}
     ], callback)
   }
 

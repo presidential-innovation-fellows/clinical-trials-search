@@ -63,6 +63,18 @@ class CleanseStream extends Transform {
     });
   }
 
+  _transformTreatments(trial) {
+    if (!trial.arms) { return; }
+    trial.arms = trial.arms.map((arm) => {
+      let treatment = arm.intervention_name
+      if (treatment) {
+        treatment = this._cleanseTerms("organizationFamilies", [treatment])[0];
+        arm.intervention_name = treatment;
+      }
+      return arm;
+    });
+  }
+
   _createLocations(trial) {
     if (!trial.sites) { return; }
     trial.sites = trial.sites.map((site) => {
@@ -120,7 +132,7 @@ class TrialsCleanser {
     let cs = new CleanseStream(this.terms);
     let jw = JSONStream.stringify();
     let ws = fs.createWriteStream("trials.json");
-    
+
     rs.pipe(js).pipe(cs).pipe(jw).pipe(ws).on("finish", callback);
   }
 

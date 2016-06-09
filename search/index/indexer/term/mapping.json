@@ -13,6 +13,9 @@
       "classification": {
         "type": "string"
       },
+      "sub_classification": {
+        "type": "string"
+      },
       "count": {
         "type": "long"
       },

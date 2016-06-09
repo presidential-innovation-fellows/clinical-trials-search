@@ -29,7 +29,8 @@ function renderSuggestion(suggestion, { value, valueBeforeUpDown }) {
     'organization_family': 'network/organization',
     'disease': 'disease',
     'location': 'location',
-    'anatomic_site': 'anatomic site'
+    'anatomic_site': 'anatomic site',
+    'treatment': suggestion.sub_classification ? `treatment - ${suggestion.sub_classification.toLowerCase()}` : `treatment`
   }[suggestion.classification];
 
   return (
@@ -55,7 +56,7 @@ function getSuggestionValue(suggestion) { // when suggestion selected, this func
 }
 
 class SuggesterComponent extends React.Component {
-  
+
   constructor() {
     super();
 
@@ -106,7 +107,7 @@ class SuggesterComponent extends React.Component {
   render() {
     const { value, suggestions } = this.state;
     const inputProps = {
-      placeholder: 'enter a disease, location, or organization',
+      placeholder: 'enter a disease, location, organization, or treatment',
       value,
       onChange: this.onChange
     };
