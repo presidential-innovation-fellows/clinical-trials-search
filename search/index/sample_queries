@@ -103,25 +103,25 @@ curl -XPOST "http://localhost:9200/cancer-terms/_search?explain&pretty=1" -d '
 
 curl -XPOST "http://localhost:9200/cancer-terms/_search?pretty=1" -d '
 {
-    "aggs" : {
-        "count_normalized_ranges" : {
-            "range" : {
-                "field" : "count_normalized",
-                "ranges" : [
-                    { "to" : 0.1 },
-                    { "from" : 0.1, "to" : 0.2 },
-                    { "from" : 0.2, "to" : 0.3 },
-                    { "from" : 0.3, "to" : 0.4 },
-                    { "from" : 0.4, "to" : 0.5 },
-                    { "from" : 0.5, "to" : 0.6 },
-                    { "from" : 0.6, "to" : 0.7 },
-                    { "from" : 0.7, "to" : 0.8 },
-                    { "from" : 0.8, "to" : 0.9 },
-                    { "from" : 0.9 }
-                ]
-            }
-        }
-    }
+  "aggs" : {
+      "count_normalized_ranges" : {
+          "range" : {
+              "field" : "count_normalized",
+              "ranges" : [
+                  { "to" : 0.1 },
+                  { "from" : 0.1, "to" : 0.2 },
+                  { "from" : 0.2, "to" : 0.3 },
+                  { "from" : 0.3, "to" : 0.4 },
+                  { "from" : 0.4, "to" : 0.5 },
+                  { "from" : 0.5, "to" : 0.6 },
+                  { "from" : 0.6, "to" : 0.7 },
+                  { "from" : 0.7, "to" : 0.8 },
+                  { "from" : 0.8, "to" : 0.9 },
+                  { "from" : 0.9 }
+              ]
+          }
+      }
+  }
 }'
 
 curl -XPOST "http://localhost:9200/cancer-clinical-trials/_search?explain&pretty=1" -d '
