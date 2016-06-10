@@ -67,7 +67,7 @@ app.use(function(err, req, res, next) {
   });
 });
 
-const port = process.env.PORT || '3000';
+const port = process.env.PORT || '3100';
 logger.info(`Started API server at http://localhost:${port}/`);
 
 module.exports = app;
