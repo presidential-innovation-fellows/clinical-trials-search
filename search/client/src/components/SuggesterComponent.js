@@ -100,7 +100,7 @@ class SuggesterComponent extends React.Component {
     browserHistory.push(`/search?${query}`);
   }
 
-  onSuggestionsUpdateRequested({ value }) {
+  onSuggestionsUpdateRequested({ value, reason }) {
     this.loadSuggestions(value);
   }
 
