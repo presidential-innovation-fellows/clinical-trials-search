@@ -71,6 +71,13 @@ class Searcher {
                                     TRIALS
    ***********************************************************************/
 
+  _addAllFilter(body, q) {
+    if (q._all) {
+      body.query("match", "_all", q._all);
+      delete q._all;
+    }
+  }
+
   _addStringFilters(body, q) {
     const _addStringFilter = (field, filter) => {
       if(filter instanceof Array) {
@@ -159,6 +166,7 @@ class Searcher {
   _searchTrialsQuery(q) {
     let body = new Bodybuilder();
 
+    this._addAllFilter(body, q);
     this._addStringFilters(body, q);
     this._addRangeFilters(body, q);
     this._addBooleanFilters(body, q);

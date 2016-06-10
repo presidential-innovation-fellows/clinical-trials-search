@@ -27,7 +27,7 @@ router.get('/clinical-trial/:id', (req, res, next) => {
 });
 
 const _getInvalidTrialQueryParams = (queryParams) => {
-  return _.without(queryParams, ["from", "size", "sort"])
+  return _.without(queryParams, ["from", "size", "sort", "_all"])
   .filter((queryParam) => {
     let len = queryParam.length;
     let op = queryParam.substring(len - 4, len);

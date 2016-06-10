@@ -1,7 +1,7 @@
 {
   "analysis": {
     "analyzer": {
-      "keyword_ci_analyzer": {
+      "keyword_ci": {
         "tokenizer": "keyword",
         "filter": "lowercase"
       }
