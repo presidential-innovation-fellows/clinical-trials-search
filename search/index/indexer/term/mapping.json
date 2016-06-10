@@ -7,6 +7,11 @@
       },
       "term": {
         "type": "string",
+        "analyzer": "keyword_ci",
+        "copy_to": "term_suggest"
+      },
+      "term_suggest": {
+        "type": "string",
         "analyzer": "autocomplete_index",
         "search_analyzer": "autocomplete_search"
       },

@@ -28,12 +28,11 @@ curl -XPOST "http://localhost:9200/cancer-clinical-trials/_search" -d '
       ]
 }}}'
 
-curl -XPOST "http://localhost:9200/cancer-terms/_search?pretty" -d '
+curl -XPOST "http://localhost:9200/cancer-terms/_search?explain&pretty" -d '
 {
-  "fields": ["text", "classification", "count", "count_normalized"],
   "query": {
     "match": {
-      "text": "progressive disease"
+      "term": "myeloma"
     }
   }
 }'
@@ -45,4 +44,92 @@ curl -XPOST "http://localhost:9200/cancer-clinical-trials/_search" -d '
       "anatomic_sites": "Multiple Myeloma"
     }
   }
+}'
+
+curl -XPOST "http://localhost:9200/cancer-clinical-trials/_search?explain&pretty=1" -d '
+{
+  "query": {
+    "match": {
+      "_all": "myeloma"
+    }
+  },
+  "size": 0
+}'
+
+curl -XPOST "http://localhost:9200/cancer-terms/_search?explain&pretty=1" -d '
+{
+  "query": {
+    "match": {
+      "term": "small cell"
+    }
+  }
+}'
+
+curl -XPOST "http://localhost:9200/cancer-terms/_search?explain&pretty=1" -d '
+{
+  "query": {
+    "function_score": {
+      "query": {
+        "bool": {
+          "must": [
+            {
+              "match": {
+                "term": "basal cell carcinoma"
+              }
+            },
+            {
+              "match": {
+                "term": {
+                  "type": "phrase",
+                  "query": "basal cell carcinoma"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "functions": [
+        {
+          "field_value_factor": {
+            "field": "count_normalized",
+            "factor": 0.25
+          }
+        }
+      ],
+      "boost_mode": "multiply"
+    }
+  }
+}'
+
+curl -XPOST "http://localhost:9200/cancer-terms/_search?pretty=1" -d '
+{
+    "aggs" : {
+        "count_normalized_ranges" : {
+            "range" : {
+                "field" : "count_normalized",
+                "ranges" : [
+                    { "to" : 0.1 },
+                    { "from" : 0.1, "to" : 0.2 },
+                    { "from" : 0.2, "to" : 0.3 },
+                    { "from" : 0.3, "to" : 0.4 },
+                    { "from" : 0.4, "to" : 0.5 },
+                    { "from" : 0.5, "to" : 0.6 },
+                    { "from" : 0.6, "to" : 0.7 },
+                    { "from" : 0.7, "to" : 0.8 },
+                    { "from" : 0.8, "to" : 0.9 },
+                    { "from" : 0.9 }
+                ]
+            }
+        }
+    }
+}'
+
+curl -XPOST "http://localhost:9200/cancer-clinical-trials/_search?explain&pretty=1" -d '
+{
+  "query": {
+    "match": {
+      "_all": "myeloma"
+    }
+  },
+  "size": 0
 }'

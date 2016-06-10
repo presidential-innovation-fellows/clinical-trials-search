@@ -1,4 +1,5 @@
 {
+  "number_of_shards": 1,
   "analysis": {
     "filter": {
       "autocomplete_filter": {
@@ -30,6 +31,10 @@
           "lowercase",
           "asciifolding"
         ]
+      },
+      "keyword_ci": {
+        "tokenizer": "keyword",
+        "filter": "lowercase"
       }
     }
   }

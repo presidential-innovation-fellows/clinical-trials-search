@@ -36,11 +36,13 @@ class TermLoader {
 
     rs.pipe(js).on("data", _loadTerms).on("end", () => {
       logger.info("Loaded terms from \"trials.json\" stream.");
-      return this._calcMostFrequentTerm(callback);
+      this._calcMostFrequentTerm();
+      this._dealWithEdgeCases();
+      return callback();
     });
   }
 
-  _calcMostFrequentTerm(callback) {
+  _calcMostFrequentTerm() {
     _.forOwn(this["terms"], (termTypeObj, termTypeKey) => {
       _.forOwn(termTypeObj, (termObj, termKey) => {
         let maxTerm = { term: null, count: 0 };
@@ -54,11 +56,18 @@ class TermLoader {
           terms: termObj["terms"],
           count: termObj["count"]
         };
-
-        // logger.info(maxTerm["term"], this["terms"][termTypeKey][maxTerm["term"]]);
       });
     });
-    return callback();
+  }
+
+  _dealWithEdgeCases() {
+    // correct for edge cases such as "Non Small Cell..."
+    _.forOwn(this["terms"], (termTypeObj, termTypeKey) => {
+      _.forOwn(termTypeObj, (termObj, termKey) => {
+        let term = termObj["term"];
+        this["terms"][termTypeKey][termKey]["term"] = term.replace(/Non /g, "Non-");
+      });
+    });
   }
 
   _loadTermsFromTrialForTermType(termType, extractTermsToArr) {
@@ -118,13 +127,14 @@ class TermLoader {
     const extractTermsToArr = () => {
       let terms = [];
       trial.diseases.forEach((disease) => {
-        if (!disease.disease_menu_display_name) { return; }
-        terms.push(disease.disease_menu_display_name);
-        // if (!disease.synonyms) { return; }
-        //
-        // disease.synonyms.forEach((synonym) => {
-        //   terms.push(synonym);
-        // });
+        if (disease.disease_menu_display_name) {
+          terms.push(disease.disease_menu_display_name);
+        }
+        if (disease.synonyms) {
+          disease.synonyms.forEach((synonym) => {
+            terms.push(synonym);
+          });
+        }
       });
       return terms;
     };

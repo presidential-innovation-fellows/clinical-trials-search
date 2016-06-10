@@ -196,21 +196,27 @@ class Searcher {
                                    TERMS
    ***********************************************************************/
 
-  _searchTermsQuery(q) {
-    let body = new Bodybuilder();
-
-    if (q.term) {
-      body.query("match", "term", q.term);
-    }
-
-    // defaults
-    let classifications = [
+  get CLASSIFICATION_DEFAULTS() {
+    return [
       "disease",
       "location",
       "organization",
       "organization_family",
       "treatment"
     ];
+  }
+
+  _searchTermsQuery(q) {
+    let body = new Bodybuilder();
+
+    // add query terms (boost when phrase is matched)
+    if (q.term) {
+      body.query("match", "term_suggest", q.term);
+      body.query("match", "term_suggest", q.term, {type: "phrase"});
+    }
+
+    // set the classification (use defaults if not supplied)
+    let classifications = this.CLASSIFICATION_DEFAULTS;
     if (q.classification) {
       if (q.classification instanceof Array) {
         classifications = q.classification;
@@ -222,14 +228,27 @@ class Searcher {
       body.orFilter("term", "classification", classification);
     });
 
+    // build the query and add custom fields (that bodyparser can't handle)
     let functionQuery = body.build("v2");
+    // boost exact match
+    if (q.term) {
+      functionQuery.query.bool.should = {
+        "match": {
+          "term": q.term
+        }
+      };
+    }
+
+    // add scoring function
     functionQuery.functions = [{
       "field_value_factor": {
         "field": "count_normalized",
-        "factor": 4
+        "factor": .25
       }
     }];
-    functionQuery.boost_mode = "avg";
+    functionQuery.boost_mode = "multiply";
+
+    // finalize the query
     let query = {
       "query": { "function_score": functionQuery },
       "size": 5

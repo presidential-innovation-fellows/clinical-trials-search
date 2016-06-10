@@ -89,7 +89,9 @@ class TermIndexer extends AbstractIndexer {
       let {term, subClassification} = this._extractSubClassificationFromTerm(termObj["term"]);
       // let terms = termObj["terms"];
       let count = termObj["count"];
-      let count_normalized = count / maxTermCount;
+      // let count_normalized = count / maxTermCount;
+      // TODO: approximation, should figure out more exact normalization...
+      let count_normalized = Math.log(count / maxTermCount + 1) / Math.log(2);
       let doc = {
         "term_key": termKey,
         "term": term,
