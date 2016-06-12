@@ -48,6 +48,7 @@ class Searcher {
 
   // queries on either nci or nct id
   getTrialById(id, callback) {
+    logger.info("Getting trial", {id});
     this.client.search({
       index: 'cancer-clinical-trials',
       type: 'trial',
@@ -179,7 +180,7 @@ class Searcher {
   }
 
   searchTrials(q, callback) {
-    logger.info(`Searching for ${JSON.stringify(q)}`);
+    logger.info("Trial searching", q);
     this.client.search({
       index: 'cancer-clinical-trials',
       type: 'trial',
@@ -267,6 +268,7 @@ class Searcher {
   }
 
   searchTerms(q, callback) {
+    logger.info("Term searching", q);
     this.client.search({
       index: 'cancer-terms',
       type: 'term',
@@ -280,7 +282,9 @@ class Searcher {
       let formattedRes = {
         total: res.hits.total,
         terms: _.map(res.hits.hits, (hit) => {
-          return hit._source;
+          let source = hit._source;
+          source.score = hit._score;
+          return source;
         })
       }
       return callback(null, formattedRes);

@@ -1,6 +1,7 @@
 {
   "name": "api",
   "version": "0.0.1",
+  "author": "Michael Balint <michael.balint@pif.gov> (https://presidentialinnovationfellows.gov/)",
   "private": true,
   "scripts": {
     "start": "node ./bin/www | ../../common/node_modules/bunyan/bin/bunyan"
