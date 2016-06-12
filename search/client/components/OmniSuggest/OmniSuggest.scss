@@ -1,0 +1,78 @@
+@import '../variables.scss';
+
+.omni-suggest {
+  // border: 1px dashed #f00;
+}
+
+.omni-suggest-highlight {
+  // color: #ee0000;
+  font-weight: bold;
+}
+
+.react-autosuggest__container {
+  position: relative;
+}
+
+.react-autosuggest__input {
+  // width: 240px;
+  width: 460px;
+  height: 30px;
+  padding: 10px 20px;
+  font-family: Helvetica, sans-serif;
+  font-weight: 300;
+  font-size: 16px;
+  border: 1px solid #aaa;
+  &:focus {
+    outline: none;
+  }
+}
+
+.react-autosuggest__container--open .react-autosuggest__input {
+
+}
+
+.react-autosuggest__suggestions-container {
+  position: absolute;
+  top: 51px;
+  width: 499px;
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  border: 1px solid #aaa;
+  background-color: #fff;
+  font-family: Helvetica, sans-serif;
+  font-weight: 300;
+  font-size: 16px;
+  z-index: 2;
+}
+
+.react-autosuggest__suggestion {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+  padding: 10px 20px;
+}
+
+.react-autosuggest__suggestion--focused {
+  background-color: #eee;
+}
+
+.search-icon {
+  width: 50px;
+  height: 50px;
+  background-color: $primary-color;
+  position: relative;
+  left: 501px;
+  top: -52px;
+  border: 1px solid $primary-color;
+  input {
+    padding: 10px;
+    width: 30px;
+    height: 30px;
+  }
+}
+
+.suggestion-classification {
+  color: #009999;
+}

@@ -1,0 +1,106 @@
+@import '../variables.scss';
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: $body-bg;
+  color: $text-color;
+  font-family: $font-family-base;
+}
+
+a {
+  color: $primary-color;
+}
+
+a:visited {
+  color: $primary-color-faded;
+}
+
+.Layout {
+  margin: 0 auto;
+}
+
+@media (min-width: $screen-sm-min) {
+  .Layout {
+    width: calc($screen-sm-min - 18px);
+  }
+}
+
+@media (min-width: $screen-md-min) {
+  .Layout {
+    width: calc($screen-md-min - 22px);
+  }
+}
+
+@media (min-width: $screen-lg-min) {
+  .Layout {
+    width: calc($screen-lg-min - 30px);
+  }
+}
+
+.index {
+  width: 540px;
+  height: 300px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+
+  .search-container {
+    display: block;
+  }
+
+  .logo-container {
+    margin-bottom: 20px;
+    font-size: 53px;
+    color: #BB0E3D;
+  }
+}
+
+// .nci-logo {
+//   width: 460px;
+//   height: auto;
+//   padding: 20px;
+//   margin-bottom: 20px;
+// }
+
+// .pill {
+//   background-color: #bbb;
+//   color: #fff;
+//   padding: 4px;
+//   margin: 2px;
+//   font-size: 10px;
+//   line-height: 14px;
+// }
+
+// ----------- TODO ------------
+
+.search-page {
+  margin: 10px;
+}
+
+.clinical-trials {
+  position: absolute;
+  width: $screen-sm-min;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+
+.clinical-trial-page {
+  margin: 10px;
+}
+
+.clinical-trial-detail {
+  position: absolute;
+  width: 640px;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+
+.clinical-trial-location {
+  margin-bottom: 10px;
+}

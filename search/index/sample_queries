@@ -133,3 +133,5 @@ curl -XPOST "http://localhost:9200/cancer-clinical-trials/_search?explain&pretty
   },
   "size": 0
 }'
+
+curl 'localhost:9200/cancer-terms/_analyze?pretty=1&analyzer=autocomplete_search' -d 'dana-farber'
