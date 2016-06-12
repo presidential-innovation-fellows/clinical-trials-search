@@ -27,23 +27,21 @@ router.get('/clinical-trial/:id', (req, res, next) => {
 });
 
 const _getInvalidTrialQueryParams = (queryParams) => {
-  return _.without(queryParams, ["from", "size", "sort", "_all"])
-  .filter((queryParam) => {
-    let len = queryParam.length;
-    let op = queryParam.substring(len - 4, len);
-    let paramWithoutOp = queryParam.substring(0, len - 4);
-    if (searchPropsByType["string"][queryParam]) {
+  let without = _.without(queryParams, "from", "size", "sort", "_all");
+  logger.info(without);
+  return without.filter((queryParam) => {
+    if (_.includes(searchPropsByType["string"], queryParam)) {
       return false;
-    } else if (op === "_gte" || "_lte") {
+    } else if (queryParam.endsWith("_gte") || queryParam.endsWith("_lte")) {
+      let paramWithoutOp = queryParam.substring(0, queryParam.length - 4);
       if (
-        searchPropsByType["date"][paramWithoutOp] ||
-        searchPropsByType["long"][paramWithoutOp]
+        _.includes(searchPropsByType["date"], paramWithoutOp) ||
+        _.includes(searchPropsByType["long"], paramWithoutOp)
       ) {
         return false;
       }
-    } else {
-      return true;
     }
+    return true;
   });
 }
 
@@ -53,10 +51,12 @@ router.get('/clinical-trials', (req, res, next) => {
   queryParams = Object.keys(req.query);
   let invalidParams = _getInvalidTrialQueryParams(queryParams);
   if (invalidParams.length > 0) {
-    return res.status(400).send({
+    let error = {
       "Error": "Invalid query params.",
       "Invalid Params": invalidParams
-    });
+    };
+    logger.error(error);
+    return res.status(400).send(error);
   }
 
   let q = req.query;
@@ -74,13 +74,9 @@ router.get('/clinical-trials', (req, res, next) => {
 
 /* get key terms that can be used to search through clinical trials */
 router.get('/terms', (req, res, next) => {
-  let queryTerm = req.query.term;
-  let queryClassification = req.query.classification;
+  let { term, term_type } = req.query;
 
-  let q = {
-    term: queryTerm,
-    classification: queryClassification
-  }
+  let q = { term, term_type };
   searcher.searchTerms(q, (err, terms) => {
     // TODO: add better error handling
     if(err) {

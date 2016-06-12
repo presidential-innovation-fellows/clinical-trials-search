@@ -7,15 +7,19 @@ let logger = new Logger({name: "term-loader"});
 
 class TermLoader {
 
+  static get VALID_TERM_TYPES() {
+    return [
+      "diseases.synonyms",
+      "sites.org.location",
+      "sites.org.name",
+      "sites.org.family",
+      "arms.treatment",
+      "anatomic_sites"
+    ]
+  }
+
   constructor() {
-    this.terms = {
-      diseases: {},
-      locations: {},
-      organizations: {},
-      anatomicSites: {},
-      organizationFamilies: {},
-      treatments: {}
-    };
+    this.terms = {};
     this.indexCounter = 0;
   }
 
@@ -26,12 +30,9 @@ class TermLoader {
     let _loadTerms = (trial) => {
       // logger.info(
       //   `Loading terms from trial with nci_id (${trial.nci_id}).`);
-      this._loadDiseaseTermsFromTrial(trial);
-      this._loadLocationTermsFromTrial(trial);
-      this._loadOrganizationTermsFromTrial(trial);
-      this._loadAnatomicSiteTermsFromTrial(trial);
-      this._loadOrganizationFamilyTermsFromTrial(trial);
-      this._loadTreatmentTermsFromTrial(trial);
+      TermLoader.VALID_TERM_TYPES.forEach((termType) => {
+        this._loadTermsFromTrialForTermType(trial, termType);
+      });
     };
 
     rs.pipe(js).on("data", _loadTerms).on("end", () => {
@@ -76,7 +77,7 @@ class TermLoader {
     });
   }
 
-  _loadTermsFromTrialForTermType(termType, extractTermsToArr) {
+  _loadTermsFromTrialForTermType(trial, termType) {
     /*
       Produces this.terms = {
         term_one: {
@@ -88,8 +89,34 @@ class TermLoader {
         }
       }
     */
+
     let terms = {};
-    let termsArr = extractTermsToArr();
+    let termsArr = [];
+    let pathArr = termType.split(".");
+
+    const _extractTerms = (obj, pathArr) => {
+      if (!obj || !pathArr) { return; }
+      let thisObj = obj[pathArr[0]];
+      if (!thisObj) { return; }
+      if (pathArr.length === 1) {
+        if (thisObj instanceof Array) {
+          termsArr = termsArr.concat(thisObj);
+        } else {
+          termsArr.push(thisObj);
+        }
+      } else {
+        let newPathArr = pathArr.slice(1, pathArr.length);
+        if (thisObj instanceof Array) {
+          thisObj.forEach((o) => {
+            _extractTerms(o, newPathArr);
+          });
+        } else {
+          _extractTerms(thisObj, newPathArr);
+        }
+      }
+    };
+    _extractTerms(trial, pathArr);
+    termsArr = _.chain(termsArr).uniq().compact().value();
 
     termsArr.forEach((term) => {
       let termKey = Utils.transformStringToKey(term);
@@ -106,6 +133,9 @@ class TermLoader {
       }
     });
 
+    if (typeof this.terms[termType] === "undefined") {
+      this.terms[termType] = {};
+    }
     Object.keys(terms).forEach((termKey) => {
       if (typeof this.terms[termType][termKey] === "undefined") {
         this.terms[termType][termKey] = {
@@ -124,128 +154,6 @@ class TermLoader {
           terms[termKey]["terms"][term];
       });
     });
-  }
-
-  _loadDiseaseTermsFromTrial(trial) {
-    if (!trial.diseases) { return; }
-
-    const termType = "diseases";
-    const extractTermsToArr = () => {
-      let terms = [];
-      trial.diseases.forEach((disease) => {
-        if (disease.disease_menu_display_name) {
-          terms.push(disease.disease_menu_display_name);
-        }
-        if (disease.synonyms) {
-          disease.synonyms.forEach((synonym) => {
-            terms.push(synonym);
-          });
-        }
-      });
-      return terms;
-    };
-
-    this._loadTermsFromTrialForTermType(termType, extractTermsToArr);
-  }
-
-  _loadLocationTermsFromTrial(trial) {
-    if (!trial.sites) { return; }
-
-    const termType = "locations";
-    const extractTermsToArr = () => {
-      let terms = [];
-      trial.sites.forEach((site) => {
-        let org = site.org;
-        let location = _.compact([
-          org.city,
-          org.state_or_province,
-          org.country
-        ]).join(", ");
-
-        if (location) {
-          terms.push(location);
-        }
-      });
-      return terms;
-    };
-
-    this._loadTermsFromTrialForTermType(termType, extractTermsToArr);
-  }
-
-  _loadOrganizationTermsFromTrial(trial) {
-    if (!trial.sites) { return; }
-
-    const termType = "organizations";
-    const extractTermsToArr = () => {
-      let terms = [];
-      trial.sites.forEach((site) => {
-        let org = site.org;
-        let organization = org.name;
-
-        if (organization) {
-          terms.push(organization);
-        }
-      });
-      return terms;
-    };
-
-    this._loadTermsFromTrialForTermType(termType, extractTermsToArr);
-  }
-
-  _loadOrganizationFamilyTermsFromTrial(trial) {
-    if (!trial.sites) { return; }
-
-    const termType = "organizationFamilies";
-    const extractTermsToArr = () => {
-      let terms = [];
-      trial.sites.forEach((site) => {
-        let org = site.org;
-        let organizationFamily = org.family;
-
-        if (organizationFamily) {
-          terms.push(organizationFamily);
-        }
-      });
-      return terms;
-    };
-
-    this._loadTermsFromTrialForTermType(termType, extractTermsToArr);
-  }
-
-  _loadAnatomicSiteTermsFromTrial(trial) {
-    if (!trial.anatomic_sites) { return; }
-
-    const termType = "anatomicSites";
-    const extractTermsToArr = () => {
-      let terms = [];
-      trial.anatomic_sites.forEach((anatomicSite) => {
-        if (anatomicSite) {
-          terms.push(anatomicSite);
-        }
-      });
-      return terms;
-    };
-
-    this._loadTermsFromTrialForTermType(termType, extractTermsToArr);
-  }
-
-  _loadTreatmentTermsFromTrial(trial) {
-    if (!trial.arms) { return; }
-
-    const termType = "treatments";
-    const extractTermsToArr = () => {
-      let terms = [];
-      trial.arms.forEach((arm) => {
-        let treatment = `${arm.intervention_name} {${arm.intervention_type}}`;
-
-        if (arm.intervention_name) {
-          terms.push(treatment);
-        }
-      });
-      return terms;
-    };
-
-    this._loadTermsFromTrialForTermType(termType, extractTermsToArr);
   }
 
 }

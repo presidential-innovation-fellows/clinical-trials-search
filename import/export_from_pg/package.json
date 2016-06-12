@@ -9,6 +9,7 @@
   "author": "Michael Balint <michael.balint@pif.gov> (https://presidentialinnovationfellows.gov/)",
   "dependencies": {
     "JSONStream": "1.1.1",
+    "moment": "^2.13.0",
     "pg": "4.5.5",
     "pg-native": "1.10.0",
     "pg-query-stream": "1.0.0"

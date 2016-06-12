@@ -31,49 +31,6 @@ class TrialIndexerStream extends Writable {
     this.logger = trialIndexer.logger;
   }
 
-  _addFieldsToTrial(trial) {
-    this._addDateLastUpdatedAnythingFieldToTrial(trial);
-
-    return trial;
-  }
-
-  // looks through all date fields, finds the latest one and uses that
-  // for the "date_last_updated_anything" field
-  _addDateLastUpdatedAnythingFieldToTrial(trial) {
-    let updateDates = [];
-
-    const _addDateToArr = (stringDate) => {
-      let momentDate = moment(stringDate);
-      if(stringDate && momentDate.isValid()) updateDates.push(momentDate);
-    }
-
-    [
-      trial.amendment_date, trial.current_trial_status_date,
-      trial.date_last_created, trial.date_last_updated
-    ].forEach(_addDateToArr);
-
-    if(trial.diseases) {
-      trial.diseases.forEach((disease) => {
-        [
-          disease.date_last_created, disease.date_last_updated
-        ].forEach(_addDateToArr);
-      });
-    }
-
-    if(trial.sites) {
-      trial.sites.forEach((site) => {
-        _addDateToArr(site.recruitment_status_date);
-        if(site.org) {
-          _addDateToArr(site.org.status_date);
-        }
-      });
-    }
-
-    let updatedDate = moment.max(updateDates);
-
-    trial.date_last_updated_anything = updatedDate.utc().format("YYYY-MM-DD");
-  }
-
   _indexTrial(trial, done) {
     this.logger.info(
       `Indexing clinical trial with nci_id (${trial.nci_id}).`);
@@ -82,7 +39,7 @@ class TrialIndexerStream extends Writable {
       "index": this.trialIndexer.esIndex,
       "type": this.trialIndexer.esType,
       "id": trial.nci_id,
-      "body": this._addFieldsToTrial(trial)
+      "body": trial
     }, (err, response, status) => {
       if(err) { this.logger.error(err); }
       this.trialIndexer.indexCounter++;

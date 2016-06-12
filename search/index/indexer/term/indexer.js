@@ -63,30 +63,18 @@ class TermIndexer extends AbstractIndexer {
     this.indexCounter = 0;
   }
 
-  _extractSubClassificationFromTerm(term) {
-    let match = term.match(/ \{(.*)\}/);
-    let subClassification = null;
-    if (match instanceof Array) {
-      term = term.replace(match[0], "");
-      subClassification = match[1];
-    }
-    return { term, subClassification };
-  }
-
-  indexTermsForType(params, callback) {
+  indexTermsForType(termType, callback) {
     let is = new TermIndexerStream(this);
 
-    let termType = params.termType;
-    let termsRoot = params.termsRoot;
     this.indexCounter = 0;
 
     let maxTermCount = _.max(
-      _.map(_.values(this.terms[termsRoot]), (term) => {
+      _.map(_.values(this.terms[termType]), (term) => {
         return term.count;
       })
     );
-    _.forOwn(this.terms[termsRoot], (termObj, termKey) => {
-      let {term, subClassification} = this._extractSubClassificationFromTerm(termObj["term"]);
+    _.forOwn(this.terms[termType], (termObj, termKey) => {
+      let term = termObj["term"];
       // let terms = termObj["terms"];
       let count = termObj["count"];
       // let count_normalized = count / maxTermCount;
@@ -95,13 +83,10 @@ class TermIndexer extends AbstractIndexer {
       let doc = {
         "term_key": termKey,
         "term": term,
-        "classification": termType,
+        "term_type": termType,
         "count": count,
         "count_normalized": count_normalized
       };
-      if (subClassification) {
-        doc["sub_classification"] = subClassification;
-      }
       is.write(doc);
     });
     is.end();
@@ -113,14 +98,10 @@ class TermIndexer extends AbstractIndexer {
   }
 
   indexTerms(callback) {
-    async.waterfall([
-      (next) => { this.indexTermsForType({ termType: "disease", termsRoot: "diseases" }, next)},
-      (next) => { this.indexTermsForType({ termType: "location", termsRoot: "locations" }, next)},
-      (next) => { this.indexTermsForType({ termType: "organization", termsRoot: "organizations" }, next)},
-      (next) => { this.indexTermsForType({ termType: "organization_family", termsRoot: "organizationFamilies" }, next)},
-      (next) => { this.indexTermsForType({ termType: "anatomic_site", termsRoot: "anatomicSites" }, next)},
-      (next) => { this.indexTermsForType({ termType: "treatment", termsRoot: "treatments" }, next)}
-    ], callback)
+    const _indexTermsForType = (termType, next) => {
+      this.indexTermsForType(termType, next);
+    };
+    async.eachSeries(TermLoader.VALID_TERM_TYPES, _indexTermsForType, callback);
   }
 
   loadTermsFromTrialsJsonFile(callback) {

@@ -83,10 +83,10 @@ class Searcher {
     const _addStringFilter = (field, filter) => {
       if(filter instanceof Array) {
         filter.forEach((filterElement) => {
-          body.filter("term", field, transformStringToKey(filterElement));
+          body.filter("term", field, transformStringToKey(filterElement.toLowerCase()));
         });
       } else {
-        body.filter("term", field, filter);
+        body.filter("term", field, filter.toLowerCase());
       }
     };
 
@@ -205,13 +205,13 @@ class Searcher {
                                    TERMS
    ***********************************************************************/
 
-  get CLASSIFICATION_DEFAULTS() {
+  get TERM_TYPE_DEFAULTS() {
     return [
-      "disease",
-      "location",
-      "organization",
-      "organization_family",
-      "treatment"
+      "diseases.synonyms",
+      "sites.org.location",
+      "sites.org.name",
+      "sites.org.family",
+      "arms.treatment"
     ];
   }
 
@@ -224,17 +224,17 @@ class Searcher {
       body.query("match", "term_suggest", q.term, {type: "phrase"});
     }
 
-    // set the classification (use defaults if not supplied)
-    let classifications = this.CLASSIFICATION_DEFAULTS;
-    if (q.classification) {
-      if (q.classification instanceof Array) {
-        classifications = q.classification;
+    // set the term types (use defaults if not supplied)
+    let termTypes = this.TERM_TYPE_DEFAULTS;
+    if (q.term_type) {
+      if (q.term_type instanceof Array) {
+        termTypes = q.term_type;
       } else {
-        classifications = [q.classification];
+        termTypes = [q.term_type];
       }
     }
-    classifications.forEach((classification) => {
-      body.orFilter("term", "classification", classification);
+    termTypes.forEach((termType) => {
+      body.orFilter("term", "term_type", termType);
     });
 
     // build the query and add custom fields (that bodyparser can't handle)

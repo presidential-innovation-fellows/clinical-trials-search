@@ -71,6 +71,11 @@
             "type": "string",
             "analyzer": "keyword_ci",
             "include_in_all": false
+          },
+          "treatment": {
+            "type": "string",
+            "analyzer": "keyword_ci",
+            "include_in_all": false
           }
         }
       },

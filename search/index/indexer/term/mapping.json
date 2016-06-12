@@ -15,10 +15,7 @@
         "analyzer": "autocomplete_index",
         "search_analyzer": "autocomplete_search"
       },
-      "classification": {
-        "type": "string"
-      },
-      "sub_classification": {
+      "term_type": {
         "type": "string"
       },
       "count": {

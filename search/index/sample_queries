@@ -135,3 +135,16 @@ curl -XPOST "http://localhost:9200/cancer-clinical-trials/_search?explain&pretty
 }'
 
 curl 'localhost:9200/cancer-terms/_analyze?pretty=1&analyzer=autocomplete_search' -d 'dana-farber'
+
+curl -XPOST "http://localhost:9200/cancer-clinical-trials/_search" -d '
+{
+  "query": {
+    "bool": {
+      "filter": {
+        "term": {
+          "nci_id": "nci-2009-00376"
+        }
+      }
+    }
+  }
+}'

@@ -23,83 +23,43 @@ class CleanseStream extends Transform {
 
   _cleanseTerms(termType, terms) {
     let newTerms = terms.map((term) => {
-      // logger.info(termType, term, Utils.transformStringToKey(term));
+      if (!term) { return term; }
       return this.terms[termType][Utils.transformStringToKey(term)]["term"];
     });
     return _.uniq(newTerms);
   }
 
-  _transformDiseases(trial) {
-    if (!trial.diseases) { return; }
-    trial.diseases = trial.diseases.map((disease) => {
-      disease.disease_menu_display_name = this._cleanseTerms("diseases", [disease.disease_menu_display_name])[0];
-      disease.synonyms = this._cleanseTerms("diseases", disease.synonyms);
-      return disease;
-    });
-  }
-
-  _transformOrganizations(trial) {
-    if (!trial.sites) { return; }
-    trial.sites = trial.sites.map((site) => {
-      let org = site.org;
-      let organization = org.name;
-      if (organization) {
-        organization = this._cleanseTerms("organizations", [organization])[0];
-        site.org.name = organization;
+  _transformTrialForTermType(trial, termType) {
+    const _transform = (obj, pathArr) => {
+      if (!obj || !pathArr) { return null; }
+      let newObj = obj[pathArr[0]];
+      if (pathArr.length === 1) {
+        if (newObj instanceof Array) {
+          newObj = this._cleanseTerms(termType, newObj);
+        } else {
+          newObj = this._cleanseTerms(termType, [newObj])[0];
+        }
+      } else {
+        let newPathArr = pathArr.slice(1, pathArr.length);
+        if (newObj instanceof Array) {
+          newObj.forEach((o) => {
+            _transform(o, newPathArr);
+          });
+        } else {
+          _transform(newObj, newPathArr);
+        }
       }
-      return site;
-    });
-  }
-
-  _transformOrganizationFamilies(trial) {
-    if (!trial.sites) { return; }
-    trial.sites = trial.sites.map((site) => {
-      let org = site.org;
-      let organization_family = org.family;
-      if (organization_family) {
-        organization_family = this._cleanseTerms("organizationFamilies", [organization_family])[0];
-        site.org.family = organization_family;
-      }
-      return site;
-    });
-  }
-
-  _transformTreatments(trial) {
-    if (!trial.arms) { return; }
-    trial.arms = trial.arms.map((arm) => {
-      let treatment = arm.intervention_name
-      if (treatment) {
-        treatment = this._cleanseTerms("organizationFamilies", [treatment])[0];
-        arm.intervention_name = treatment;
-      }
-      return arm;
-    });
-  }
-
-  _createLocations(trial) {
-    if (!trial.sites) { return; }
-    trial.sites = trial.sites.map((site) => {
-      let org = site.org;
-      let location = _.compact([
-        org.city,
-        org.state_or_province,
-        org.country
-      ]).join(", ");
-      if (location) {
-        location = this._cleanseTerms("locations", [location])[0];
-        site.org.location = location;
-      }
-      return site;
-    });
+      obj[pathArr[0]] = newObj;
+    };
+    _transform(trial, termType.split("."));
   }
 
   _transform(trial, enc, next) {
     logger.info(`Cleansing trial with nci_id (${trial.nci_id}).`);
 
-    this._transformDiseases(trial);
-    this._transformOrganizations(trial);
-    this._transformOrganizationFamilies(trial);
-    this._createLocations(trial);
+    TermLoader.VALID_TERM_TYPES.forEach((termType) => {
+      this._transformTrialForTermType(trial, termType);
+    });
 
     this.push(trial);
     next();
