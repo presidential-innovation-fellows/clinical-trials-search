@@ -4,6 +4,11 @@ import ReactDOM from 'react-dom';
 import { canUseDOM } from 'fbjs/lib/ExecutionEnvironment';
 import Location from './lib/Location';
 import Layout from './components/Layout';
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
+import searchApp from './reducers';
+
+let store = createStore(searchApp);
 
 const routes = {}; // Auto-generated on build. See tools/lib/routes-loader.js
 
@@ -13,15 +18,21 @@ const route = async (path, callback) => {
   }
   const handler = routes[path] || routes['/404'];
   const component = await handler();
-  await callback(<Layout>{React.createElement(component)}</Layout>);
+  await callback(
+    <Provider store={store}>
+      <Layout>{React.createElement(component)}</Layout>
+    </Provider>
+  );
 };
 
 function run() {
   const container = document.getElementById('app');
   Location.listen(location => {
-    route(location.pathname, async (component) => ReactDOM.render(component, container, () => {
-      // Track the page view event via Google Analytics
-      // window.ga('send', 'pageview');
+    route(location.pathname, async (component) =>
+      ReactDOM.render(component, container, () => {
+        // console.log(location.pathname, location.search);
+        // Track the page view event via Google Analytics
+        // window.ga('send', 'pageview');
     }));
   });
 }

@@ -8,6 +8,10 @@ class Layout extends Component {
     children: PropTypes.element.isRequired,
   };
 
+  componentDidMount() {
+    // debugger;
+  }
+
   render() {
     return (
       <div className="Layout">
@@ -18,5 +22,7 @@ class Layout extends Component {
   }
 
 }
+
+// Layout.contextTypes = { store: PropTypes.object };
 
 export default Layout;

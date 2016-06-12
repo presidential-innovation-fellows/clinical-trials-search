@@ -1,0 +1,10 @@
+@import '../../variables.scss';
+
+.clinical-trials {
+  position: absolute;
+  // width: $screen-sm-min;
+  width: 640px;
+  left: 0;
+  right: 0;
+  margin: auto;
+}

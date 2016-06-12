@@ -74,33 +74,3 @@ a:visited {
 //   font-size: 10px;
 //   line-height: 14px;
 // }
-
-// ----------- TODO ------------
-
-.search-page {
-  margin: 10px;
-}
-
-.clinical-trials {
-  position: absolute;
-  width: $screen-sm-min;
-  left: 0;
-  right: 0;
-  margin: auto;
-}
-
-.clinical-trial-page {
-  margin: 10px;
-}
-
-.clinical-trial-detail {
-  position: absolute;
-  width: 640px;
-  left: 0;
-  right: 0;
-  margin: auto;
-}
-
-.clinical-trial-location {
-  margin-bottom: 10px;
-}

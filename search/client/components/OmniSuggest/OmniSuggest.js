@@ -1,6 +1,6 @@
-'use strict';
-
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
+import { newParams } from '../../actions';
 import fetch from 'isomorphic-fetch';
 import Autosuggest from 'react-autosuggest';
 import AutosuggestHighlight from 'autosuggest-highlight';
@@ -13,23 +13,33 @@ function escapeRegexCharacters(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
+function extractSubTypeFromTerm(term) {
+  let match = term.match(/ \((.*)\)/);
+  let subType = null;
+  if (match instanceof Array) {
+    term = term.replace(match[0], "");
+    subType = match[1];
+  }
+  return { term, subType };
+}
+
 function renderSuggestion(suggestion, { value, valueBeforeUpDown }) {
   const suggestionText = suggestion.term;
   const query = (valueBeforeUpDown || value).trim();
   const matches = AutosuggestHighlight.match(suggestionText, query);
   const parts = AutosuggestHighlight.parse(suggestionText, matches);
 
-  let classificationText = {
-    'organization': 'hospital/center',
-    'organization_family': 'network/organization',
-    'disease': 'disease',
-    'location': 'location',
-    'anatomic_site': 'anatomic site',
-    'treatment': suggestion.sub_classification ? `treatment - ${suggestion.sub_classification.toLowerCase()}` : `treatment`
-  }[suggestion.classification];
+  let termTypeText = {
+    "diseases.synonyms": "disease",
+    "sites.org.location": "location",
+    "sites.org.name": "hospital/center",
+    "sites.org.family": "network/organization",
+    "anatomic_sites": "anatomic site",
+    "arms.treatment": suggestion.sub_type ? `treatment - ${suggestion.sub_type.toLowerCase()}` : `treatment`
+  }[suggestion.term_type];
 
   return (
-    <span className={'suggestion-content ' + suggestion.classification}>
+    <span className={'suggestion-content ' + suggestion.term_type}>
       <span className='text'>
         {
           parts.map((part, index) => {
@@ -41,7 +51,7 @@ function renderSuggestion(suggestion, { value, valueBeforeUpDown }) {
           })
         }
       </span>
-      <span className='suggestion-classification'>&nbsp;({classificationText})</span>
+      <span className='suggestion-type'>&nbsp;({termTypeText})</span>
     </span>
   );
 }
@@ -50,11 +60,15 @@ function getSuggestionValue(suggestion) { // when suggestion selected, this func
   return suggestion.term;                 // what should be the value of the input
 }
 
-class OmniSuggest extends React.Component {
+class OmniSuggest extends Component {
 
   get SIMILARITY_THRESHOLD() {
     return 0.8;
   }
+
+  static contextTypes = {
+    store: PropTypes.object
+  };
 
   constructor() {
     super();
@@ -67,7 +81,7 @@ class OmniSuggest extends React.Component {
     this.onSubmit = this.onSubmit.bind(this);
     this.onChange = this.onChange.bind(this);
     this.onSuggestionsUpdateRequested = this.onSuggestionsUpdateRequested.bind(this);
-    this.onSuggestionSelected = this.onSuggestionSelected.bind(this);
+    // this.onSuggestionSelected = this.onSuggestionSelected.bind(this);
   }
 
   loadSuggestions(value) {
@@ -77,7 +91,14 @@ class OmniSuggest extends React.Component {
     fetch(`http://localhost:3000/terms?term=${term}`)
       .then(response => response.json())
       .then((json) => {
-        var suggestions = json.terms;
+        let suggestions = json.terms.map((suggestion) => {
+          if (suggestion.term_type === "arms.treatment") {
+            let {term, subType} = extractSubTypeFromTerm(suggestion.term);
+            suggestion.term = term;
+            suggestion.sub_type = subType;
+          }
+          return suggestion;
+        });
         if (value === this.state.value) {
           this.setState({
             suggestions
@@ -88,41 +109,55 @@ class OmniSuggest extends React.Component {
       });
   }
 
+  componentDidMount() {
+    let store = this.context.store;
+    let unsubscribe = store.subscribe(() =>
+      // console.log(store.getState())
+    );
+  }
+
   onChange(event, { newValue }) {
     this.setState({
       value: newValue
     });
   }
 
-  gotoResults(suggestion) {
-    let query = `${suggestion.classification}=${encodeURIComponent(suggestion.term)}`;
-    Location.push(`/clinical-trials?${query}`);
+  gotoResults(event, {term_type, term}) {
+    let store = this.context.store;
+    let params = {}
+    params[term_type] = term;
+    store.dispatch(newParams(params));
+    // let query = `${suggestion.term_type}=${encodeURIComponent(suggestion.term)}`
   }
 
   onSubmit(event) {
     event.preventDefault();
     let { value, suggestions } = this.state;
-    let query = `_all=${encodeURIComponent(value)}`;
+    let query = { "_all": encodeURIComponent(value) };
     if (suggestions.length) {
       let topSuggestion = suggestions[0];
       if (topSuggestion) {
         let term = topSuggestion.term;
-        if (topSuggestion.classification === "location") {
+        if (topSuggestion.term_type === "location") {
           let locParts = topSuggestion.term.split(", ");
           if (locParts.length) { term = locParts[0]; }
         }
         let similarity = Similarity.compareTwoStrings(value, term);
         if (similarity > this.SIMILARITY_THRESHOLD) {
-          return this.gotoResults(topSuggestion);
+          return this.gotoResults(event, topSuggestion);
         }
       }
     }
-    Location.push(`/clinical-trials?${query}`);
+    return this.gotoResults(event, {
+      "term_type": "_all",
+      "term": value
+    });
+    // Location.push(`/clinical-trials?${query}`);
   }
 
-  onSuggestionSelected(event, { suggestion, suggestionValue }) {
-    this.gotoResults(suggestion);
-  }
+  // onSuggestionSelected(event, { suggestion, suggestionValue }) {
+  //   this.gotoResults(event, suggestion);
+  // }
 
   onSuggestionsUpdateRequested({ value, reason }) {
     if (reason === "type") {
@@ -158,6 +193,6 @@ class OmniSuggest extends React.Component {
   }
 }
 
-// OmniSuggest.displayName = 'OmniSuggest';
+OmniSuggest = connect()(OmniSuggest);
 
 export default OmniSuggest;

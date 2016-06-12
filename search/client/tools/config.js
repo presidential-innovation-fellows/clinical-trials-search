@@ -18,9 +18,11 @@ const AUTOPREFIXER_BROWSERS = [
 const JS_LOADER = {
   test: /\.jsx?$/,
   include: [
+    path.resolve(__dirname, '../actions'),
     path.resolve(__dirname, '../components'),
     path.resolve(__dirname, '../lib'),
     path.resolve(__dirname, '../pages'),
+    path.resolve(__dirname, '../reducers'),
     path.resolve(__dirname, '../app.js'),
     path.resolve(__dirname, '../config.js'),
   ],

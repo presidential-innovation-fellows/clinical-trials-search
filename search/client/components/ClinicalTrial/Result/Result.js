@@ -1,5 +1,7 @@
 import React, { Component, PropTypes } from 'react';
-import Link from '../Link'
+import Link from '../../Link'
+
+import './Result.scss';
 
 export default class extends Component {
 
@@ -9,8 +11,25 @@ export default class extends Component {
     state: PropTypes.object
   };
 
+  getTreatments(trial) {
+    let treatments = [];
+    if (trial.arms) {
+      trial.arms.forEach((arm) => {
+        if (arm.treatment) {
+          treatments.push({
+            display: arm.treatment,
+            link: `/clinical-trials?arms.treatment=${arm.treatment}`
+          });
+        }
+      });
+    }
+    return treatments;
+  }
+
   render() {
     const { trial, children } = this.props;
+    let treatments = this.getTreatments(trial);
+
 
     return (
       <div key={trial.nci_id} className="clinical-trial-result">
@@ -26,7 +45,15 @@ export default class extends Component {
           <b>Phase:</b> <span>{trial.phase.phase.split("_").join(", ")}</span>
         </div>
         <div>
-          <b>Treatment:</b> <span></span>
+          <b>Treatment{treatments.length > 1 ? "s" : ""}:</b>{" "}
+          {treatments.map((treatment, i) =>
+            <span>
+              <a href={treatment.link} onClick={Link.handleClick}>
+                {treatment.display}
+              </a>
+              {i < treatments.length - 1 ? ", " : ""}
+            </span>
+          )}
         </div>
         <div>
           <b>Condition{trial.diseases.length > 1 ? "s" : ""}:</b>{" "}
