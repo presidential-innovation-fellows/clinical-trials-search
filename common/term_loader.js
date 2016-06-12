@@ -61,11 +61,17 @@ class TermLoader {
   }
 
   _dealWithEdgeCases() {
-    // correct for edge cases such as "Non Small Cell..."
     _.forOwn(this["terms"], (termTypeObj, termTypeKey) => {
       _.forOwn(termTypeObj, (termObj, termKey) => {
         let term = termObj["term"];
-        this["terms"][termTypeKey][termKey]["term"] = term.replace(/Non /g, "Non-");
+        // correct for edge cases such as "Non Small Cell..."
+        term = term.replace(/Non /g, "Non-");
+        // add spacing to "/" chars...
+        term = term.replace(/\//g, " / ");
+        // remove extra white space
+        term = term.replace(/\s\s+/g, ' ');
+        // save
+        this["terms"][termTypeKey][termKey]["term"] = term;
       });
     });
   }
