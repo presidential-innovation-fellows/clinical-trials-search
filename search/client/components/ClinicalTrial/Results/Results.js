@@ -1,13 +1,12 @@
 import React, { Component, PropTypes } from 'react';
 
-import QueryString from 'query-string';
 import Waypoint from 'react-waypoint';
 import Fetch from 'isomorphic-fetch';
 
 import ClinicalTrialResult from '../Result';
 import Link from '../../Link'
 import Location from '../../../lib/Location';
-import { newParams } from '../../../actions';
+import Url from '../../../lib/Url';
 
 import './Results.scss';
 
@@ -16,10 +15,6 @@ export default class extends Component {
   get LOAD_SIZE() {
     return 10;
   }
-
-  static contextTypes = {
-    store: PropTypes.object
-  };
 
   constructor() {
     super();
@@ -39,15 +34,15 @@ export default class extends Component {
 
   loadTrials() {
     const { trials, size, from, isLoading } = this.state;
-    let query = QueryString.parse(location.search);
-    let queryCopy = QueryString.parse(location.search);
+    let query = Url.getParams();
+    let queryCopy = Url.getParams();
     query.size = size;
     query.from = from;
     this.setState({
       isLoading: true,
       query: queryCopy
     });
-    let url = `http://localhost:3000/clinical-trials?${QueryString.stringify(query)}`;
+    let url = `http://localhost:3000/clinical-trials?${Url.stringifyParams(query)}`;
     Fetch(url)
       .then(response => response.json())
       .then((json) => {
@@ -72,8 +67,7 @@ export default class extends Component {
   componentWillUpdate() {}
 
   componentDidUpdate() {
-    let query = QueryString.parse(location.search);
-    const queryChanged = JSON.stringify(this.state.query) !== JSON.stringify(query);
+    const queryChanged = Url.areParamsDiff(this.state.query);
     if (queryChanged && this.state.queryLoaded) {
       this.setState({ from: 0, queryLoaded: false }, () => {
         this.loadTrials();

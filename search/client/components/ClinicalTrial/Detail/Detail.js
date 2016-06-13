@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import Fetch from 'isomorphic-fetch';
+
 import Link from '../../Link'
-import QueryString from 'query-string';
+import Url from '../../../lib/Url';
 
 import './Detail.scss';
 
@@ -21,7 +22,7 @@ export default class extends Component {
   }
 
   componentDidMount() {
-    let query = QueryString.parse(location.search);
+    let { query } = Url.getParams();
     let id = query.id
     this.setState({ id });
     Fetch(`http://localhost:3000/clinical-trial/${id}`)

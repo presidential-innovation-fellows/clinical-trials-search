@@ -1,11 +1,11 @@
 import React, { Component, PropTypes } from 'react';
-import { connect } from 'react-redux';
-import { newParams } from '../../actions';
 import fetch from 'isomorphic-fetch';
 import Autosuggest from 'react-autosuggest';
 import AutosuggestHighlight from 'autosuggest-highlight';
-import Location from '../../lib/Location';
 import Similarity from 'string-similarity';
+
+import Location from '../../lib/Location';
+import Url from '../../lib/Url';
 
 import './OmniSuggest.scss';
 
@@ -66,10 +66,6 @@ class OmniSuggest extends Component {
     return 0.8;
   }
 
-  static contextTypes = {
-    store: PropTypes.object
-  };
-
   constructor() {
     super();
 
@@ -117,11 +113,10 @@ class OmniSuggest extends Component {
     });
   }
 
-  dispatchSearchParams(event, {term_type, term}) {
-    let store = this.context.store;
-    let params = {}
+  gotoSearch(event, {term_type, term}) {
+    let params = {};
     params[term_type] = term;
-    store.dispatch(newParams(params));
+    Url.newParams({ path: "/clinical-trials", params });
   }
 
   onSubmit(event) {
@@ -138,11 +133,11 @@ class OmniSuggest extends Component {
         }
         let similarity = Similarity.compareTwoStrings(value, term);
         if (similarity > this.SIMILARITY_THRESHOLD) {
-          return this.dispatchSearchParams(event, topSuggestion);
+          return this.gotoSearch(event, topSuggestion);
         }
       }
     }
-    return this.dispatchSearchParams(event, {
+    return this.gotoSearch(event, {
       "term_type": "_all",
       "term": value
     });
@@ -183,7 +178,5 @@ class OmniSuggest extends Component {
     );
   }
 }
-
-OmniSuggest = connect()(OmniSuggest);
 
 export default OmniSuggest;

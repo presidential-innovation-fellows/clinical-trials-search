@@ -1,5 +1,4 @@
-import React, { Component, PropTypes } from 'react';
-import { addTodo } from '../actions';
+import React, { Component } from 'react';
 
 export default class extends Component {
 

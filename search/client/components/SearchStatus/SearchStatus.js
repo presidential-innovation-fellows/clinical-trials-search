@@ -1,13 +1,11 @@
-import React, { Component, PropTypes } from 'react';
-import StatusPill from './StatusPill';
+import React, { Component } from 'react';
+import StatusPart from './StatusPart';
+
+import Url from '../../lib/Url';
 
 export default class extends Component {
 
-  static contextTypes = {
-    store: PropTypes.object
-  };
-
-  getDisplayType(type) {
+  _getDisplayType(type) {
     return {
       "diseases.synonyms": "disease",
       "sites.org.location": "location",
@@ -19,14 +17,13 @@ export default class extends Component {
   }
 
   getStatuses() {
-    let store = this.context.store;
-    let { searchParams } = store.getState();
+    let params = Url.getParams();
     let statuses = [];
 
-    Object.keys(searchParams).forEach((key) => {
-      let value = searchParams[key];
+    Object.keys(params).forEach((key) => {
+      let value = params[key];
       let status = {
-        displayKey: this.getDisplayType(key),
+        displayKey: this._getDisplayType(key),
         key: key
       }
       if (value instanceof Array) {
@@ -45,7 +42,7 @@ export default class extends Component {
     return (
       <div className="search-status">
         {statuses.map((status, i) =>
-          <StatusPill key={status.key} status={status} />
+          <StatusPart key={status.key} status={status} />
         )}
       </div>
     )
