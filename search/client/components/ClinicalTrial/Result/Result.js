@@ -30,7 +30,6 @@ export default class extends Component {
     const { trial, children } = this.props;
     let treatments = this.getTreatments(trial);
 
-
     return (
       <div key={trial.nci_id} className="clinical-trial-result">
         <h3>
@@ -47,7 +46,7 @@ export default class extends Component {
         <div>
           <b>Treatment{treatments.length > 1 ? "s" : ""}:</b>{" "}
           {treatments.map((treatment, i) =>
-            <span>
+            <span key={i}>
               <a href={treatment.link} onClick={Link.handleClick}>
                 {treatment.display}
               </a>
@@ -58,7 +57,7 @@ export default class extends Component {
         <div>
           <b>Condition{trial.diseases.length > 1 ? "s" : ""}:</b>{" "}
           {trial.diseases.slice(0,3).map((disease, i) =>
-            <span key={disease.disease_menu_display_name}>
+            <span key={`${trial.nci_id} ${disease.disease_menu_display_name}`}>
               <span>{disease.disease_menu_display_name}</span>
               {i < 2 ? ", " : ""}
             </span>

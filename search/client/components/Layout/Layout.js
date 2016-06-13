@@ -1,16 +1,13 @@
 import React, { Component, PropTypes } from 'react';
-import './Layout.scss';
 import Navigation from '../Navigation';
+
+import './Layout.scss';
 
 class Layout extends Component {
 
   static propTypes = {
     children: PropTypes.element.isRequired,
   };
-
-  componentDidMount() {
-    // debugger;
-  }
 
   render() {
     return (
@@ -22,7 +19,5 @@ class Layout extends Component {
   }
 
 }
-
-// Layout.contextTypes = { store: PropTypes.object };
 
 export default Layout;

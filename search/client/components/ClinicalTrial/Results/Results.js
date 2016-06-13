@@ -7,6 +7,7 @@ import Fetch from 'isomorphic-fetch';
 import ClinicalTrialResult from '../Result';
 import Link from '../../Link'
 import Location from '../../../lib/Location';
+import { newParams } from '../../../actions';
 
 import './Results.scss';
 

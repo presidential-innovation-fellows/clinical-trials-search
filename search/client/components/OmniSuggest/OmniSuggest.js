@@ -81,7 +81,7 @@ class OmniSuggest extends Component {
     this.onSubmit = this.onSubmit.bind(this);
     this.onChange = this.onChange.bind(this);
     this.onSuggestionsUpdateRequested = this.onSuggestionsUpdateRequested.bind(this);
-    // this.onSuggestionSelected = this.onSuggestionSelected.bind(this);
+    this.onSuggestionSelected = this.onSuggestionSelected.bind(this);
   }
 
   loadSuggestions(value) {
@@ -109,12 +109,7 @@ class OmniSuggest extends Component {
       });
   }
 
-  componentDidMount() {
-    let store = this.context.store;
-    let unsubscribe = store.subscribe(() =>
-      // console.log(store.getState())
-    );
-  }
+  componentDidMount() {}
 
   onChange(event, { newValue }) {
     this.setState({
@@ -122,12 +117,11 @@ class OmniSuggest extends Component {
     });
   }
 
-  gotoResults(event, {term_type, term}) {
+  dispatchSearchParams(event, {term_type, term}) {
     let store = this.context.store;
     let params = {}
     params[term_type] = term;
     store.dispatch(newParams(params));
-    // let query = `${suggestion.term_type}=${encodeURIComponent(suggestion.term)}`
   }
 
   onSubmit(event) {
@@ -144,20 +138,17 @@ class OmniSuggest extends Component {
         }
         let similarity = Similarity.compareTwoStrings(value, term);
         if (similarity > this.SIMILARITY_THRESHOLD) {
-          return this.gotoResults(event, topSuggestion);
+          return this.dispatchSearchParams(event, topSuggestion);
         }
       }
     }
-    return this.gotoResults(event, {
+    return this.dispatchSearchParams(event, {
       "term_type": "_all",
       "term": value
     });
-    // Location.push(`/clinical-trials?${query}`);
   }
 
-  // onSuggestionSelected(event, { suggestion, suggestionValue }) {
-  //   this.gotoResults(event, suggestion);
-  // }
+  onSuggestionSelected(event, { suggestion, suggestionValue }) {}
 
   onSuggestionsUpdateRequested({ value, reason }) {
     if (reason === "type") {
