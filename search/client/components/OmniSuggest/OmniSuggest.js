@@ -34,7 +34,7 @@ function renderSuggestion(suggestion, { value, valueBeforeUpDown }) {
     "sites.org.name": "hospital/center",
     "sites.org.family": "network/organization",
     "anatomic_sites": "anatomic site",
-    "arms.treatment": suggestion.sub_type ? `treatment - ${suggestion.sub_type.toLowerCase()}` : `treatment`
+    "arms.interventions.treatment": suggestion.sub_type ? `treatment - ${suggestion.sub_type.toLowerCase()}` : `treatment`
   }[suggestion.term_type];
 
   return (
@@ -87,7 +87,7 @@ class OmniSuggest extends Component {
       .then(response => response.json())
       .then((json) => {
         let suggestions = json.terms.map((suggestion) => {
-          if (suggestion.term_type === "arms.treatment") {
+          if (suggestion.term_type === "arms.interventions.treatment") {
             let {term, subType} = extractSubTypeFromTerm(suggestion.term);
             suggestion.term = term;
             suggestion.sub_type = subType;

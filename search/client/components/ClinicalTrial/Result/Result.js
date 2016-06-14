@@ -18,7 +18,7 @@ export default class extends Component {
         if (arm.treatment) {
           treatments.push({
             display: arm.treatment,
-            link: `/clinical-trials?arms.treatment=${arm.treatment}`
+            link: `/clinical-trials?arms.interventions.treatment=${arm.treatment}`
           });
         }
       });

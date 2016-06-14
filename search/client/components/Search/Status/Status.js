@@ -15,7 +15,7 @@ export default class extends Component {
       "sites.org.name": "hospital/center",
       "sites.org.family": "network/organization",
       "anatomic_sites": "anatomic site",
-      "arms.treatment": "treatment"
+      "arms.interventions.treatment": "treatment"
     }[type];
   }
 

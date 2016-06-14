@@ -24,7 +24,7 @@ const params = [{
     "filter_type": "select",
     "category": "primary"
   }, {
-    "param_key": "arms.treatment",
+    "param_key": "arms.interventions.treatment",
     "display_name": "Treatment",
     "filter_type": "suggest",
     "category": "primary"
