@@ -4,22 +4,12 @@ import Autosuggest from 'react-autosuggest';
 import AutosuggestHighlight from 'autosuggest-highlight';
 import Similarity from 'string-similarity';
 
-import Url from '../../lib/Url';
+import Url from '../../../../lib/Url';
 
-import './OmniSuggest.scss';
+import './Suggest.scss';
 
 function escapeRegexCharacters(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
-function extractSubTypeFromTerm(term) {
-  let match = term.match(/ \((.*)\)/);
-  let subType = null;
-  if (match instanceof Array) {
-    term = term.replace(match[0], "");
-    subType = match[1];
-  }
-  return { term, subType };
 }
 
 function renderSuggestion(suggestion, { value, valueBeforeUpDown }) {
@@ -28,21 +18,12 @@ function renderSuggestion(suggestion, { value, valueBeforeUpDown }) {
   const matches = AutosuggestHighlight.match(suggestionText, query);
   const parts = AutosuggestHighlight.parse(suggestionText, matches);
 
-  let termTypeText = {
-    "diseases.synonyms": "disease",
-    "sites.org.location": "location",
-    "sites.org.name": "hospital/center",
-    "sites.org.family": "network/organization",
-    "anatomic_sites": "anatomic site",
-    "arms.treatment": suggestion.sub_type ? `treatment - ${suggestion.sub_type.toLowerCase()}` : `treatment`
-  }[suggestion.term_type];
-
   return (
-    <span className={'suggestion-content ' + suggestion.term_type}>
+    <span className={'suggestion-content'}>
       <span className='text'>
         {
           parts.map((part, index) => {
-            const className = part.highlight ? 'omni-suggest-highlight' : null;
+            const className = part.highlight ? 'filter-suggest-highlight' : null;
 
             return (
               <span className={className} key={index}>{part.text}</span>
@@ -50,7 +31,6 @@ function renderSuggestion(suggestion, { value, valueBeforeUpDown }) {
           })
         }
       </span>
-      <span className='suggestion-type'>&nbsp;({termTypeText})</span>
     </span>
   );
 }
@@ -59,11 +39,7 @@ function getSuggestionValue(suggestion) { // when suggestion selected, this func
   return suggestion.term;                 // what should be the value of the input
 }
 
-class OmniSuggest extends Component {
-
-  get SIMILARITY_THRESHOLD() {
-    return 0.8;
-  }
+class Suggest extends Component {
 
   constructor() {
     super();
@@ -79,21 +55,20 @@ class OmniSuggest extends Component {
     this.onSuggestionSelected = this.onSuggestionSelected.bind(this);
   }
 
+  static propTypes = {
+    paramField: PropTypes.string.isRequired,
+    displayName: PropTypes.string.isRequired
+  };
+
   loadSuggestions(value) {
     this.setState({});
 
     let term = escapeRegexCharacters(value);
-    fetch(`http://localhost:3000/terms?term=${term}`)
+    let {paramField} = this.props;
+    fetch(`http://localhost:3000/terms?term=${term}&term_type=${paramField}`)
       .then(response => response.json())
       .then((json) => {
-        let suggestions = json.terms.map((suggestion) => {
-          if (suggestion.term_type === "arms.treatment") {
-            let {term, subType} = extractSubTypeFromTerm(suggestion.term);
-            suggestion.term = term;
-            suggestion.sub_type = subType;
-          }
-          return suggestion;
-        });
+        let suggestions = json.terms;
         if (value === this.state.value) {
           this.setState({
             suggestions
@@ -112,40 +87,28 @@ class OmniSuggest extends Component {
     });
   }
 
-  gotoSearch(event, {term_type, term}) {
-    let params = {};
-    params[term_type] = term;
-    Url.newParams({ path: "/clinical-trials", params });
+  gotoSearch(event, params) {
+    Url.addParams({ path: "/clinical-trials", params });
+    this.setState({
+      value: ""
+    });
   }
 
   onSubmit(event) {
     event.preventDefault();
     let { value, suggestions } = this.state;
-    if (suggestions.length) {
-      let topSuggestion = suggestions[0];
-      if (topSuggestion) {
-        let term = topSuggestion.term;
-        if (topSuggestion.term_type === "sites.org.location") {
-          let locParts = topSuggestion.term.split(", ");
-          value = value.split(", ")[0];
-          if (locParts.length) { term = locParts[0]; }
-        }
-        let similarity = Similarity.compareTwoStrings(value, term);
-        if (similarity > this.SIMILARITY_THRESHOLD) {
-          return this.gotoSearch(event, topSuggestion);
-        }
-      }
-    }
-    return this.gotoSearch(event, {
-      "term_type": "_all",
-      "term": value
-    });
+    let { paramField } = this.props;
+    let params = {};
+    params[paramField] = value;
+    return this.gotoSearch(event, params);
   }
 
   onSuggestionSelected(event, { suggestion, suggestionValue }) {
     if (event.type === "click") {
       let { term_type, term } = suggestion;
-      this.gotoSearch(event, { term_type, term });
+      let params = {};
+      params[term_type] = term;
+      this.gotoSearch(event, params);
     }
   }
 
@@ -160,13 +123,13 @@ class OmniSuggest extends Component {
   render() {
     const { value, suggestions } = this.state;
     const inputProps = {
-      placeholder: 'enter a disease, location, organization, or treatment',
+      placeholder: `filter by ${this.props.displayName}`,
       value,
       onChange: this.onChange
     };
 
     return (
-      <div className="omni-suggest">
+      <div className="filter-suggest">
         <form onSubmit={this.onSubmit}>
           <Autosuggest suggestions={suggestions}
                        onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
@@ -174,13 +137,10 @@ class OmniSuggest extends Component {
                        getSuggestionValue={getSuggestionValue}
                        renderSuggestion={renderSuggestion}
                        inputProps={inputProps} />
-          <div className='search-icon'>
-            <input type="image" src="images/search-icon.svg" alt="Submit Form" />
-          </div>
         </form>
       </div>
     );
   }
 }
 
-export default OmniSuggest;
+export default Suggest;

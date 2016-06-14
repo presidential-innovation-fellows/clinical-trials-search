@@ -64,7 +64,7 @@ const _updateUrl = (path, params) => {
 class Url {
 
   static getParams() {
-    return QueryString.parse(loc.search || "");
+    return _getUrlObj()["params"];
   }
 
   static areParamsDiff(params) {

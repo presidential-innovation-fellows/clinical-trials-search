@@ -1,0 +1,4 @@
+{
+  "name": "StatusItem",
+  "main": "./StatusItem.js"
+}

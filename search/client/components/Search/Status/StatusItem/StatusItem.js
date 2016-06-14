@@ -1,8 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 
-import Url from '../../../lib/Url';
+import Url from '../../../../lib/Url';
 
-import './StatusPart.scss';
+import './StatusItem.scss';
 
 export default class extends Component {
 
@@ -16,10 +16,6 @@ export default class extends Component {
     status: PropTypes.object.isRequired,
   };
 
-  static contextTypes = {
-    store: PropTypes.object
-  };
-
   removeParam() {
     const { status } = this.props;
     let params = {};
@@ -30,9 +26,9 @@ export default class extends Component {
   render() {
     let { status } = this.props;
     return (
-      <span>
-        <span>{status.displayKey} {status.value}</span>{" "}
-        <span className="removeStatusPart" onClick={this.removeParam}>[x]</span>
+      <span className="status-item">
+        <span>{status.value}</span>{" "}
+        <span className="remove-status" onClick={this.removeParam}>[x]</span>
       </span>
     );
   };

@@ -26,7 +26,8 @@ export default class extends Component {
       from: 0,
       hasMore: false,
       isLoading: false,
-      queryLoaded: false
+      queryLoaded: false,
+      total: 0
     };
 
     this.loadTrials = this.loadTrials.bind(this);
@@ -53,7 +54,8 @@ export default class extends Component {
           from: numTrialsLoaded,
           hasMore,
           isLoading: false,
-          queryLoaded: true
+          queryLoaded: true,
+          total: json.total
         });
       });
   }
@@ -86,17 +88,28 @@ export default class extends Component {
   }
 
   render() {
-    const { trials } = this.state;
+    const { trials, total } = this.state;
 
-    return (
-      <div className="clinical-trials">
-        {trials.map((trial, i) =>
-          <ClinicalTrialResult key={trial.nci_id} trial={trial}>
-            {this.placeWaypoint(i, trials.length)}
-          </ClinicalTrialResult>
-        )}
-      </div>
-    )
+    if (total) {
+      return (
+        <div className="clinical-trials">
+          <div>{total} clinical trials</div>
+          <div>
+            {trials.map((trial, i) =>
+              <ClinicalTrialResult key={trial.nci_id} trial={trial}>
+                {this.placeWaypoint(i, trials.length)}
+              </ClinicalTrialResult>
+            )}
+          </div>
+        </div>
+      )
+    } else {
+      return (
+        <div className="clinical-trials">
+          No result found. <a href="/" onClick={Link.handleClick}>Start a new search?</a>
+        </div>
+      )
+    }
   }
 
 }
