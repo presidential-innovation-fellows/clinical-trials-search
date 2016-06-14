@@ -17,7 +17,7 @@ class Select extends Component {
 
     return (
       <div>
-        filter select by {displayName}
+        select by {displayName}
       </div>
     );
   }
