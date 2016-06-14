@@ -28,7 +28,6 @@ router.get('/clinical-trial/:id', (req, res, next) => {
 
 const _getInvalidTrialQueryParams = (queryParams) => {
   let without = _.without(queryParams, "from", "size", "sort", "_all");
-  logger.info(without);
   return without.filter((queryParam) => {
     if (_.includes(searchPropsByType["string"], queryParam)) {
       return false;

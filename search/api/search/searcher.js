@@ -83,7 +83,7 @@ class Searcher {
     const _addStringFilter = (field, filter) => {
       if(filter instanceof Array) {
         filter.forEach((filterElement) => {
-          body.filter("term", field, transformStringToKey(filterElement.toLowerCase()));
+          body.filter("term", field, filterElement.toLowerCase());
         });
       } else {
         body.filter("term", field, filter.toLowerCase());
@@ -268,7 +268,7 @@ class Searcher {
   }
 
   searchTerms(q, callback) {
-    logger.info("Term searching", q);
+    // logger.info("Term searching", q);
     this.client.search({
       index: 'cancer-terms',
       type: 'term',
