@@ -13,7 +13,7 @@ class TermLoader {
       "sites.org.location",
       "sites.org.name",
       "sites.org.family",
-      "arms.treatment",
+      "arms.interventions.treatment",
       "anatomic_sites"
     ]
   }

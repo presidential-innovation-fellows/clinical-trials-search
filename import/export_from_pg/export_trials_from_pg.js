@@ -55,13 +55,16 @@ class TransformTrialStream extends Transform {
   _createTreatments(trial) {
     if (!trial.arms) { return; }
     trial.arms = trial.arms.map((arm) => {
-      let treatment = arm.intervention_name;
-      if (treatment) {
-        if (arm.intervention_type) {
-          treatment += ` (${arm.intervention_type})`;
-          arm.treatment = treatment;
+      arm.interventions = arm.interventions.map((intervention) => {
+        let treatment = intervention.intervention_name;
+        if (treatment) {
+          if (intervention.intervention_type) {
+            treatment += ` (${intervention.intervention_type})`;
+            intervention.treatment = treatment;
+          }
         }
-      }
+        return intervention
+      });
       return arm;
     });
   }
