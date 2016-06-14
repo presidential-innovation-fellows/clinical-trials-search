@@ -46,7 +46,7 @@ jspm_packages
 download_ctrp.sh
 
 # Large data files
-data
+data/*
 trials.json
 thesaurus.json
 ctrp_data_warehouse.sql

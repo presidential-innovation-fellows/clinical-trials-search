@@ -19,7 +19,7 @@ const ES_PARAMS = {
   "esSettings": ES_SETTINGS
 };
 const TRIALS_FILEPATH = path.join(__dirname,
-  '../../../../import/cleanse/trials.json');
+  '../../../../data/trials_cleansed.json');
 
 const transformStringToKey = Utils.transformStringToKey;
 
