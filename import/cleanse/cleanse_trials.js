@@ -12,7 +12,7 @@ const Logger              = require("../../common/logger");
 let logger = new Logger({name: "export-cleanser"});
 
 const TRIALS_FILEPATH = path.join(__dirname,
-  '../../import/export_from_pg/trials.json');
+  '../../data/trials.json');
 
 class CleanseStream extends Transform {
 
@@ -92,7 +92,7 @@ class TrialsCleanser {
     let js = JSONStream.parse("*");
     let cs = new CleanseStream(this.terms);
     let jw = JSONStream.stringify();
-    let ws = fs.createWriteStream("trials.json");
+    let ws = fs.createWriteStream("../../data/trials_cleansed.json");
 
     rs.pipe(js).pipe(cs).pipe(jw).pipe(ws).on("finish", callback);
   }

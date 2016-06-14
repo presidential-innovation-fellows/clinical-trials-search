@@ -135,7 +135,7 @@ client.connect((err) => {
     let ps = JSONStream.parse("*");
     let ts = new TransformTrialStream();
     let jz = JSONStream.stringify();
-    let ws = fs.createWriteStream('trials.json');
+    let ws = fs.createWriteStream('../../data/trials.json');
     // run the query and write the results to file via piping the streams
     qs.pipe(ja).pipe(ss).pipe(ps).pipe(ts).pipe(jz).pipe(ws).on("finish", () => {
       logger.info("Wrote trials from 'trial_query.sql' to  'trials.json'.");
