@@ -3,6 +3,9 @@ SELECT
     'nci_id', study.nci_id,
     'nct_id', study.nct_id,
     'protocol_id', study.lead_org_id,
+    'ccr_id', study.ccr_id,
+    'ctep_id', study.ctep_id,
+    'dcp_id', study.dcp_id,
     'other_ids', (
       SELECT
         json_agg(
@@ -15,6 +18,20 @@ SELECT
         dw_study_other_identifier other_identifier
       WHERE
         study.nci_id = other_identifier.nci_id
+    ),
+
+    'associated_studies', (
+      SELECT
+        json_agg(
+          json_build_object(
+            'study_id', association.study_b,
+            'study_id_type', association.identifier_type
+          )
+        )
+      FROM
+        dw_study_association association
+      WHERE
+        study.nci_id = association.study_a
     ),
 
     'amendment_date', study.amendment_date,
@@ -37,17 +54,19 @@ SELECT
     'detail_description', study.detail_description,
     'classification_code', study.classification_code,
     'interventional_model', study.interventional_model,
-    'funding_category', study.summary_4_funding_category,
-    'expanded_access_indicator', study.expanded_access_indicator,
+    -- 'funding_category', study.summary_4_funding_category,
+    -- 'expanded_access_indicator', study.expanded_access_indicator,
     'accepts_healthy_volunteers_indicator', study.accepts_healthy_volunteers_indicator,
-    'fdaregulated_indicator', study.fdaregulated_indicator,
+    -- 'fdaregulated_indicator', study.fdaregulated_indicator,
     'study_protocol_type', study.study_protocol_type,
     'study_subtype_code', study.study_subtype_code,
     'study_population_description', study.study_population_description,
+    'study_model_code', study.study_model_code,
+    'study_model_other_text', study.study_model_other_text,
+    'sampling_method_code', study.sampling_method_code,
     'bio_specimen', (
       'bio_specimen_description', study.bio_specimen_description,
-      'bio_specimen_retention_code', study.bio_specimen_retention_code,
-      'sampling_method_code', study.sampling_method_code
+      'bio_specimen_retention_code', study.bio_specimen_retention_code
     ),
     'primary_purpose', (
       json_build_object(
@@ -84,6 +103,20 @@ SELECT
       )
     ),
     'lead_org', study.lead_org,
+    'collaborators', (
+      SELECT
+        json_agg(
+          json_build_object(
+            'name', collaborator.name,
+            'functional_role', collaborator.functional_role,
+            'status', collaborator.status
+          )
+        )
+      FROM
+        dw_study_collaborator as collaborator
+      WHERE
+        study.nci_id = collaborator.nci_id
+    ),
     'sites', (
       SELECT
         json_agg(
@@ -119,8 +152,8 @@ SELECT
             ),
             'recruitment_status', site.recruitment_status,
             'recruitment_status_date', site.recruitment_status_date,
-            'target_accrual', site.target_accrual,
-            'program_code', site.program_code,
+            -- 'target_accrual', site.target_accrual,
+            -- 'program_code', site.program_code,
             'local_site_identifier', site.local_site_identifier
           )
         )
@@ -147,10 +180,19 @@ SELECT
             'disease_code', disease.disease_code,
             'disease_preferred_name', disease.disease_preferred_name,
             'disease_menu_display_name', disease.disease_menu_display_name,
+            'inclusion_indicator', disease.inclusion_indicator,
             'lead_disease_indicator', disease.lead_disease_indicator,
             'nci_thesaurus_concept_id', disease.nci_thesaurus_concept_id,
             'date_last_created', disease.date_last_created,
             'date_last_updated', disease.date_last_updated,
+            'parents', (
+              SELECT
+                string_to_array(parents, '|')
+              FROM
+                nci_thesaurus thesaurus
+              WHERE
+                disease.nci_thesaurus_concept_id = thesaurus.code
+            ),
             'synonyms', (
               SELECT
                 string_to_array(synonyms, '|')
@@ -166,51 +208,51 @@ SELECT
       WHERE
         study.nci_id = disease.nci_id
     ),
-    'biomarkers', (
-      SELECT
-        json_agg(
-          json_build_object(
-            'assay_purpose', biomarker.assay_purpose,
-            'assay_purpose_description', biomarker.assay_purpose_description,
-            'assay_type_code', biomarker.assay_type_code,
-            'assay_type_description', biomarker.assay_type_description,
-            'assay_use', biomarker.assay_use,
-            'long_name', biomarker.long_name,
-            'name', split_part(biomarker.name, ' (', 1),
-            'synonyms', (
-              string_to_array(replace(split_part(biomarker.name, '(', 2), ')', ''), '; ')
-            ),
-            'status_code', biomarker.status_code,
-            'tissue_collection_method_code', biomarker.tissue_collection_method_code,
-            'tissue_specimen_type_code', biomarker.tissue_specimen_type_code,
-            'hugo_biomarker_code', biomarker.hugo_biomarker_code,
-            'evaluation_type_code', biomarker.evaluation_type_code,
-            'evaluation_type_other_text', biomarker.evaluation_type_other_text,
-            'specimen_type_other_text', biomarker.specimen_type_other_text
-          )
-        )
-      FROM
-        dw_study_biomarker biomarker
-      WHERE
-        study.nci_id = biomarker.nci_id
-    ),
+    -- 'biomarkers', (
+    --   SELECT
+    --     json_agg(
+    --       json_build_object(
+    --         'assay_purpose', biomarker.assay_purpose,
+    --         'assay_purpose_description', biomarker.assay_purpose_description,
+    --         'assay_type_code', biomarker.assay_type_code,
+    --         'assay_type_description', biomarker.assay_type_description,
+    --         'assay_use', biomarker.assay_use,
+    --         'long_name', biomarker.long_name,
+    --         'name', split_part(biomarker.name, ' (', 1),
+    --         'synonyms', (
+    --           string_to_array(replace(split_part(biomarker.name, '(', 2), ')', ''), '; ')
+    --         ),
+    --         'status_code', biomarker.status_code,
+    --         'tissue_collection_method_code', biomarker.tissue_collection_method_code,
+    --         'tissue_specimen_type_code', biomarker.tissue_specimen_type_code,
+    --         'hugo_biomarker_code', biomarker.hugo_biomarker_code,
+    --         'evaluation_type_code', biomarker.evaluation_type_code,
+    --         'evaluation_type_other_text', biomarker.evaluation_type_other_text,
+    --         'specimen_type_other_text', biomarker.specimen_type_other_text
+    --       )
+    --     )
+    --   FROM
+    --     dw_study_biomarker biomarker
+    --   WHERE
+    --     study.nci_id = biomarker.nci_id
+    -- ),
 
     'minimum_target_accrual_number', study.minimum_target_accrual_number,
-    'accruals', (
-      SELECT
-        json_agg(
-          json_build_object(
-            'accrual_count', accrual.accrual_count,
-            'count_type', accrual.count_type,
-            'org_name', accrual.org_name,
-            'org_org_family', accrual.org_org_family
-          )
-        )
-      FROM
-        dw_study_accrual_count accrual
-      WHERE
-        study.nci_id = accrual.nci_id
-    ),
+    -- 'accruals', (
+    --   SELECT
+    --     json_agg(
+    --       json_build_object(
+    --         'accrual_count', accrual.accrual_count,
+    --         'count_type', accrual.count_type,
+    --         'org_name', accrual.org_name,
+    --         'org_org_family', accrual.org_org_family
+    --       )
+    --     )
+    --   FROM
+    --     dw_study_accrual_count accrual
+    --   WHERE
+    --     study.nci_id = accrual.nci_id
+    -- ),
 
     'eligibility', (
       json_build_object(
@@ -229,7 +271,7 @@ SELECT
           SELECT
             json_agg(
               json_build_object(
-                'display_order', eligibility.display_order,
+                -- 'display_order', eligibility.display_order,
                 'inclusion_indicator', eligibility.inclusion_indicator,
                 'description', eligibility.description
               )
@@ -249,25 +291,49 @@ SELECT
           json_build_object(
             'arm_name', arm.arm_name,
             'arm_type', arm.arm_type,
-            'intervention_name', arm.intervention_name,
-            'intervention_type', arm.intervention_type--,
-            -- 'date_created_arm', arm.date_created_arm,
-            -- 'date_updated_arm', arm.date_updated_arm,
-            -- 'date_created_intervention', arm.date_created_intervention,
-            -- 'date_updated_intervention', arm.date_updated_intervention
+            'arm_description', arm.arm_description,
+            'date_created_arm', arm.date_created_arm,
+            'date_updated_arm', arm.date_updated_arm,
+            'interventions', arm.interventions
           )
         )
       FROM (
-        SELECT DISTINCT
+        SELECT
           nci_id,
           arm_name,
           arm_type,
-          intervention_name,
-          intervention_type
+          arm_description,
+          date_created_arm,
+          date_updated_arm,
+          coalesce(
+            json_agg(
+              json_build_object(
+                'intervention_name', intervention_name,
+                'intervention_type', intervention_type,
+                'intervention_description', intervention_description,
+                'date_created_intervention', date_created_intervention,
+                'date_updated_intervention', date_updated_intervention
+              )
+            )
+            filter(
+              WHERE
+                intervention_name IS NOT NULL OR
+                intervention_type IS NOT NULL OR
+                intervention_description IS NOT NULL
+            ),
+            '[]'
+          ) as interventions
         FROM
           dw_study_arm_and_intervention
         WHERE
           study.nci_id = dw_study_arm_and_intervention.nci_id
+        GROUP BY
+          nci_id,
+          arm_name,
+          arm_type,
+          arm_description,
+          date_created_arm,
+          date_updated_arm
       ) AS arm
       WHERE
         study.nci_id = arm.nci_id
