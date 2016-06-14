@@ -118,7 +118,7 @@ class TransformTrialStream extends Transform {
 }
 
 // connect to pg
-const CONN_STRING = "postgres://localhost:5432/michaelbalint";
+const CONN_STRING = "postgres://localhost:5432/ctrp-data-warehouse";
 let client = new pg.Client(CONN_STRING);
 client.connect((err) => {
   if(err) {
