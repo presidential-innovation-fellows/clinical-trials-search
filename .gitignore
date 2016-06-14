@@ -42,8 +42,14 @@ jspm_packages
 # Mac files
 .DS_STORE
 
+# Sensitive Info
+download_ctrp.sh
+
 # Large data files
+data
 trials.json
 thesaurus.json
 ctrp_data_warehouse.sql
 nci_thesaurus.csv
+*.zip
+DW2.sql
