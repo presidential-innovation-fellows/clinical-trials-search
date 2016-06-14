@@ -6,32 +6,6 @@
         "analyzer": "keyword_ci",
         "include_in_all": false
       },
-      "accruals": {
-        "type": "nested",
-        "include_in_root": true,
-        "properties": {
-          "accrual_count": {
-            "type": "long",
-            "index": "not_analyzed",
-            "include_in_all": false
-          },
-          "count_type": {
-            "type": "string",
-            "analyzer": "keyword_ci",
-            "include_in_all": false
-          },
-          "org_name": {
-            "type": "string",
-            "analyzer": "keyword_ci",
-            "include_in_all": true
-          },
-          "org_org_family": {
-            "type": "string",
-            "analyzer": "keyword_ci",
-            "include_in_all": true
-          }
-        }
-      },
       "acronym": {
         "type": "string",
         "analyzer": "keyword_ci",
@@ -62,17 +36,74 @@
             "analyzer": "keyword_ci",
             "include_in_all": false
           },
-          "intervention_name": {
+          "arm_description": {
+            "type": "string",
+            "analyzer": "standard",
+            "include_in_all": false
+          },
+          "date_created_arm": {
+            "type": "date",
+            "index": "not_analyzed",
+            "include_in_all": false,
+            "format": "strict_date_optional_time||epoch_millis"
+          },
+          "date_updated_arm": {
+            "type": "date",
+            "index": "not_analyzed",
+            "include_in_all": false,
+            "format": "strict_date_optional_time||epoch_millis"
+          },
+          "interventions": {
+            "type": "nested",
+            "include_in_root": true,
+            "properties": {
+              "intervention_name": {
+                "type": "string",
+                "analyzer": "keyword_ci",
+                "include_in_all": true
+              },
+              "intervention_type": {
+                "type": "string",
+                "analyzer": "keyword_ci",
+                "include_in_all": false
+              },
+              "intervention_description": {
+                "type": "string",
+                "analyzer": "standard",
+                "include_in_all": false
+              },
+              "date_created_intervention": {
+                "type": "date",
+                "index": "not_analyzed",
+                "include_in_all": false,
+                "format": "strict_date_optional_time||epoch_millis"
+              },
+              "date_updated_intervention": {
+                "type": "date",
+                "index": "not_analyzed",
+                "include_in_all": false,
+                "format": "strict_date_optional_time||epoch_millis"
+              }
+            }
+          }
+          ,
+          "treatment": {
             "type": "string",
             "analyzer": "keyword_ci",
-            "include_in_all": true
-          },
-          "intervention_type": {
+            "include_in_all": false
+          }
+        }
+      },
+      "associated_studies": {
+        "type": "nested",
+        "include_in_root": true,
+        "properties": {
+          "study_id": {
             "type": "string",
             "analyzer": "keyword_ci",
             "include_in_all": false
           },
-          "treatment": {
+          "study_id_type": {
             "type": "string",
             "analyzer": "keyword_ci",
             "include_in_all": false
@@ -83,108 +114,12 @@
         "type": "nested",
         "include_in_root": true,
         "properties": {
-          "f1": {
+          "bio_specimen_description": {
             "type": "string",
             "analyzer": "keyword_ci",
             "include_in_all": false
           },
-          "f2": {
-            "type": "string",
-            "analyzer": "keyword_ci",
-            "include_in_all": false
-          },
-          "f3": {
-            "type": "string",
-            "analyzer": "keyword_ci",
-            "include_in_all": false
-          },
-          "f4": {
-            "type": "string",
-            "analyzer": "keyword_ci",
-            "include_in_all": false
-          },
-          "f5": {
-            "type": "string",
-            "analyzer": "keyword_ci",
-            "include_in_all": false
-          },
-          "f6": {
-            "type": "string",
-            "analyzer": "keyword_ci",
-            "include_in_all": false
-          }
-        }
-      },
-      "biomarkers": {
-        "type": "nested",
-        "include_in_root": true,
-        "properties": {
-          "assay_purpose": {
-            "type": "string",
-            "analyzer": "keyword_ci",
-            "include_in_all": false
-          },
-          "assay_type_code": {
-            "type": "string",
-            "analyzer": "keyword_ci",
-            "include_in_all": false
-          },
-          "assay_type_description": {
-            "type": "string",
-            "analyzer": "keyword_ci",
-            "include_in_all": false
-          },
-          "assay_use": {
-            "type": "string",
-            "analyzer": "keyword_ci",
-            "include_in_all": false
-          },
-          "evaluation_type_code": {
-            "type": "string",
-            "analyzer": "keyword_ci",
-            "include_in_all": false
-          },
-          "evaluation_type_other_text": {
-            "type": "string",
-            "analyzer": "keyword_ci",
-            "include_in_all": false
-          },
-          "hugo_biomarker_code": {
-            "type": "string",
-            "analyzer": "keyword_ci",
-            "include_in_all": false
-          },
-          "long_name": {
-            "type": "string",
-            "analyzer": "keyword_ci",
-            "include_in_all": false
-          },
-          "name": {
-            "type": "string",
-            "analyzer": "keyword_ci",
-            "include_in_all": false
-          },
-          "specimen_type_other_text": {
-            "type": "string",
-            "analyzer": "keyword_ci",
-            "include_in_all": false
-          },
-          "status_code": {
-            "type": "string",
-            "analyzer": "keyword_ci",
-            "include_in_all": false
-          },
-          "synonyms": {
-            "type": "string",
-            "analyzer": "keyword_ci",
-            "include_in_all": false
-          },
-          "tissue_collection_method_code": {
-            "type": "string",
-            "analyzer": "keyword_ci",
-            "include_in_all": false
-          },
-          "tissue_specimen_type_code": {
+          "bio_specimen_retention_code": {
             "type": "string",
             "analyzer": "keyword_ci",
             "include_in_all": false
@@ -200,6 +135,11 @@
         "type": "string",
         "analyzer": "standard",
         "include_in_all": false
+      },
+      "ccr_id": {
+        "type": "string",
+        "analyzer": "keyword_ci",
+        "include_in_all": true
       },
       "central_contact": {
         "type": "nested",
@@ -232,6 +172,27 @@
         "analyzer": "keyword_ci",
         "include_in_all": false
       },
+      "collaborators": {
+        "type": "nested",
+        "include_in_root": true,
+        "properties": {
+          "name": {
+            "type": "string",
+            "analyzer": "keyword_ci",
+            "include_in_all": true
+          },
+          "functional_role": {
+            "type": "string",
+            "analyzer": "keyword_ci",
+            "include_in_all": false
+          },
+          "status": {
+            "type": "string",
+            "analyzer": "keyword_ci",
+            "include_in_all": false
+          }
+        }
+      },
       "completion_date": {
         "type": "date",
         "format": "strict_date_optional_time||epoch_millis",
@@ -242,6 +203,11 @@
         "type": "string",
         "analyzer": "keyword_ci",
         "include_in_all": false
+      },
+      "ctep_id": {
+        "type": "string",
+        "analyzer": "keyword_ci",
+        "include_in_all": true
       },
       "current_trial_status": {
         "type": "string",
@@ -271,6 +237,11 @@
         "format": "strict_date_optional_time||epoch_millis",
         "index": "not_analyzed",
         "include_in_all": false
+      },
+      "dcp_id": {
+        "type": "string",
+        "analyzer": "keyword_ci",
+        "include_in_all": true
       },
       "detail_description": {
         "type": "string",
@@ -308,10 +279,20 @@
             "analyzer": "keyword_ci",
             "include_in_all": false
           },
+          "lead_disease_indicator": {
+            "type": "string",
+            "analyzer": "keyword_ci",
+            "include_in_all": false
+          },
           "nci_thesaurus_concept_id": {
             "type": "string",
             "analyzer": "keyword_ci",
             "include_in_all": false
+          },
+          "parent_nci_thesarus_concept_ids": {
+            "type": "string",
+            "analyzer": "keyword_ci",
+            "include_in_all": true
           },
           "synonyms": {
             "type": "string",
@@ -374,11 +355,6 @@
                 "analyzer": "standard",
                 "include_in_all": false
               },
-              "display_order": {
-                "type": "long",
-                "index": "not_analyzed",
-                "include_in_all": false
-              },
               "inclusion_indicator": {
                 "type": "boolean",
                 "index": "not_analyzed",
@@ -387,21 +363,6 @@
             }
           }
         }
-      },
-      "expanded_access_indicator": {
-        "type": "string",
-        "analyzer": "keyword_ci",
-        "include_in_all": false
-      },
-      "fdaregulated_indicator": {
-        "type": "string",
-        "analyzer": "keyword_ci",
-        "include_in_all": false
-      },
-      "funding_category": {
-        "type": "string",
-        "analyzer": "keyword_ci",
-        "include_in_all": false
       },
       "interventional_model": {
         "type": "string",
@@ -547,6 +508,11 @@
         "analyzer": "keyword_ci",
         "include_in_all": true
       },
+      "sampling_method_code": {
+        "type": "string",
+        "analyzer": "keyword_ci",
+        "include_in_all": false
+      },
       "sites": {
         "type": "nested",
         "include_in_root": true,
@@ -678,11 +644,6 @@
             "format": "strict_date_optional_time||epoch_millis",
             "index": "not_analyzed",
             "include_in_all": false
-          },
-          "target_accrual": {
-            "type": "long",
-            "index": "not_analyzed",
-            "include_in_all": false
           }
         }
       },
@@ -697,7 +658,27 @@
         "analyzer": "keyword_ci",
         "include_in_all": false
       },
+      "study_model_code": {
+        "type": "string",
+        "analyzer": "keyword_ci",
+        "include_in_all": false
+      },
+      "study_model_other_text": {
+        "type": "string",
+        "analyzer": "keyword_ci",
+        "include_in_all": false
+      },
+      "study_population_description": {
+        "type": "string",
+        "analyzer": "keyword_ci",
+        "include_in_all": false
+      },
       "study_protocol_type": {
+        "type": "string",
+        "analyzer": "keyword_ci",
+        "include_in_all": false
+      },
+      "study_subtype_code": {
         "type": "string",
         "analyzer": "keyword_ci",
         "include_in_all": false
