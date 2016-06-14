@@ -12,6 +12,8 @@ let logger = new Logger({name: "searcher"});
 
 const transformStringToKey = Utils.transformStringToKey;
 const DATE_FORMAT = "YYYY-MM-DD";
+const RESULT_SIZE_MAX = 50;
+const RESULT_SIZE_DEFAULT = 10;
 const searchPropsByType =
   Utils.getFlattenedMappingPropertiesByType(trialMapping["trial"]);
 
@@ -157,8 +159,8 @@ class Searcher {
   }
 
   _addSizeFromParams(body, q) {
-    q.size = q.size ? q.size : 10;
-    let size = q.size > 50 ? 50 : q.size;
+    q.size = q.size ? q.size : RESULT_SIZE_DEFAULT;
+    let size = q.size > RESULT_SIZE_MAX ? RESULT_SIZE_MAX : q.size;
     let from = q.from ? q.from : 0;
     body.size(size);
     body.from(from);
