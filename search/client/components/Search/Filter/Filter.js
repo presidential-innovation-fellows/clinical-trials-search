@@ -1,8 +1,13 @@
 import React, { Component } from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
+import FilterDate from './Date'
+import FilterSelect from './Select'
 import FilterSuggest from './Suggest'
+import FilterText from './Text'
+
 import Url from '../../../lib/Url';
+import ValidParams from '../../../lib/ValidParams';
 
 import './Filter.scss';
 
@@ -12,7 +17,9 @@ export default class extends Component {
     super();
 
     this.state = {
-      showFilters: false
+      showFilters: false,
+      selectedCategory: "primary",
+      validParamsByCategory: ValidParams.getParamsByCategory()
     }
 
     this.toggleFilters = this.toggleFilters.bind(this);
@@ -23,36 +30,58 @@ export default class extends Component {
     this.setState({ showFilters: !showFilters });
   }
 
-  render() {
-    let { showFilters } = this.state;
-    var filters;
-    if (showFilters) {
-      filters = (
-        <div>
-          <FilterSuggest paramField="sites.org.location" displayName="location" />
-          <FilterSuggest paramField="diseases.synonyms" displayName="disease" />
-          <FilterSuggest paramField="sites.org.name" displayName="hospital/center" />
-          <FilterSuggest paramField="sites.org.family" displayName="network/organization" />
-          <FilterSuggest paramField="anatomic_sites" displayName="anatomic site" />
-          <FilterSuggest paramField="arms.treatment" displayName="treatment" />
-          <div>TODO: filter select by status</div>
-          <div>TODO: filter slide by max age</div>
-          <div>TODO: filter select by gender</div>
-          <div>TODO: search by nci id</div>
-          <div>TODO: search by nct id</div>
-          <div>TODO: search by title</div>
-          <div>TODO: search anywhere in the trial (_all)</div>
-          <div>TODO: filter date by last updated</div>
-          <div>TODO: filter select by interventional model</div>
-          <div>TODO: filter select by masking?</div>
-          <div>TODO: filter select by phase</div>
-          <div>TODO: filter select by protocol type</div>
-          <div>TODO: filter select by primary purpose</div>
+  selectCategory(category) {
+    this.setState({ selectedCategory: category });
+  }
 
-          <div>add default search for open trials</div>
+  render() {
+    let { showFilters, selectedCategory, validParamsByCategory } = this.state;
+    let categories = Object.keys(validParamsByCategory);
+    let validParams = validParamsByCategory[selectedCategory];
+    let filters = Object.keys(validParams).map((paramKey) => {
+      let filterType = validParams[paramKey]["filter_type"];
+      let displayName = validParams[paramKey]["display_name"];
+      switch(filterType) {
+        case "date":
+          return (<FilterDate paramField={paramKey} displayName={displayName} />);
+        case "select":
+          return (<FilterSelect paramField={paramKey} displayName={displayName} />);
+        case "suggest":
+          return (<FilterSuggest paramField={paramKey} displayName={displayName} />);
+        case "text":
+          return (<FilterText paramField={paramKey} displayName={displayName} />);
+        default:
+          return;
+      };
+    });
+    var filterRender;
+    if (showFilters) {
+      filterRender = (
+        <div>
+          <div>
+            {categories.map((category, i) =>
+              <span className="filter-category-header">
+                <span className="filter-category-header-link" onClick={() => this.selectCategory(category)}>
+                  {category === selectedCategory ? "[ " : ""}
+                  {category}
+                  {category === selectedCategory ? " ]" : ""}
+                </span>
+                {i < categories.length - 1 ? " | " : ""}
+              </span>
+            )}
+          </div>
+          <div className="filters">
+            {filters}
+          </div>
         </div>
       );
     }
+    // <div>TODO: filter slide by max age</div>
+    // <div>add default search for open trials</div>
+    // <div>TODO: filter select by interventional model</div>
+    // <div>TODO: filter select by masking?</div>
+    // <div>TODO: filter select by protocol type</div>
+    // <div>TODO: search anywhere in the trial (_all)</div>
 
     return (
       <ReactCSSTransitionGroup
@@ -64,7 +93,7 @@ export default class extends Component {
           <div className="toggle-show-filter" onClick={this.toggleFilters} key={showFilters}>
             {showFilters ? "[-] hide filters" : "[+] show filters"}
           </div>
-          {filters}
+          {filterRender}
       </ReactCSSTransitionGroup>
     );
   }

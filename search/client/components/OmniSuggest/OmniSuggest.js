@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import fetch from 'isomorphic-fetch';
+import Fetch from 'isomorphic-fetch';
 import Autosuggest from 'react-autosuggest';
 import AutosuggestHighlight from 'autosuggest-highlight';
 import Similarity from 'string-similarity';
@@ -83,7 +83,7 @@ class OmniSuggest extends Component {
     this.setState({});
 
     let term = escapeRegexCharacters(value);
-    fetch(`http://localhost:3000/terms?term=${term}`)
+    Fetch(`http://localhost:3000/terms?term=${term}`)
       .then(response => response.json())
       .then((json) => {
         let suggestions = json.terms.map((suggestion) => {

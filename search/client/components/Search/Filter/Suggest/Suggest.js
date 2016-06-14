@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import fetch from 'isomorphic-fetch';
+import Fetch from 'isomorphic-fetch';
 import Autosuggest from 'react-autosuggest';
 import AutosuggestHighlight from 'autosuggest-highlight';
 import Similarity from 'string-similarity';
@@ -65,7 +65,7 @@ class Suggest extends Component {
 
     let term = escapeRegexCharacters(value);
     let {paramField} = this.props;
-    fetch(`http://localhost:3000/terms?term=${term}&term_type=${paramField}`)
+    Fetch(`http://localhost:3000/terms?term=${term}&term_type=${paramField}`)
       .then(response => response.json())
       .then((json) => {
         let suggestions = json.terms;
