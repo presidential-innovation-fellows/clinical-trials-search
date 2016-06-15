@@ -3,7 +3,7 @@ import React, { Component, PropTypes } from 'react';
 import Waypoint from 'react-waypoint';
 import Fetch from 'isomorphic-fetch';
 
-import ApiServer from '../../../lib/ApiServer.js';
+import ApiFetch from '../../../lib/ApiFetch.js';
 import ClinicalTrialResult from '../Result';
 import Link from '../../Link'
 import Location from '../../../lib/Location';
@@ -44,13 +44,7 @@ export default class extends Component {
       isLoading: true,
       query: queryCopy
     });
-    let url = `http://${ApiServer.host}/clinical-trials?${Url.stringifyParams(query)}`;
-    let token = btoa(`${ApiServer.username}:${ApiServer.password}`);
-    Fetch(url, {
-      "headers": {
-        "Authorization": `Basic ${token}`
-      }
-    })
+    ApiFetch(`clinical-trials?${Url.stringifyParams(query)}`)
       .then(response => response.json())
       .then((json) => {
         let numTrialsLoaded = from + size;

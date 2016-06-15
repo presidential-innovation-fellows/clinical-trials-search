@@ -54,3 +54,6 @@ ctrp_data_warehouse.sql
 nci_thesaurus.csv
 *.zip
 DW2.sql
+
+# PID files
+scripts/es/es_pid

@@ -1,10 +1,9 @@
 import React, { Component, PropTypes } from 'react';
-import Fetch from 'isomorphic-fetch';
 import Autosuggest from 'react-autosuggest';
 import AutosuggestHighlight from 'autosuggest-highlight';
 import Similarity from 'string-similarity';
 
-import ApiServer from '../../lib/ApiServer.js';
+import ApiFetch from '../../lib/ApiFetch.js';
 import Url from '../../lib/Url';
 
 import './OmniSuggest.scss';
@@ -84,12 +83,7 @@ class OmniSuggest extends Component {
     this.setState({});
 
     let term = escapeRegexCharacters(value);
-    let token = btoa(`${ApiServer.username}:${ApiServer.password}`);
-    Fetch(`http://${ApiServer.host}/terms?term=${term}`, {
-      "headers": {
-        "Authorization": `Basic ${token}`
-      }
-    })
+    ApiFetch(`terms?term=${term}`)
       .then(response => response.json())
       .then((json) => {
         let suggestions = json.terms.map((suggestion) => {

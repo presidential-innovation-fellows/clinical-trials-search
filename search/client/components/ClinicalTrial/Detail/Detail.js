@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Fetch from 'isomorphic-fetch';
 
-import ApiServer from '../../../lib/ApiServer.js';
+import ApiFetch from '../../../lib/ApiFetch.js';
 import Link from '../../Link';
 import Url from '../../../lib/Url';
 
@@ -26,12 +26,7 @@ export default class extends Component {
   componentDidMount() {
     let { id } = Url.getParams();
     this.setState({ id });
-    let token = btoa(`${ApiServer.username}:${ApiServer.password}`);
-    Fetch(`http://${ApiServer.host}/clinical-trial/${id}`, {
-      "headers": {
-        "Authorization": `Basic ${token}`
-      }
-    })
+    ApiFetch(`clinical-trial/${id}`)
       .then(response => response.json())
       .then((json) => {
         this.setState({
