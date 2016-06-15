@@ -12,17 +12,22 @@ export default class extends Component {
   };
 
   getTreatments(trial) {
-    let treatments = [];
+    let tHash = {};
     if (trial.arms) {
       trial.arms.forEach((arm) => {
-        if (arm.treatment) {
-          treatments.push({
-            display: arm.treatment,
-            link: `/clinical-trials?arms.interventions.treatment=${arm.treatment}`
-          });
-        }
+        arm.interventions.forEach((intervention) => {
+          if (intervention.treatment) {
+            tHash[intervention.treatment] = 1;
+          }
+        })
       });
     }
+    let treatments = Object.keys(tHash).map((treatment) => {
+      return {
+        display: treatment,
+        link: `/clinical-trials?arms.interventions.treatment=${treatment}`
+      };
+    });
     return treatments;
   }
 
