@@ -18,13 +18,13 @@ export default class extends Component {
     super();
     this.state = {
       id: null,
-      trial: null
+      trial: null,
+      isLoading: true
     };
   }
 
   componentDidMount() {
-    let { query } = Url.getParams();
-    let id = query.id
+    let { id } = Url.getParams();
     this.setState({ id });
     let token = btoa(`${ApiServer.username}:${ApiServer.password}`);
     Fetch(`http://${ApiServer.host}/clinical-trial/${id}`, {
@@ -35,13 +35,14 @@ export default class extends Component {
       .then(response => response.json())
       .then((json) => {
         this.setState({
-          trial: json
+          trial: json,
+          isLoading: false
         });
       });
   }
 
   render() {
-    let { id, trial } = this.state;
+    let { id, trial, isLoading } = this.state;
     if (trial) {
       return (
         <div className="clinical-trial-detail">
@@ -69,12 +70,16 @@ export default class extends Component {
           </div><br/><br/><br/>
         </div>
       );
-    } else {
+    } else if (!isLoading) {
       return (
         <div className="clinical-trial-detail">
           No trial with id {id} found.
         </div>
       );
+    } else {
+      return (
+        <div className="clinical-trial-detail"></div>
+      )
     }
   }
 
