@@ -29,7 +29,7 @@ class TermIndexerStream extends Writable {
   }
 
   _indexTerm(termDoc, done) {
-    let id = `${termDoc.term_key}_${termDoc.classification}`;
+    let id = `${termDoc.term_key}_${termDoc.term_type}`;
     this.logger.info(`Indexing term (${id}).`);
     this.termIndexer.indexDocument({
       "index": this.termIndexer.esIndex,
