@@ -22,13 +22,13 @@ sudo apt-get install python-pip
 sudo pip install csvkit
 
 # install elasticsearch
-wget -qO - https://packages.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
-echo "deb https://packages.elastic.co/elasticsearch/2.x/debian stable main" | sudo tee -a /etc/apt/sources.list.d/elasticsearch-2.x.list
-sudo apt-get update && sudo apt-get install elasticsearch
+wget https://download.elastic.co/elasticsearch/release/org/elasticsearch/distribution/deb/elasticsearch/2.3.3/elasticsearch-2.3.3.deb
+sudo dpkg -i elasticsearch-2.3.3.deb
 
 # install sshpass and unzip
 sudo apt-get install sshpass zip
 
+cd ../../common && npm install
 cd ../import/export_from_pg && npm install
 cd ../cleanse && npm install
 cd ../../search/api && npm install
