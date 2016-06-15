@@ -2,7 +2,7 @@
 set -e
 
 # download and import ctrp data warehouse drop
-cd import/import_into_pg/ctrp
+cd ../import/import_into_pg/ctrp
 ./download_ctrp.sh
 ./import_ctrp_into_pg.sh
 cd ../../..
