@@ -4,6 +4,7 @@ import Autosuggest from 'react-autosuggest';
 import AutosuggestHighlight from 'autosuggest-highlight';
 import Similarity from 'string-similarity';
 
+import ApiServer from '../../../../lib/ApiServer.js';
 import Url from '../../../../lib/Url';
 
 import './Suggest.scss';
@@ -65,7 +66,12 @@ class Suggest extends Component {
 
     let term = escapeRegexCharacters(value);
     let {paramField} = this.props;
-    Fetch(`http://localhost:3000/terms?term=${term}&term_type=${paramField}`)
+    let token = btoa(`${ApiServer.username}:${ApiServer.password}`);
+    Fetch(`http://${ApiServer.host}/terms?term=${term}&term_type=${paramField}`, {
+      "headers": {
+        "Authorization": `Basic ${token}`
+      }
+    })
       .then(response => response.json())
       .then((json) => {
         let suggestions = json.terms;

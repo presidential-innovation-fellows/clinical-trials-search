@@ -4,6 +4,7 @@ import Autosuggest from 'react-autosuggest';
 import AutosuggestHighlight from 'autosuggest-highlight';
 import Similarity from 'string-similarity';
 
+import ApiServer from '../../lib/ApiServer.js';
 import Url from '../../lib/Url';
 
 import './OmniSuggest.scss';
@@ -83,7 +84,12 @@ class OmniSuggest extends Component {
     this.setState({});
 
     let term = escapeRegexCharacters(value);
-    Fetch(`http://localhost:3000/terms?term=${term}`)
+    let token = btoa(`${ApiServer.username}:${ApiServer.password}`);
+    Fetch(`http://${ApiServer.host}/terms?term=${term}`, {
+      "headers": {
+        "Authorization": `Basic ${token}`
+      }
+    })
       .then(response => response.json())
       .then((json) => {
         let suggestions = json.terms.map((suggestion) => {
