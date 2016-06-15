@@ -1,11 +1,6 @@
 #!/bin/sh
 set -e
 
-# start postgres
-cd pg
-./start_postgres.sh
-cd ../..
-
 # download and import ctrp data warehouse drop
 cd import/import_into_pg/ctrp
 ./download_ctrp.sh
@@ -26,7 +21,3 @@ cd ../..
 cd search/index
 npm run index
 cd ../../
-
-# stop postgres
-cd scripts/pg
-./stop_postgres.sh
