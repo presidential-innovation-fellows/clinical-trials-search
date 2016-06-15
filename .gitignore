@@ -44,7 +44,7 @@ jspm_packages
 
 # Sensitive Info
 download_ctrp.sh
-api_server.js
+ApiServer.js
 
 # Large data files
 data/*
