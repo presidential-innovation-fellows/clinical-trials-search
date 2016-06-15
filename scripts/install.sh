@@ -17,10 +17,17 @@ sudo apt-get install -y nodejs
 # install postgres
 sudo apt-get install postgresql python-psycopg2 libpq-dev
 
+# install csvsql
+sudo apt-get install python-pip
+sudo pip install csvkit
+
 # install elasticsearch
 wget -qO - https://packages.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
 echo "deb https://packages.elastic.co/elasticsearch/2.x/debian stable main" | sudo tee -a /etc/apt/sources.list.d/elasticsearch-2.x.list
 sudo apt-get update && sudo apt-get install elasticsearch
+
+# install sshpass and unzip
+sudo apt-get install sshpass zip
 
 cd ../import/export_from_pg && npm install
 cd ../cleanse && npm install
