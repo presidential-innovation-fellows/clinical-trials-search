@@ -84,9 +84,11 @@ class Searcher {
   _addStringFilters(body, q) {
     const _addStringFilter = (field, filter) => {
       if(filter instanceof Array) {
+        let orBody = new Bodybuilder();
         filter.forEach((filterElement) => {
-          body.filter("term", field, filterElement.toLowerCase());
+          orBody.orFilter("term", field, filterElement.toLowerCase());
         });
+        body.filter("bool", "and", orBody.build("v2"));
       } else {
         body.filter("term", field, filter.toLowerCase());
       }
@@ -143,9 +145,11 @@ class Searcher {
         return string === "true" || string === "1";
       }
       if(filter instanceof Array) {
+        let orBody = new Bodybuilder();
         filter.forEach((filterEl) => {
-          body.filter("term", field, _stringToBool(filterEl));
+          orBody.orFilter("term", field, _stringToBool(filterEl));
         });
+        body.filter("bool", "and", orBody.build("v2"));
       } else {
         body.filter("term", field, _stringToBool(filter));
       }
