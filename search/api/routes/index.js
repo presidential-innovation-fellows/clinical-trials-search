@@ -1,5 +1,6 @@
 const _                   = require("lodash");
 const express             = require("express");
+const md                  = require("marked");
 const searcher            = require("../search/searcher");
 const Logger              = require('../../../common/logger');
 const Utils               = require("../../../common/utils");
@@ -18,7 +19,6 @@ router.get('/clinical-trial/:id', (req, res, next) => {
   searcher.getTrialById(id, (err, trial) => {
     // TODO: add better error handling
     if(err) {
-      req.log.error(err);
       return res.sendStatus(500);
     }
     res.json(trial);
@@ -62,7 +62,6 @@ router.get('/clinical-trials', (req, res, next) => {
   searcher.searchTrials(q, (err, trials) => {
     // TODO: add better error handling
     if(err) {
-      req.log.error(err);
       return res.sendStatus(500);
     }
     // TODO: format trials
@@ -78,11 +77,24 @@ router.get('/terms', (req, res, next) => {
   searcher.searchTerms(q, (err, terms) => {
     // TODO: add better error handling
     if(err) {
-      req.log.error(err);
       return res.sendStatus(500);
     }
     res.json(terms);
   });
+});
+
+router.get('/clinical-trial.json', (req, res, next) => {
+  let clinicalTrialJson = Utils.omitPrivateKeys(trialMapping);
+  let excludeKeys = [
+    "analyzer", "index",
+    "format", "include_in_root"
+  ]
+  clinicalTrialJson = Utils.omitDeepKeys(clinicalTrialJson, excludeKeys);
+  res.json(clinicalTrialJson["trial"]["properties"]);
+});
+
+router.get('/', (req, res, next) => {
+  res.render('index', { md });
 });
 
 const respondInvalidQuery = (res) => {
