@@ -88,7 +88,7 @@ class Suggest extends Component {
     });
   }
 
-  gotoSearch(event, params) {
+  addSearchParam(event, params) {
     Url.addParams({ path: "/clinical-trials", params });
     this.setState({
       value: ""
@@ -100,8 +100,13 @@ class Suggest extends Component {
     let { value, suggestions } = this.state;
     let { paramField } = this.props;
     let params = {};
-    params[paramField] = value;
-    return this.gotoSearch(event, params);
+    // params[paramField] = value;
+    let searchValue = value;
+    if (suggestions && suggestions[0] && suggestions[0].term) {
+      searchValue = suggestions[0].term;
+    }
+    params[paramField] = searchValue;
+    return this.addSearchParam(event, params);
   }
 
   onSuggestionSelected(event, { suggestion, suggestionValue }) {
@@ -109,7 +114,7 @@ class Suggest extends Component {
       let { term_type, term } = suggestion;
       let params = {};
       params[term_type] = term;
-      this.gotoSearch(event, params);
+      this.addSearchParam(event, params);
     }
   }
 

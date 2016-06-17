@@ -1,5 +1,3 @@
-Filter out private fields
-Add ability to include/exclude fields
 
 Write cron for update
 Install some sort of error monitoring / Integrate with pingdom (or some other service)
@@ -11,3 +9,5 @@ Alter schema using feedback provided
 Write email regarding things we could change / things we couldn't
 
 update date all/any fields
+
+look into biospecimen...

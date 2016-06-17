@@ -115,7 +115,7 @@ export default class extends Component {
     } else {
       return (
         <div className="clinical-trials">
-          No result found. <a href="/" onClick={Link.handleClick}>Start a new search?</a>
+          No results found. <a href="/" onClick={Link.handleClick}>Start a new search?</a>
         </div>
       )
     }

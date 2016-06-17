@@ -69,10 +69,8 @@ export default class extends Component {
         <div>
           <b>Treatment{treatments.length > 1 ? "s" : ""}:</b>{" "}
           {treatments.map((treatment, i) =>
-            <span key={i}>
-              <a href={treatment.link} onClick={Link.handleClick}>
-                {treatment.display}
-              </a>
+            <span key={treatment.display}>
+              {treatment.display}
               {i < treatments.length - 1 ? ", " : ""}
             </span>
           )}
