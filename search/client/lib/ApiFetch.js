@@ -4,7 +4,7 @@ import ApiServer from './ApiServer';
 function ApiFetch(endpointQuery) {
 
   var opt;
-  
+
   if(ApiServer.username && ApiServer.password) {
     const token = btoa(`${ApiServer.username}:${ApiServer.password}`);
     opt = {
@@ -14,7 +14,7 @@ function ApiFetch(endpointQuery) {
     };
   }
 
-  return fetch(`http://${ApiServer.host}/${endpointQuery}`, opt);
+  return fetch(`${ApiServer.host}/${endpointQuery}`, opt);
 
 };
 
