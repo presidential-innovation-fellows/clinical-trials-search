@@ -44,10 +44,9 @@ const _getInvalidTrialQueryParams = (queryParams) => {
   });
 }
 
-/* get clinical trials that match supplied search criteria */
-router.get('/clinical-trials', (req, res, next) => {
+const queryClinicalTrialsAndSendResponse = (q, res, next) => {
+  let queryParams = Object.keys(q);
   // validate query params...
-  queryParams = Object.keys(req.query);
   let invalidParams = _getInvalidTrialQueryParams(queryParams);
   if (invalidParams.length > 0) {
     let error = {
@@ -58,8 +57,6 @@ router.get('/clinical-trials', (req, res, next) => {
     return res.status(400).send(error);
   }
 
-  let q = req.query;
-
   searcher.searchTrials(q, (err, trials) => {
     // TODO: add better error handling
     if(err) {
@@ -67,7 +64,18 @@ router.get('/clinical-trials', (req, res, next) => {
     }
     // TODO: format trials
     res.json(trials);
-  })
+  });
+}
+
+/* get clinical trials that match supplied search criteria */
+router.get('/clinical-trials', (req, res, next) => {
+  let q = req.query;
+  queryClinicalTrialsAndSendResponse(q, res, next);
+});
+
+router.post('/clinical-trials', (req, res, next) => {
+  let q = req.body;
+  queryClinicalTrialsAndSendResponse(q, res, next);
 });
 
 /* get key terms that can be used to search through clinical trials */
@@ -95,7 +103,8 @@ router.get('/clinical-trial.json', (req, res, next) => {
 });
 
 router.get('/', (req, res, next) => {
-  res.render('index', { md });
+  let title = "NCI Clinical Trials API";
+  res.render('index', { md, title });
 });
 
 const respondInvalidQuery = (res) => {
