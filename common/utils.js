@@ -55,6 +55,17 @@ class Utils {
     return props;
   }
 
+  static omitDeepKeys(collection, excludeKeys) {
+    const omitFn = (value) => {
+      if (value && typeof value === 'object') {
+        excludeKeys.forEach((key) => {
+          delete value[key];
+        });
+      }
+    }
+    return _.cloneDeepWith(collection, omitFn);
+  }
+
   static omitPrivateKeys(collection) {
     const omitFn = (value) => {
       if (value && typeof value === 'object') {
