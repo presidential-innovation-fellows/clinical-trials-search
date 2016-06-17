@@ -1,3 +1,4 @@
+const _                           = require("lodash");
 const latinize                    = require("latinize");
 
 class Utils {
@@ -52,6 +53,19 @@ class Utils {
 
     _recurseMappingTree(mapping, []);
     return props;
+  }
+
+  static omitPrivateKeys(collection) {
+    const omitFn = (value) => {
+      if (value && typeof value === 'object') {
+        Object.keys(value).forEach((key) => {
+          if (key[0] === "_") {
+            delete value[key];
+          }
+        });
+      }
+    }
+    return _.cloneDeepWith(collection, omitFn);
   }
 
 }

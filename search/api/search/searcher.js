@@ -45,6 +45,8 @@ class Searcher {
       body.query("match", "nct_id", id);
 
     let query = body.build("v2");
+    // logger.info(query);
+
     return query;
   }
 
@@ -64,9 +66,8 @@ class Searcher {
       if(!res.hits || !res.hits.hits || !res.hits.hits[0]) {
         return callback(null, {});
       }
-      // TODO: format
-      let formattedRes = res.hits.hits[0]._source;
-      return callback(null, formattedRes);
+      let trial = Utils.omitPrivateKeys(res.hits.hits[0]._source);
+      return callback(null, trial);
     });
   }
 
@@ -170,6 +171,32 @@ class Searcher {
     body.from(from);
   }
 
+  _addIncludeExclude(body, q) {
+    let include = q.include;
+    let exclude = q.exclude;
+
+    const _enforceArray = (obj) => {
+      if (!(obj instanceof Array)) {
+        if (typeof(obj) === "string") {
+          return [obj];
+        } else {
+          return [];
+        }
+      } else {
+        return obj;
+      }
+    };
+
+    if (include || exclude) {
+      include = _enforceArray(include);
+      exclude = _enforceArray(exclude);
+      let _source = {};
+      if (include) _source.include = include;
+      if (exclude) _source.exclude = exclude;
+      body.rawOption("_source", _source);
+    }
+  }
+
   _searchTrialsQuery(q) {
     let body = new Bodybuilder();
 
@@ -178,6 +205,7 @@ class Searcher {
     this._addRangeFilters(body, q);
     this._addBooleanFilters(body, q);
     this._addSizeFromParams(body, q);
+    this._addIncludeExclude(body, q);
 
     let query = body.build("v2");
     // logger.info(query);
@@ -197,11 +225,15 @@ class Searcher {
         return callback(err);
       }
       // return callback(null, res);
-      let formattedRes = {
-        total: res.hits.total,
-        trials: _.map(res.hits.hits, (hit) => {
+      let trials = Utils.omitPrivateKeys(
+        _.map(res.hits.hits, (hit) => {
           return hit._source;
         })
+      );
+
+      let formattedRes = {
+        total: res.hits.total,
+        trials: trials
       }
       return callback(null, formattedRes);
     });

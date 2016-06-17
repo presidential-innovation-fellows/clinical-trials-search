@@ -1,5 +1,5 @@
-
-Remove TREE `lead_disease_indicator` from disease
+Filter out private fields
+Add ability to include/exclude fields
 
 Write cron for update
 Install some sort of error monitoring / Integrate with pingdom (or some other service)
@@ -9,7 +9,5 @@ Upgrade to jsonapi spec (https://github.com/holidayextras/jsonapi-server)
 Write tests
 Alter schema using feedback provided
 Write email regarding things we could change / things we couldn't
-
-Investigate drop in cts to < 2000 (active as of june 15 2015?)
 
 update date all/any fields
