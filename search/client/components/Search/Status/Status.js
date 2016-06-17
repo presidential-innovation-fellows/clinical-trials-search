@@ -3,20 +3,14 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 import StatusItem from './StatusItem';
 import Url from '../../../lib/Url';
+import ValidParams from '../../../lib/ValidParams';
 
 import './Status.scss';
 
 export default class extends Component {
 
   _getDisplayType(type) {
-    return {
-      "diseases.synonyms": "disease",
-      "sites.org.location": "location",
-      "sites.org.name": "hospital/center",
-      "sites.org.family": "network/organization",
-      "anatomic_sites": "anatomic site",
-      "arms.interventions.treatment": "treatment"
-    }[type];
+    return ValidParams.getParamsByKey()[type]["display_name"].toLowerCase();
   }
 
   getFieldStatuses() {

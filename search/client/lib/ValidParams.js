@@ -1,10 +1,10 @@
 const params = [{
-    "param_key": "diseases.synonyms",
+    "param_key": "_diseases",
     "display_name": "Disease",
     "filter_type": "suggest",
     "category": "primary"
   }, {
-    "param_key": "sites.org.location",
+    "param_key": "_locations",
     "display_name": "Location",
     "filter_type": "suggest",
     "category": "primary"
@@ -24,13 +24,18 @@ const params = [{
     "filter_type": "select",
     "category": "primary"
   }, {
-    "param_key": "arms.interventions.treatment",
+    "param_key": "_treatments",
     "display_name": "Treatment",
     "filter_type": "suggest",
     "category": "primary"
   }, {
     "param_key": "arms.intervention_type",
     "display_name": "Treatment Type",
+    "filter_type": "select",
+    "category": "primary"
+  }, {
+    "param_key": "arms.intervention_name",
+    "display_name": "Treatment Name",
     "filter_type": "select",
     "category": "primary"
   }, {
@@ -115,6 +120,21 @@ class ValidParams {
       };
     });
     return paramsByCategory;
+  }
+
+  static getParamsByKey() {
+    let paramsByKey = {};
+    params.forEach((param) => {
+      if (!paramsByKey[param["param_key"]]) {
+        paramsByKey[param["param_key"]] = {};
+      }
+      paramsByKey[param["param_key"]] = {
+        display_name: param.display_name,
+        filter_type: param.filter_type,
+        category: param.category
+      };
+    });
+    return paramsByKey;
   }
 
 };

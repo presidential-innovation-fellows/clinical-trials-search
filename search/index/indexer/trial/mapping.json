@@ -86,12 +86,6 @@
               }
             }
           }
-          ,
-          "treatment": {
-            "type": "string",
-            "analyzer": "keyword_ci",
-            "include_in_all": false
-          }
         }
       },
       "associated_studies": {
@@ -252,52 +246,43 @@
         "type": "nested",
         "include_in_root": true,
         "properties": {
-          "date_last_created": {
-            "type": "date",
-            "format": "strict_date_optional_time||epoch_millis",
-            "index": "not_analyzed",
-            "include_in_all": false
-          },
-          "date_last_updated": {
-            "type": "date",
-            "format": "strict_date_optional_time||epoch_millis",
-            "index": "not_analyzed",
-            "include_in_all": false
-          },
-          "disease_code": {
-            "type": "string",
-            "analyzer": "keyword_ci",
-            "include_in_all": false
-          },
-          "disease_menu_display_name": {
-            "type": "string",
-            "analyzer": "keyword_ci",
-            "include_in_all": false
-          },
-          "disease_preferred_name": {
-            "type": "string",
-            "analyzer": "keyword_ci",
-            "include_in_all": false
-          },
-          "lead_disease_indicator": {
-            "type": "string",
-            "analyzer": "keyword_ci",
-            "include_in_all": false
-          },
-          "nci_thesaurus_concept_id": {
-            "type": "string",
-            "analyzer": "keyword_ci",
-            "include_in_all": false
-          },
-          "parent_nci_thesarus_concept_ids": {
-            "type": "string",
-            "analyzer": "keyword_ci",
-            "include_in_all": true
-          },
-          "synonyms": {
-            "type": "string",
-            "analyzer": "keyword_ci",
-            "include_in_all": true
+          "disease": {
+            "type": "nested",
+            "include_in_root": true,
+            "properties": {
+              "id": {
+                "type": "string",
+                "analyzer": "keyword_ci",
+                "include_in_all": false
+              },
+              "display_name": {
+                "type": "string",
+                "analyzer": "keyword_ci",
+                "include_in_all": false
+              },
+              "lead_disease_indicator": {
+                "type": "string",
+                "analyzer": "keyword_ci",
+                "include_in_all": false
+              },
+              "_synonyms": {
+                "type": "string",
+                "analyzer": "keyword_ci",
+                "include_in_all": false
+              },
+              "date_last_created": {
+                "type": "date",
+                "format": "strict_date_optional_time||epoch_millis",
+                "index": "not_analyzed",
+                "include_in_all": false
+              },
+              "date_last_updated": {
+                "type": "date",
+                "format": "strict_date_optional_time||epoch_millis",
+                "index": "not_analyzed",
+                "include_in_all": false
+              }
+            }
           }
         }
       },
@@ -551,11 +536,6 @@
                 "analyzer": "keyword_ci",
                 "include_in_all": false
               },
-              "change_request_count": {
-                "type": "long",
-                "index": "not_analyzed",
-                "include_in_all": false
-              },
               "city": {
                 "type": "string",
                 "analyzer": "keyword_ci",
@@ -579,11 +559,6 @@
               "fax": {
                 "type": "string",
                 "index": "not_analyzed",
-                "include_in_all": false
-              },
-              "location": {
-                "type": "string",
-                "analyzer": "keyword_ci",
                 "include_in_all": false
               },
               "name": {
@@ -679,6 +654,21 @@
         "include_in_all": false
       },
       "study_subtype_code": {
+        "type": "string",
+        "analyzer": "keyword_ci",
+        "include_in_all": false
+      },
+      "_locations": {
+        "type": "string",
+        "analyzer": "keyword_ci",
+        "include_in_all": false
+      },
+      "_treatments": {
+        "type": "string",
+        "analyzer": "keyword_ci",
+        "include_in_all": false
+      },
+      "_diseases": {
         "type": "string",
         "analyzer": "keyword_ci",
         "include_in_all": false

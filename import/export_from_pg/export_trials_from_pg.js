@@ -38,7 +38,8 @@ class TransformTrialStream extends Transform {
 
   _createLocations(trial) {
     if (!trial.sites) { return; }
-    trial.sites = trial.sites.map((site) => {
+    let locations = {};
+    trial.sites.forEach((site) => {
       let org = site.org;
       let location = _.compact([
         org.city,
@@ -46,26 +47,66 @@ class TransformTrialStream extends Transform {
         org.country
       ]).join(", ");
       if (location) {
-        site.org.location = location;
+        locations[location] = 1;
       }
-      return site;
     });
+    trial._locations = Object.keys(locations);
   }
 
   _createTreatments(trial) {
     if (!trial.arms) { return; }
-    trial.arms = trial.arms.map((arm) => {
-      arm.interventions = arm.interventions.map((intervention) => {
+    let treatments = {};
+    trial.arms.forEach((arm) => {
+      arm.interventions.forEach((intervention) => {
         let treatment = intervention.intervention_name;
         if (treatment) {
           if (intervention.intervention_type) {
             treatment += ` (${intervention.intervention_type})`;
-            intervention.treatment = treatment;
           }
+          treatments[treatment] = 1;
         }
-        return intervention
       });
-      return arm;
+    });
+    trial._treatments = Object.keys(treatments);
+  }
+
+  _createDiseases(trial) {
+    if (!trial.diseases) { return; }
+    let diseases = {};
+    trial.diseases.forEach((disease) => {
+      if (disease.disease) {
+        let d = disease.disease;
+        d.synonyms.forEach((synonym) => {
+          diseases[synonym] = 1;
+        });
+      }
+      if (disease.parents) {
+        disease.parents.forEach((c) => {
+          c.synonyms.forEach((synonym) => {
+            diseases[synonym] = 1;
+          })
+        });
+      }
+    });
+    trial._diseases = Object.keys(diseases);
+  }
+
+  _modifyDiseaseFields(trial) {
+    if (!trial.diseases) { return; }
+    trial.diseases = trial.diseases.map((disease) => {
+      if (disease.disease) {
+        if (disease.disease.synonyms) {
+          disease.disease._synonyms = _.clone(disease.disease.synonyms);
+          delete disease.disease.synonyms;
+        }
+        if (disease.disease.parents) {
+          delete disease.disease.parents;
+        }
+      }
+      if (disease.parents) {
+        delete disease.parents;
+      }
+      return disease;
     });
   }
 
@@ -76,7 +117,7 @@ class TransformTrialStream extends Transform {
 
     const _addDateToArr = (stringDate) => {
       let momentDate = moment(stringDate);
-      if(stringDate && momentDate.isValid()) updateDates.push(momentDate);
+      if (stringDate && momentDate.isValid()) updateDates.push(momentDate);
     }
 
     [
@@ -84,18 +125,19 @@ class TransformTrialStream extends Transform {
       trial.date_last_created, trial.date_last_updated
     ].forEach(_addDateToArr);
 
-    if(trial.diseases) {
+    if (trial.diseases) {
       trial.diseases.forEach((disease) => {
-        [
-          disease.date_last_created, disease.date_last_updated
-        ].forEach(_addDateToArr);
+        if (disease.disease) {
+          let d = disease.disease;
+          [d.date_last_created, d.date_last_updated].forEach(_addDateToArr);
+        }
       });
     }
 
-    if(trial.sites) {
+    if (trial.sites) {
       trial.sites.forEach((site) => {
         _addDateToArr(site.recruitment_status_date);
-        if(site.org) {
+        if (site.org) {
           _addDateToArr(site.org.status_date);
         }
       });
@@ -109,6 +151,8 @@ class TransformTrialStream extends Transform {
   _transform(trial, enc, next) {
     this._createLocations(trial);
     this._createTreatments(trial);
+    this._createDiseases(trial);
+    this._modifyDiseaseFields(trial);
     this._addDateLastUpdatedAnythingField(trial);
     logger.info(`Exporting trial with nci_id (${trial.nci_id}) to stream...`);
     this.push(trial);
@@ -121,7 +165,7 @@ class TransformTrialStream extends Transform {
 const CONN_STRING = "postgres://localhost:5432/ctrp-data-warehouse";
 let client = new pg.Client(CONN_STRING);
 client.connect((err) => {
-  if(err) {
+  if (err) {
     logger.error(err);
     throw err;
   };

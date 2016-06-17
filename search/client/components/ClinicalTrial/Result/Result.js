@@ -16,8 +16,12 @@ export default class extends Component {
     if (trial.arms) {
       trial.arms.forEach((arm) => {
         arm.interventions.forEach((intervention) => {
-          if (intervention.treatment) {
-            tHash[intervention.treatment] = 1;
+          let treatment = intervention.intervention_name;
+          if (treatment) {
+            if (intervention.intervention_type) {
+              treatment += ` (${intervention.intervention_type})`;
+            }
+            tHash[treatment] = 1;
           }
         })
       });
@@ -25,15 +29,29 @@ export default class extends Component {
     let treatments = Object.keys(tHash).map((treatment) => {
       return {
         display: treatment,
-        link: `/clinical-trials?arms.interventions.treatment=${treatment}`
+        link: `/clinical-trials?_treatments=${treatment}`
       };
     });
     return treatments;
   }
 
+  getDiseases(trial) {
+    let dHash = {};
+    if (trial.diseases) {
+      trial.diseases.forEach((disease) => {
+        let d = disease.disease;
+        if (d) {
+          dHash[d.display_name] = 1;
+        }
+      });
+    }
+    return Object.keys(dHash);
+  }
+
   render() {
     const { trial, children } = this.props;
     let treatments = this.getTreatments(trial);
+    let diseases = this.getDiseases(trial);
 
     return (
       <div key={trial.nci_id} className="clinical-trial-result">
@@ -60,11 +78,11 @@ export default class extends Component {
           )}
         </div>
         <div>
-          <b>Condition{trial.diseases.length > 1 ? "s" : ""}:</b>{" "}
-          {trial.diseases.slice(0,3).map((disease, i) =>
-            <span key={`${trial.nci_id} ${disease.disease_menu_display_name}`}>
-              <span>{disease.disease_menu_display_name}</span>
-              {i < 2 ? ", " : ""}
+          <b>Disease{diseases.length > 1 ? "s" : ""}:</b>{" "}
+          {diseases.map((disease, i) =>
+            <span key={disease}>
+              <span>{disease}</span>
+              {i < diseases.length - 1 ? ", " : ""}
             </span>
           )}
         </div>

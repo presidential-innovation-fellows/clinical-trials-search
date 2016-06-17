@@ -213,11 +213,11 @@ class Searcher {
 
   get TERM_TYPE_DEFAULTS() {
     return [
-      "diseases.synonyms",
-      "sites.org.location",
+      "_diseases",
+      "_locations",
       "sites.org.name",
       "sites.org.family",
-      "arms.interventions.treatment"
+      "_treatments"
     ];
   }
 

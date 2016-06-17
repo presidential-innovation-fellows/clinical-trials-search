@@ -7,13 +7,17 @@ let logger = new Logger({name: "term-loader"});
 
 class TermLoader {
 
+  static get DISEASE_BOOST_FACTOR() {
+    return 10;
+  }
+
   static get VALID_TERM_TYPES() {
     return [
-      "diseases.synonyms",
-      "sites.org.location",
+      "_diseases",
+      "_locations",
       "sites.org.name",
       "sites.org.family",
-      "arms.interventions.treatment",
+      "_treatments",
       "anatomic_sites"
     ]
   }
@@ -79,14 +83,15 @@ class TermLoader {
 
   _loadTermsFromTrialForTermType(trial, termType) {
     /*
-      Produces this.terms = {
+      Produces this.terms[termType] = {
         term_one: {
           count: 10,
           terms: {
             "Term One": 26,
             "term one": 14
           }
-        }
+        },
+        ...
       }
     */
 

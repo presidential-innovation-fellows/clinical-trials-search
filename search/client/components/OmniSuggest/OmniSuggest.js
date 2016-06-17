@@ -5,6 +5,7 @@ import Similarity from 'string-similarity';
 
 import ApiFetch from '../../lib/ApiFetch.js';
 import Url from '../../lib/Url';
+import ValidParams from '../../lib/ValidParams';
 
 import './OmniSuggest.scss';
 
@@ -28,14 +29,12 @@ function renderSuggestion(suggestion, { value, valueBeforeUpDown }) {
   const matches = AutosuggestHighlight.match(suggestionText, query);
   const parts = AutosuggestHighlight.parse(suggestionText, matches);
 
-  let termTypeText = {
-    "diseases.synonyms": "disease",
-    "sites.org.location": "location",
-    "sites.org.name": "hospital/center",
-    "sites.org.family": "network/organization",
-    "anatomic_sites": "anatomic site",
-    "arms.interventions.treatment": suggestion.sub_type ? `treatment - ${suggestion.sub_type.toLowerCase()}` : `treatment`
-  }[suggestion.term_type];
+  let termTypeText = ValidParams
+    .getParamsByKey()[suggestion.term_type]["display_name"].toLowerCase();
+  // override treatment
+  if (termTypeText === "treatment") {
+    termTypeText = suggestion.sub_type ? `treatment - ${suggestion.sub_type.toLowerCase()}` : `treatment`;
+  }
 
   return (
     <span className={'suggestion-content ' + suggestion.term_type}>

@@ -1,4 +1,4 @@
-Fix client
+
 Remove TREE `lead_disease_indicator` from disease
 
 Write cron for update
@@ -11,3 +11,5 @@ Alter schema using feedback provided
 Write email regarding things we could change / things we couldn't
 
 Investigate drop in cts to < 2000 (active as of june 15 2015?)
+
+update date all/any fields
