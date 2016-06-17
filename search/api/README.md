@@ -37,11 +37,13 @@ Same as the `GET` endpoint, but allows you to craft a JSON body as the request.
 Example:
 
 ```
-curl -XPOST 'http://localhost:3000/clinical-trials' -H 'Content-Type: application/json' -d '{
-  "sites.org.state_or_province": ["CA", "OR"],
-  "date_last_updated_anything_gte": "2016-06-01",
-  "include": ["nci_id"]
-}'
+curl -XPOST 'https://clinicaltrialsapi.cancer.gov/clinical-trials' \
+     -H 'Content-Type: application/json' \
+     -d '{
+        "sites.org.state_or_province": ["CA", "OR"],
+        "date_last_updated_anything_gte": "2016-06-01",
+        "include": ["nci_id"]
+      }'
 ```
 
 ## Fetching Daily Updates
