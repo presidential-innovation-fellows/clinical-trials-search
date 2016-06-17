@@ -86,7 +86,7 @@ class OmniSuggest extends Component {
       .then(response => response.json())
       .then((json) => {
         let suggestions = json.terms.map((suggestion) => {
-          if (suggestion.term_type === "arms.interventions.treatment") {
+          if (suggestion.term_type === "_treatments") {
             let {term, subType} = extractSubTypeFromTerm(suggestion.term);
             suggestion.term = term;
             suggestion.sub_type = subType;
