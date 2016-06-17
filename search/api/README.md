@@ -31,6 +31,19 @@ Example: [/clinical-trials?date_last_updated_anything_gte=2016-06-16](/clinical-
 
 If you are crafting more complicated queries, it might be best to use the `POST` endpoint of the same name.
 
+### POST /clinical-trials
+Same as the `GET` endpoint, but allows you to craft a JSON body as the request.
+
+Example:
+
+```
+curl -XPOST 'http://localhost:3000/clinical-trials' -H 'Content-Type: application/json' -d '{
+  "sites.org.state_or_province": ["CA", "OR"],
+  "date_last_updated_anything_gte": "2016-06-01",
+  "include": ["nci_id"]
+}'
+```
+
 ## Fetching Daily Updates
 
 Updates to the API are made daily (with future plans to make updates in realtime). Although the API does not do a `diff` to track changes, it is possible to query the `date_last_updated_anything` field for any clinical trials that have been updated. This field uses all other `date` fields which track changes in a clinical trial (and selects the latest/max `date` value). For example, if you wish to see which clinical trials have changed in any way since 2016-06-16...
