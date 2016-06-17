@@ -40,6 +40,15 @@ export default class extends Component {
     let queryCopy = Url.getParams();
     query.size = size;
     query.from = from;
+    query.include = [
+      "nci_id",
+      "brief_title",
+      "current_trial_status",
+      "phase",
+      "arms.interventions.intervention_name",
+      "arms.interventions.intervention_type",
+      "diseases.disease.display_name"
+    ]
     this.setState({
       isLoading: true,
       query: queryCopy
