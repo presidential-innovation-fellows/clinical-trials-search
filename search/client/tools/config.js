@@ -141,7 +141,12 @@ const appConfig = merge({}, config, {
       ...config.module.loaders,
       {
         test: /\.scss$/,
-        loaders: ['style-loader', 'css-loader', 'postcss-loader?parser=postcss-scss'],
+        loaders: [
+          'style-loader',
+          'css-loader',
+          'sass-loader',
+          'postcss-loader?parser=postcss-scss'
+        ],
       },
     ],
   },
