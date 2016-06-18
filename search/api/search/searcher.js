@@ -12,8 +12,10 @@ let logger = new Logger({name: "searcher"});
 
 const transformStringToKey = Utils.transformStringToKey;
 const DATE_FORMAT = "YYYY-MM-DD";
-const RESULT_SIZE_MAX = 50;
-const RESULT_SIZE_DEFAULT = 10;
+const TRIAL_RESULT_SIZE_MAX = 50;
+const TRIAL_RESULT_SIZE_DEFAULT = 10;
+const TERM_RESULT_SIZE_MAX = 100;
+const TERM_RESULT_SIZE_DEFAULT = 5;
 const searchPropsByType =
   Utils.getFlattenedMappingPropertiesByType(trialMapping["trial"]);
 
@@ -164,8 +166,8 @@ class Searcher {
   }
 
   _addSizeFromParams(body, q) {
-    q.size = q.size ? q.size : RESULT_SIZE_DEFAULT;
-    let size = q.size > RESULT_SIZE_MAX ? RESULT_SIZE_MAX : q.size;
+    q.size = q.size ? q.size : TRIAL_RESULT_SIZE_DEFAULT;
+    let size = q.size > TRIAL_RESULT_SIZE_MAX ? TRIAL_RESULT_SIZE_MAX : q.size;
     let from = q.from ? q.from : 0;
     body.size(size);
     body.from(from);
@@ -254,6 +256,7 @@ class Searcher {
   }
 
   _searchTermsQuery(q) {
+    // TODO: use BodyBuilder more
     let body = new Bodybuilder();
 
     // add query terms (boost when phrase is matched)
@@ -295,10 +298,16 @@ class Searcher {
     }];
     functionQuery.boost_mode = "multiply";
 
+    // set the size, from
+    let size = q.size || TERM_RESULT_SIZE_DEFAULT;
+    size = size > TERM_RESULT_SIZE_MAX ? TERM_RESULT_SIZE_MAX : size;
+    let from = q.from ? q.from : 0;
+
     // finalize the query
     let query = {
       "query": { "function_score": functionQuery },
-      "size": 5
+      "size": size,
+      "from": from
     };
 
     // logger.info(query);

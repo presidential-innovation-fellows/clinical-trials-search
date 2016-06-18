@@ -80,9 +80,8 @@ router.post('/clinical-trials', (req, res, next) => {
 
 /* get key terms that can be used to search through clinical trials */
 router.get('/terms', (req, res, next) => {
-  let { term, term_type } = req.query;
+  let q = _.pick(req.query, ["term", "term_type", "size", "from"]);
 
-  let q = { term, term_type };
   searcher.searchTerms(q, (err, terms) => {
     // TODO: add better error handling
     if(err) {
