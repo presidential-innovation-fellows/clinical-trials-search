@@ -161,7 +161,8 @@ class OmniSuggest extends Component {
     const inputProps = {
       placeholder: 'enter a disease, location, organization, or treatment',
       value,
-      onChange: this.onChange
+      onChange: this.onChange,
+      autoFocus: true
     };
 
     return (
