@@ -127,8 +127,11 @@ class Suggest extends Component {
   }
 
   render() {
+    const { paramField, displayName } = this.props;
     const { value, suggestions } = this.state;
+    const htmlId = paramField.split(".").join("-");
     const inputProps = {
+      id: htmlId,
       placeholder: `filter by ${this.props.displayName}`,
       value,
       onChange: this.onChange
@@ -137,7 +140,9 @@ class Suggest extends Component {
     return (
       <div className="filter-suggest">
         <form onSubmit={this.onSubmit}>
-          <Autosuggest suggestions={suggestions}
+          <label htmlFor={htmlId}>{displayName}</label>
+          <Autosuggest id={`suggest-${htmlId}`}
+                       suggestions={suggestions}
                        onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
                        onSuggestionSelected={this.onSuggestionSelected}
                        getSuggestionValue={getSuggestionValue}

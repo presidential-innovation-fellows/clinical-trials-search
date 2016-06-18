@@ -167,7 +167,8 @@ class OmniSuggest extends Component {
     return (
       <div className="omni-suggest">
         <form onSubmit={this.onSubmit}>
-          <Autosuggest suggestions={suggestions}
+          <Autosuggest id="omni-search"
+                       suggestions={suggestions}
                        onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
                        onSuggestionSelected={this.onSuggestionSelected}
                        getSuggestionValue={getSuggestionValue}

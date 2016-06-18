@@ -40,7 +40,7 @@ export default class extends Component {
     let validParams = validParamsByCategory[selectedCategory];
     let filters = Object.keys(validParams).map((paramKey) => {
       let filterType = validParams[paramKey]["filter_type"];
-      let displayName = validParams[paramKey]["display_name"];
+      let displayName = validParams[paramKey]["display_name"].toLowerCase();
       switch(filterType) {
         case "date":
           return (<FilterDate paramField={paramKey} displayName={displayName} />);

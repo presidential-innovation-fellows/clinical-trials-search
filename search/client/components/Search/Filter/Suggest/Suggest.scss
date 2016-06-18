@@ -2,6 +2,16 @@
 
 .filter-suggest {
 
+  margin-bottom: 10px;
+
+  label {
+    font-size: 14px;
+  }
+
+  input {
+    margin-top: 4px;
+  }
+
   .filter-suggest-highlight {
     // color: #ee0000;
     font-weight: bold;
