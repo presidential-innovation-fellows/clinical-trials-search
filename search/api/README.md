@@ -3,14 +3,14 @@
 
 ## Endpoints
 
-### GET /clinical-trial/$id
+### `GET /clinical-trial/<id>`
 Retrieves the clinical trial with supplied `nci_id` or `nct_id`. [All fields](/clinical-trial.json) (including nested ones) are returned.
 
 Examples:
 * [/clinical-trial/NCT02194738](/clinical-trial/NCT02194738)
 * [/clinical-trial/NCI-2014-01509](/clinical-trial/NCI-2014-01509)
 
-### GET /clinical-trials?$filter_params
+### `GET /clinical-trials?<filter_params>`
 Filters all clinical trials based upon supplied filter params. Filter params may be any of the [fields in the schema](/clinical-trial.json) as well as any of the following params...
 
 `size`: limit the amount of results a supplied amount (default is 10, max is 50)
@@ -41,7 +41,7 @@ Example: [/clinical-trials?date_last_updated_anything_gte=2016-06-16](/clinical-
 
 If you are crafting more complicated queries, it might be best to use the `POST` endpoint of the same name.
 
-### POST /clinical-trials
+### `POST /clinical-trials`
 Same as the `GET` endpoint, but allows you to craft a JSON body as the request.
 
 Example:
