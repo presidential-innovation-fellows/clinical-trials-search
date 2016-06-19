@@ -123,7 +123,9 @@ class OmniSuggest extends Component {
     event.preventDefault();
     let { value, suggestions } = this.state;
     if (suggestions.length) {
-      let topSuggestion = suggestions[0];
+      let topSuggestion = suggestions.find((suggestion) => {
+        return value === suggestion.term;
+      }) || suggestions[0];
       if (topSuggestion) {
         let term = topSuggestion.term;
         if (topSuggestion.term_type === "_locations") {
