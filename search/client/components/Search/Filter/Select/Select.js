@@ -118,7 +118,8 @@ class Select extends Component {
                            placeholder={this.state.placeholderText}
                            optionRenderer={this.optionRenderer}
                            onInputChange={this.onInputChange}
-                           minimumInput={this.state.minimumInput} />
+                           minimumInput={this.state.minimumInput}
+                           searchPromptText={`type to search by ${displayName}...`} />
       </div>
     );
   }
