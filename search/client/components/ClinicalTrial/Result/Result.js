@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
-import Link from '../../Link'
+import Link from '../../Link';
+import ToggleMore from '../../ToggleMore';
 
 import './Result.scss';
 
@@ -68,21 +69,14 @@ export default class extends Component {
         </div>
         <div>
           <b>Treatment{treatments.length > 1 ? "s" : ""}:</b>{" "}
-          {treatments.map((treatment, i) =>
-            <span key={treatment.display}>
-              {treatment.display}
-              {i < treatments.length - 1 ? ", " : ""}
-            </span>
-          )}
+          <ToggleMore items={treatments}
+                      itemKey="display"
+                      numToShow={3} />
         </div>
         <div>
           <b>Disease{diseases.length > 1 ? "s" : ""}:</b>{" "}
-          {diseases.map((disease, i) =>
-            <span key={disease}>
-              <span>{disease}</span>
-              {i < diseases.length - 1 ? ", " : ""}
-            </span>
-          )}
+          <ToggleMore items={diseases}
+                      numToShow={3} />
         </div>
         {children}
       </div>
