@@ -43,13 +43,13 @@ export default class extends Component {
       let displayName = validParams[paramKey]["display_name"].toLowerCase();
       switch(filterType) {
         case "date":
-          return (<FilterDate paramField={paramKey} displayName={displayName} />);
+          return (<FilterDate key={paramKey} paramField={paramKey} displayName={displayName} />);
         case "select":
-          return (<FilterSelect paramField={paramKey} displayName={displayName} />);
+          return (<FilterSelect key={paramKey} paramField={paramKey} displayName={displayName} />);
         case "suggest":
-          return (<FilterSuggest paramField={paramKey} displayName={displayName} />);
+          return (<FilterSuggest key={paramKey} paramField={paramKey} displayName={displayName} />);
         case "text":
-          return (<FilterText paramField={paramKey} displayName={displayName} />);
+          return (<FilterText key={paramKey} paramField={paramKey} displayName={displayName} />);
         default:
           return;
       };
