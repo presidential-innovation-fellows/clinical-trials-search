@@ -32,19 +32,21 @@ class Select extends Component {
     displayName: PropTypes.string.isRequired
   };
 
-  componentDidMount() {
+  escapeRegexCharacters(str) {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
+  componentWillUpdate() {
     let params = Url.getParams();
     let paramValues = params[this.props.paramField] || [];
     let values = paramValues.map((value) => {
       return { term: value };
     });
-    this.setState({
-      selectedValues: values
-    });
-  }
-
-  escapeRegexCharacters(str) {
-    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    if (JSON.stringify(this.state.selectedValues) !== JSON.stringify(values)) {
+      this.setState({
+        selectedValues: values
+      });
+    }
   }
 
   getOptions(input, callback) {
