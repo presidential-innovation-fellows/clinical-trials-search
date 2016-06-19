@@ -113,7 +113,9 @@ class OmniSuggest extends Component {
 
   gotoSearch(event, {term_type, term}) {
     let params = {};
-    params[term_type] = term;
+    if (term !== "") {
+      params[term_type] = term;
+    }
     Url.newParams({ path: "/clinical-trials", params });
   }
 
