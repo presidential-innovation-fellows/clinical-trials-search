@@ -18,7 +18,11 @@ class TermLoader {
       "sites.org.name",
       "sites.org.family",
       "_treatments",
-      "anatomic_sites"
+      "anatomic_sites",
+      "arms.interventions.intervention_type",
+      "current_trial_status",
+      "eligibility.structured.gender",
+      "phase.phase"
     ]
   }
 

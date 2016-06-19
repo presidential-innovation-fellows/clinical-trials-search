@@ -29,13 +29,8 @@ const params = [{
     "filter_type": "suggest",
     "category": "primary"
   }, {
-    "param_key": "arms.intervention_type",
+    "param_key": "arms.interventions.intervention_type",
     "display_name": "Treatment Type",
-    "filter_type": "select",
-    "category": "primary"
-  }, {
-    "param_key": "arms.intervention_name",
-    "display_name": "Treatment Name",
     "filter_type": "select",
     "category": "primary"
   }, {
