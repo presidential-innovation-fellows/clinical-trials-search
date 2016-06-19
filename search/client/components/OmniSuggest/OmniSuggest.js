@@ -126,7 +126,7 @@ class OmniSuggest extends Component {
       let topSuggestion = suggestions[0];
       if (topSuggestion) {
         let term = topSuggestion.term;
-        if (topSuggestion.term_type === "sites.org.location") {
+        if (topSuggestion.term_type === "_locations") {
           let locParts = topSuggestion.term.split(", ");
           value = value.split(", ")[0];
           if (locParts.length) { term = locParts[0]; }
