@@ -34,6 +34,10 @@ export default class extends Component {
     this.loadTrials = this.loadTrials.bind(this);
   }
 
+  static propTypes = {
+    reportTotalResults: PropTypes.func
+  };
+
   loadTrials() {
     const { trials, size, from, isLoading } = this.state;
     let query = Url.getParams();
@@ -53,6 +57,7 @@ export default class extends Component {
       isLoading: true,
       query: queryCopy
     });
+    const { reportTotalResults } = this.props;
     ApiFetch(`clinical-trials?${Url.stringifyParams(query)}`)
       .then(response => response.json())
       .then((json) => {
@@ -66,6 +71,7 @@ export default class extends Component {
           queryLoaded: true,
           total: json.total
         });
+        reportTotalResults(json.total);
       });
   }
 
@@ -102,7 +108,6 @@ export default class extends Component {
     if (total) {
       return (
         <div className="clinical-trials">
-          <div>{total} clinical trials</div>
           <div>
             {trials.map((trial, i) =>
               <ClinicalTrialResult key={trial.nci_id} trial={trial}>

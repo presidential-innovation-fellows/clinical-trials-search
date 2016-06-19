@@ -1,26 +1,39 @@
 @import '../variables.scss';
 
-.Navigation {
-  display: flex;
-  flex-direction: row;
-  margin: 2em 0 5em 0;
-  list-style: none;
-  justify-content: flex-end;
-}
+.navigation {
 
-.Navigation-item {
-  padding: 0 2em;
-}
+  margin: 0;
+  background-color: $primary-color;
+  height: 80px;
 
-.Navigation-link {
-  padding: 0.5em 1em;
-  color: $primary-color !important;
-  text-decoration: none;
-  text-transform: uppercase;
-  cursor: pointer;
-
-  &:hover {
-    border-bottom: 3px solid $primary-color;
-    color: $text-color;
+  .nci-logo {
+    padding: 20px 40px;
+    img {
+      height: 40px;
+      width: auto;
+    }
   }
+
+  .nci-home-link {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    height: 40px;
+    padding: 20px 40px;
+
+    line-height: 40px;
+    a {
+      color: darken($primary-color, 25%);
+      text-decoration: none;
+      font-weight: bold;
+      // &:hover {
+      //   border-bottom: 3px solid darken($primary-color, 25%);
+      //   color: $text-color;
+      // }
+      &:visited {
+        color: darken($primary-color, 25%);
+      }
+    }
+  }
+
 }

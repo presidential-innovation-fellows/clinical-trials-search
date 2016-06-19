@@ -17,7 +17,7 @@
 
   margin-bottom: 10px;
 
-  max-width: 320px;
+  max-width: 340px;
 
 }
 
@@ -90,8 +90,8 @@
 }
 .Select-control {
 	background-color: #fff;
-	border-color: #d9d9d9 #ccc #b3b3b3;
-	border: 1px solid #ccc;
+	// border-color: #d9d9d9 #ccc #b3b3b3;
+	// border: 1px solid #ccc;
 	color: #333;
 	cursor: default;
 	display: table;
@@ -139,7 +139,7 @@
 .is-focused {
 	&:not(.is-open) {
 		>.Select-control {
-			border-color: $primary-color;
+			border-color: $text-color;
 			box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 0 3px rgba(0, 126, 255, 0.1);
 		}
 	}
@@ -193,12 +193,12 @@
 				cursor: pointer;
 				text-decoration: none;
 				&:hover {
-					color: $primary-color;
+					color: $text-color;
 					outline: none;
 					text-decoration: underline;
 				}
 				&:focus {
-					color: $primary-color;
+					color: $text-color;
 					outline: none;
 					text-decoration: underline;
 				}
@@ -216,12 +216,12 @@
 				cursor: pointer;
 				text-decoration: none;
 				&:hover {
-					color: $primary-color;
+					color: $text-color;
 					outline: none;
 					text-decoration: underline;
 				}
 				&:focus {
-					color: $primary-color;
+					color: $text-color;
 					outline: none;
 					text-decoration: underline;
 				}
@@ -263,19 +263,19 @@
 	vertical-align: middle;
 	width: 16px;
 }
-.Select-loading {
-	-webkit-animation: Select-animation-spin 400ms infinite linear;
-	-o-animation: Select-animation-spin 400ms infinite linear;
-	animation: Select-animation-spin 400ms infinite linear;
-	width: 16px;
-	height: 16px;
-	box-sizing: border-box;
-	border: 2px solid #ccc;
-	border-right-color: #333;
-	display: inline-block;
-	position: relative;
-	vertical-align: middle;
-}
+// .Select-loading {
+// 	-webkit-animation: Select-animation-spin 400ms infinite linear;
+// 	-o-animation: Select-animation-spin 400ms infinite linear;
+// 	animation: Select-animation-spin 400ms infinite linear;
+// 	width: 16px;
+// 	height: 16px;
+// 	box-sizing: border-box;
+// 	border: 2px solid #ccc;
+// 	border-right-color: #333;
+// 	display: inline-block;
+// 	position: relative;
+// 	vertical-align: middle;
+// }
 .Select-clear-zone {
 	-webkit-animation: Select-animation-fadeIn 200ms;
 	-o-animation: Select-animation-fadeIn 200ms;
@@ -309,9 +309,9 @@
 		padding: 0;
 	}
 	.Select-value {
-		background-color: lighten($primary-color, 50%);
-		border: 1px solid lighten($primary-color, 30%);
-		color: $primary-color;
+		background-color: lighten($text-color, 50%);
+		border: 1px solid lighten($text-color, 30%);
+		color: $text-color;
 		display: inline-block;
 		font-size: 0.9em;
 		line-height: 1.4;
@@ -323,18 +323,18 @@
 		display: inline-block;
 		vertical-align: middle;
 		cursor: pointer;
-		border-right: 1px solid lighten($primary-color, 30%);
+		border-right: 1px solid lighten($text-color, 30%);
 		padding: 1px 5px 3px;
 		&:hover {
-			background-color: lighten($primary-color, 40%);
-			color: $primary-color;
+			background-color: lighten($text-color, 40%);
+			color: $text-color;
 		}
 		&:focus {
-			background-color: lighten($primary-color, 40%);
-			color: $primary-color;
+			background-color: lighten($text-color, 40%);
+			color: $text-color;
 		}
 		&:active {
-			background-color: lighten($primary-color, 30%);
+			background-color: lighten($text-color, 30%);
 		}
 	}
 	.Select-value-label {
@@ -344,7 +344,7 @@
 		padding: 2px 5px;
 	}
 	a.Select-value-label {
-		color: $primary-color;
+		color: $text-color;
 		cursor: pointer;
 		text-decoration: none;
 		&:hover {
@@ -376,8 +376,9 @@
 }
 .Select-menu-outer {
 	background-color: #fff;
-	border: 1px solid #ccc;
-	border-top-color: #e6e6e6;
+	border-top: 1px solid #e6e6e6;
+  border-bottom: 1px solid #e6e6e6;
+	// border-top-color: #e6e6e6;
 	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
 	box-sizing: border-box;
 	margin-top: -1px;
@@ -403,11 +404,11 @@
 	}
 }
 .Select-option.is-selected {
-	background-color: lighten($primary-color, 60%);
+	background-color: lighten($text-color, 60%);
 	color: #333;
 }
 .Select-option.is-focused {
-	background-color: lighten($primary-color, 50%);
+	background-color: lighten($text-color, 50%);
 	color: #333;
 }
 .Select-option.is-disabled {
@@ -455,7 +456,7 @@ body {
 	padding: 0;
 }
 a {
-	color: $primary-color;
+	color: $text-color;
 	text-decoration: none;
 	&:hover {
 		text-decoration: underline;
@@ -580,7 +581,7 @@ h6 {
 }
 .page-header {
 	padding: 30px 0;
-	background-color: $primary-color;
+	background-color: $text-color;
 	color: #bfdfff;
 	h1 {
 		color: white;
@@ -624,12 +625,12 @@ h6 {
 	outline: none;
 	text-decoration: none;
 	&:hover {
-		border-bottom-color: $primary-color;
+		border-bottom-color: $text-color;
 		outline: none;
 		text-decoration: none;
 	}
 	&:focus {
-		border-bottom-color: $primary-color;
+		border-bottom-color: $text-color;
 		outline: none;
 		text-decoration: none;
 	}
@@ -655,7 +656,7 @@ h6 {
 	margin: 10px 0;
 	text-transform: uppercase;
 	.link {
-		color: $primary-color;
+		color: $text-color;
 		cursor: pointer;
 		font-weight: bold;
 		margin-left: 10px;

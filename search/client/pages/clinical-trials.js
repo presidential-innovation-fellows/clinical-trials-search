@@ -5,13 +5,27 @@ import SearchFilter from '../components/Search/Filter';
 
 export default class extends Component {
 
+  constructor() {
+    super();
+
+    this.state = {
+      totalResults: 0
+    };
+
+    this.reportTotalResults = this.reportTotalResults.bind(this);
+  }
+
+  reportTotalResults(totalResults) {
+    this.setState({ totalResults });
+  }
+
   render() {
     return (
       <div className="clinical-trials-page">
         <SearchFilter />
         <br/>
-        <SearchStatus />
-        <ClinicalTrialResults />
+        <SearchStatus totalResults={this.state.totalResults} />
+        <ClinicalTrialResults reportTotalResults={this.reportTotalResults} />
       </div>
     )
   }

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 import StatusItem from './StatusItem';
@@ -32,27 +32,28 @@ export default class extends Component {
     return fieldStatuses;
   }
 
+  static propTypes = {
+    totalResults: PropTypes.number
+  };
+
   render() {
     let fieldStatuses = this.getFieldStatuses();
+    let { totalResults } = this.props;
     return (
       <div className="search-status">
+        <div className="search-results">
+          Showing <b>{totalResults}</b> {totalResults === 1 ? "trial" : "trials"}
+        </div>
         {fieldStatuses.map((fieldStatus, i) =>
-          <ReactCSSTransitionGroup
-            transitionName="fade-transition"
-            transitionEnterTimeout={300}
-            transitionLeaveTimeout={100}
-            transitionAppear={true}
-            transitionAppearTimeout={300}>
-              <div key={fieldStatus.displayType}>
-                <b>{fieldStatus.displayType}:</b>{" "}
-                {fieldStatus.statusItems.map((statusItem, i) =>
-                  <span>
-                    <StatusItem status={statusItem} />
-                    {i < (fieldStatus.statusItems.length) - 1 ? " or " : ""}
-                  </span>
-                )}
-              </div>
-          </ReactCSSTransitionGroup>
+          <div key={fieldStatus.displayType}>
+            <b>{fieldStatus.displayType}:</b>{" "}
+            {fieldStatus.statusItems.map((statusItem, i) =>
+              <span>
+                <StatusItem status={statusItem} />
+                {i < (fieldStatus.statusItems.length) - 1 ? " or " : ""}
+              </span>
+            )}
+          </div>
         )}
         <br/>
       </div>

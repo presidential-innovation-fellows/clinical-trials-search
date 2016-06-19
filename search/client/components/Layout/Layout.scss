@@ -16,64 +16,51 @@ a:visited {
   color: darken($primary-color, 17%);
 }
 
-.Layout {
+.layout {
   margin: 0 auto;
 }
 
-@media (min-width: $screen-sm-min) {
-  .Layout {
-    width: calc($screen-sm-min - 18px);
-  }
+.card {
+  background-color: #fff;
+  -webkit-box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  color: $text-color;
 }
 
-@media (min-width: $screen-md-min) {
-  .Layout {
-    width: calc($screen-md-min - 22px);
-  }
-}
+.index-page {
 
-@media (min-width: $screen-lg-min) {
-  .Layout {
-    width: calc($screen-lg-min - 30px);
+  .index-search {
+    background-color: $primary-color;
+    padding: 20px 40px 10px 40px;
   }
-}
 
-.index {
-  width: 540px;
-  height: 300px;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  margin: auto;
+  .search-prompt-container {
+    font-weight: 200;
+    margin-bottom: 20px;
+    font-size: 28px;
+    color: #fff;
+  }
 
   .search-container {
-    display: block;
+
   }
 
-  .logo-container {
-    margin-bottom: 20px;
-    font-size: 53px;
-    color: #BB0E3D;
+  .index-about {
+    h1 {
+      color: $text-color;
+      font-weight: 100px;
+      font-size: 24px;
+    }
+    font-size: 16px;
+    padding: 40px;
+    max-width: 690px;
   }
+
 }
 
-// .nci-logo {
-//   width: 460px;
-//   height: auto;
-//   padding: 20px;
-//   margin-bottom: 20px;
-// }
-
-// .pill {
-//   background-color: #bbb;
-//   color: #fff;
-//   padding: 4px;
-//   margin: 2px;
-//   font-size: 10px;
-//   line-height: 14px;
-// }
+// fade transitions...
 
 .fade-transition-enter {
   opacity: 0.01;

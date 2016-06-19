@@ -58,21 +58,27 @@ export default class extends Component {
     if (showFilters) {
       filterRender = (
         <div>
-          <div>
+          <div className="filter-category-headers">
+            <div className="filter-category-preheaders">&nbsp;</div>
             {categories.map((category, i) =>
-              <span className="filter-category-header">
-                <span className="filter-category-header-link" onClick={() => this.selectCategory(category)}>
-                  {category === selectedCategory ? "[ " : ""}
-                  {category}
-                  {category === selectedCategory ? " ]" : ""}
-                </span>
-                {i < categories.length - 1 ? " | " : ""}
+              <span className={"filter-category-header" + (category === selectedCategory ? " selected" : "")} onClick={() => this.selectCategory(category)}>
+                {category}
               </span>
             )}
+            <div className="filter-category-postheaders">&nbsp;</div>
           </div>
           <div className="filters">
             {filters}
           </div>
+          <div className="toggle-hide-filter" onClick={this.toggleFilters} key={showFilters}>
+            Close
+          </div>
+        </div>
+      );
+    } else {
+      filterRender = (
+        <div className="toggle-show-filter" onClick={this.toggleFilters} key={showFilters}>
+          Filter Results [+]
         </div>
       );
     }
@@ -84,17 +90,9 @@ export default class extends Component {
     // <div>TODO: search anywhere in the trial (_all)</div>
 
     return (
-      <ReactCSSTransitionGroup
-        transitionName="fade-transition"
-        transitionEnterTimeout={300}
-        transitionLeaveTimeout={100}
-        transitionAppear={true}
-        transitionAppearTimeout={300}>
-          <div className="toggle-show-filter" onClick={this.toggleFilters} key={showFilters}>
-            {showFilters ? "[-] hide filters" : "[+] show filters"}
-          </div>
-          {filterRender}
-      </ReactCSSTransitionGroup>
+      <div className="filter-page">
+        {filterRender}
+      </div>
     );
   }
 

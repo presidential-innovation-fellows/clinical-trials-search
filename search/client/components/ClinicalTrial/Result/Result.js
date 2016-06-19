@@ -54,7 +54,7 @@ export default class extends Component {
     let diseases = this.getDiseases(trial);
 
     return (
-      <div key={trial.nci_id} className="clinical-trial-result">
+      <div key={trial.nci_id} className="clinical-trial-result card">
         <h3>
           <a href={`/clinical-trial?id=${trial.nci_id}`} onClick={Link.handleClick}>
             {trial.brief_title}

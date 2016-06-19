@@ -27,8 +27,8 @@ export default class extends Component {
     let { status } = this.props;
     return (
       <span className="status-item">
-        <span>{status.value}</span>{" "}
-        <span className="remove-status" onClick={this.removeParam}>[x]</span>
+        <span className="remove-status" onClick={this.removeParam}>[x]</span>{" "}
+        <span>{status.value}</span>
       </span>
     );
   };

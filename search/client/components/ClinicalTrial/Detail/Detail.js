@@ -41,34 +41,38 @@ export default class extends Component {
     if (trial) {
       return (
         <div className="clinical-trial-detail">
-          <h1>{trial.brief_title}</h1>
-          <div>{trial.brief_summary}</div><br/>
-          <div className="clinical-trial-section">
-          </div><br/>
-          <div className="clinical-trial-section">
-            <b>Locations:</b><br/><br/>
-            <div className="clinical-trial-locations">
-              {trial.sites.map((site, i) =>
-                <div className="clinical-trial-location">
-                  <a href={`http://maps.google.com/?q=${[site.org.name, site.org.address_line_1, site.org.city, site.org.state_or_province, site.org.postal_code].join(' ')}`}>
-                    {site.org.name}<br/>
-                    {site.org.address_line_1}<br/>
-                    {site.org.city}, {site.org.state_or_province} {site.org.postal_code}<br/>
-                  </a>
-                </div>
-              )}
-            </div>
-          </div><br/>
-          <div className="clinical-trial-section">
-            <b>Detailed Info:</b><br/><br/>
-            <div dangerouslySetInnerHTML={createMarkup(trial.detail_description)} />
-          </div><br/><br/><br/>
+          <div className="card">
+            <h1>{trial.brief_title}</h1>
+            <div>{trial.brief_summary}</div><br/>
+            <div className="clinical-trial-section">
+            </div><br/>
+            <div className="clinical-trial-section">
+              <b>Locations:</b><br/><br/>
+              <div className="clinical-trial-locations">
+                {trial.sites.map((site, i) =>
+                  <div className="clinical-trial-location">
+                    <a href={`http://maps.google.com/?q=${[site.org.name, site.org.address_line_1, site.org.city, site.org.state_or_province, site.org.postal_code].join(' ')}`}>
+                      {site.org.name}<br/>
+                      {site.org.address_line_1}<br/>
+                      {site.org.city}, {site.org.state_or_province} {site.org.postal_code}<br/>
+                    </a>
+                  </div>
+                )}
+              </div>
+            </div><br/>
+            <div className="clinical-trial-section">
+              <b>Detailed Info:</b><br/><br/>
+              <div dangerouslySetInnerHTML={createMarkup(trial.detail_description)} />
+            </div><br/><br/><br/>
+          </div>
         </div>
       );
     } else if (!isLoading) {
       return (
         <div className="clinical-trial-detail">
-          No trial with id {id} found.
+          <div className="card">
+            No trial with id {id} found.
+          </div>
         </div>
       );
     } else {

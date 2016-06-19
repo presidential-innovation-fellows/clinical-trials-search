@@ -17,82 +17,82 @@ const params = [{
     "param_key": "sites.org.family",
     "display_name": "Network/Organization",
     "filter_type": "suggest",
-    "category": "primary"
+    "category": "secondary"
   }, {
     "param_key": "anatomic_sites",
     "display_name": "Anatomic Site",
     "filter_type": "select",
-    "category": "primary"
+    "category": "secondary"
   }, {
     "param_key": "_treatments",
     "display_name": "Treatment",
     "filter_type": "suggest",
-    "category": "primary"
+    "category": "secondary"
   }, {
     "param_key": "arms.interventions.intervention_type",
     "display_name": "Treatment Type",
     "filter_type": "select",
-    "category": "primary"
+    "category": "secondary"
   }, {
     "param_key": "acronym",
     "display_name": "Acronym",
     "filter_type": "text",
-    "category": "primary"
+    "category": "secondary"
   }, {
     "param_key": "brief_title",
     "display_name": "Title",
     "filter_type": "text",
-    "category": "primary"
+    "category": "secondary"
   }, {
     "param_key": "current_trial_status",
     "display_name": "Status",
     "filter_type": "select",
-    "category": "primary"
+    "category": "secondary"
   }, {
     "param_key": "eligibility.structured.gender",
     "display_name": "Gender",
     "filter_type": "select",
-    "category": "secondary"
+    "category": "tertiary"
   }, {
     "param_key": "eligibility.structured.max_age",
     "display_name": "Max Age",
     "filter_type": "number",
-    "category": "secondary"
+    "category": "tertiary"
   }, {
     "param_key": "eligibility.structured.min_age",
     "display_name": "Min Age",
     "filter_type": "number",
-    "category": "secondary"
+    "category": "tertiary"
   }, {
     "param_key": "nci_id",
     "display_name": "NCI ID",
     "filter_type": "text",
-    "category": "secondary"
+    "category": "tertiary"
   }, {
     "param_key": "nct_id",
     "display_name": "NCT ID",
     "filter_type": "text",
-    "category": "secondary"
+    "category": "tertiary"
   }, {
     "param_key": "phase",
     "display_name": "Phase",
     "filter_type": "select",
-    "category": "secondary"
+    "category": "tertiary"
   }, {
     "param_key": "date_last_updated_anything",
     "display_name": "Date Updated",
     "filter_type": "date",
-    "category": "secondary"
+    "category": "tertiary"
   }, {
     "param_key": "completion_date",
     "display_name": "Date Completed",
     "filter_type": "date",
-    "category": "secondary"
+    "category": "tertiary"
   }, {
     "param_key": "start_date",
     "display_name": "Date Started",
     "filter_type": "date",
-    "category": "secondary"
+    "category": "tertiary"
   }, {
     "param_key": "_all",
     "display_name": "All Text",

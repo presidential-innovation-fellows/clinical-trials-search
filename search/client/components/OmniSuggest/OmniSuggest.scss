@@ -13,13 +13,13 @@
 
   .react-autosuggest__input {
     // width: 240px;
-    width: 460px;
+    width: 600px;
     height: 30px;
     padding: 10px 20px;
     font-family: Helvetica, sans-serif;
     font-weight: 300;
     font-size: 16px;
-    border: 1px solid #aaa;
+    border: none;
     &:focus {
       outline: none;
     }
@@ -31,17 +31,20 @@
 
   .react-autosuggest__suggestions-container {
     position: absolute;
-    top: 51px;
-    width: 499px;
+    top: 60px;
+    width: 640px;
     margin: 0;
     padding: 0;
     list-style-type: none;
-    border: 1px solid #aaa;
+    border: 1px solid #fff;
     background-color: #fff;
     font-family: Helvetica, sans-serif;
     font-weight: 300;
     font-size: 16px;
     z-index: 2;
+    -webkit-box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.1);
+    -moz-box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.1);
   }
 
   .react-autosuggest__suggestion {
@@ -59,11 +62,10 @@
   .search-icon {
     width: 50px;
     height: 50px;
-    background-color: $primary-color;
+    background-color: darken($primary-color, 20%);
     position: relative;
-    left: 501px;
-    top: -52px;
-    border: 1px solid $primary-color;
+    left: 640px;
+    top: -50px;
     input {
       padding: 10px;
       width: 30px;
@@ -74,5 +76,5 @@
   .suggestion-type {
     color: #009999;
   }
-  
+
 }
