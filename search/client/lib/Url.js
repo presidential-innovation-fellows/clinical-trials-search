@@ -33,6 +33,20 @@ const _addParams = (params, addParams) => {
   return params;
 }
 
+const _overwriteParams = (params, addParams) => {
+  Object.keys(addParams).forEach((key) => {
+    let values = addParams[key];
+    if (!(values instanceof Array)) {
+      values = [values];
+    }
+    if (!params[key]) {
+      params[key] = [];
+    }
+    params[key] = values;
+  });
+  return params;
+}
+
 const _removeParams = (params, removeParams) => {
   Object.keys(removeParams).forEach((key) => {
     let values = removeParams[key];
@@ -88,6 +102,11 @@ class Url {
   static removeParams({ path, params }) {
     let currentParams = _getUrlObj().params;
     _updateUrl(path, _removeParams(currentParams, params));
+  }
+
+  static overwriteParams({ path, params }) {
+    let currentParams = _getUrlObj().params;
+    _updateUrl(path, _overwriteParams(currentParams, params));
   }
 
   static clearParams({ path }) {

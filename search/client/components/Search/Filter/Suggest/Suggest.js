@@ -1,157 +1,32 @@
-import React, { Component, PropTypes } from 'react';
-import Fetch from 'isomorphic-fetch';
-import Autosuggest from 'react-autosuggest';
-import AutosuggestHighlight from 'autosuggest-highlight';
-import Similarity from 'string-similarity';
+import Select from '../Select';
 
 import ApiFetch from '../../../../lib/ApiFetch.js';
-import Url from '../../../../lib/Url';
 
 import './Suggest.scss';
 
-function escapeRegexCharacters(str) {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
-function renderSuggestion(suggestion, { value, valueBeforeUpDown }) {
-  const suggestionText = suggestion.term;
-  const query = (valueBeforeUpDown || value).trim();
-  const matches = AutosuggestHighlight.match(suggestionText, query);
-  const parts = AutosuggestHighlight.parse(suggestionText, matches);
-
-  return (
-    <span className={'suggestion-content'}>
-      <span className='text'>
-        {
-          parts.map((part, index) => {
-            const className = part.highlight ? 'filter-suggest-highlight' : null;
-
-            return (
-              <span className={className} key={index}>{part.text}</span>
-            );
-          })
-        }
-      </span>
-    </span>
-  );
-}
-
-function getSuggestionValue(suggestion) { // when suggestion selected, this function tells
-  return suggestion.term;                 // what should be the value of the input
-}
-
-class Suggest extends Component {
+class Suggest extends Select {
 
   constructor() {
     super();
 
-    this.state = {
-      value: '',
-      suggestions: []
-    };
+    this.className = "filter-suggest";
 
-    this.onSubmit = this.onSubmit.bind(this);
-    this.onChange = this.onChange.bind(this);
-    this.onSuggestionsUpdateRequested = this.onSuggestionsUpdateRequested.bind(this);
-    this.onSuggestionSelected = this.onSuggestionSelected.bind(this);
+    this.state.minimumInput = 1;
+    // this.state.placeholderText = "search...";
   }
 
-  static propTypes = {
-    paramField: PropTypes.string.isRequired,
-    displayName: PropTypes.string.isRequired
-  };
-
-  loadSuggestions(value) {
-    this.setState({});
-
-    let term = escapeRegexCharacters(value);
-    let {paramField} = this.props;
-    ApiFetch(`terms?term=${term}&term_type=${paramField}`)
-      .then(response => response.json())
-      .then((json) => {
-        let suggestions = json.terms;
-        if (value === this.state.value) {
-          this.setState({
-            suggestions
-          });
-        } else { // Ignore suggestions if input value changed
-          this.setState({});
-        }
-      });
-  }
-
-  componentDidMount() {}
-
-  onChange(event, { newValue }) {
-    this.setState({
-      value: newValue
-    });
-  }
-
-  addSearchParam(event, params) {
-    Url.addParams({ path: "/clinical-trials", params });
-    this.setState({
-      value: ""
-    });
-  }
-
-  onSubmit(event) {
-    event.preventDefault();
-    let { value, suggestions } = this.state;
+  getOptions(input, callback) {
     let { paramField } = this.props;
-    let params = {};
-    // params[paramField] = value;
-    let searchValue = value;
-    if (suggestions && suggestions[0] && suggestions[0].term) {
-      searchValue = suggestions[0].term;
-    }
-    params[paramField] = searchValue;
-    return this.addSearchParam(event, params);
+    ApiFetch(`terms?term=${input}&term_type=${paramField}&size=5`)
+    .then((response) => {
+      return response.json();
+    }).then((json) => {
+      return callback(null, {
+        options: json.terms
+      });
+    });
   }
 
-  onSuggestionSelected(event, { suggestion, suggestionValue }) {
-    if (event.type === "click") {
-      let { term_type, term } = suggestion;
-      let params = {};
-      params[term_type] = term;
-      this.addSearchParam(event, params);
-    }
-  }
-
-  onSuggestionsUpdateRequested({ value, reason }) {
-    if (reason === "type") {
-      // don't load suggestions or change state if the user is
-      // selecting an option
-      this.loadSuggestions(value);
-    }
-  }
-
-  render() {
-    const { paramField, displayName } = this.props;
-    const { value, suggestions } = this.state;
-    const htmlId = paramField.split(".").join("-");
-    const inputProps = {
-      id: htmlId,
-      placeholder: `filter by ${this.props.displayName}`,
-      value,
-      onChange: this.onChange
-    };
-
-    return (
-      <div className="filter-suggest">
-        <form onSubmit={this.onSubmit}>
-          <label htmlFor={htmlId}>{displayName}</label>
-          <Autosuggest id={`suggest-${htmlId}`}
-                       suggestions={suggestions}
-                       onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
-                       onSuggestionSelected={this.onSuggestionSelected}
-                       getSuggestionValue={getSuggestionValue}
-                       renderSuggestion={renderSuggestion}
-                       inputProps={inputProps} />
-        </form>
-      </div>
-    );
-  }
 }
 
 export default Suggest;

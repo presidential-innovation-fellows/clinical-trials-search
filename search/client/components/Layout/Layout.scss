@@ -13,7 +13,7 @@ a {
 }
 
 a:visited {
-  color: $primary-color-faded;
+  color: darken($primary-color, 17%);
 }
 
 .Layout {
