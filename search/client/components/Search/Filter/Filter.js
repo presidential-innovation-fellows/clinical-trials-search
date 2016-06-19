@@ -61,7 +61,7 @@ export default class extends Component {
           <div className="filter-category-headers">
             <div className="filter-category-preheaders">&nbsp;</div>
             {categories.map((category, i) =>
-              <span className={"filter-category-header" + (category === selectedCategory ? " selected" : "")} onClick={() => this.selectCategory(category)}>
+              <span key={category} className={"filter-category-header" + (category === selectedCategory ? " selected" : "")} onClick={() => this.selectCategory(category)}>
                 {category}
               </span>
             )}
