@@ -18,7 +18,7 @@ export default class extends Component {
 
     this.state = {
       showFilters: false,
-      selectedCategory: "primary",
+      selectedCategory: "basic",
       validParamsByCategory: ValidParams.getParamsByCategory()
     }
 
