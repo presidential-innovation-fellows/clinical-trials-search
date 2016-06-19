@@ -1,20 +1,11 @@
 import fetch from 'isomorphic-fetch';
-import ApiServer from './ApiServer';
 
 function ApiFetch(endpointQuery) {
 
-  var opt;
+  const host = "https://clinicaltrialsapi.cancer.gov";
+  // const host = "http://localhost:3000";
 
-  if(ApiServer.username && ApiServer.password) {
-    const token = btoa(`${ApiServer.username}:${ApiServer.password}`);
-    opt = {
-      "headers": {
-        "Authorization": `Basic ${token}`
-      }
-    };
-  }
-
-  return fetch(`${ApiServer.host}/${endpointQuery}`, opt);
+  return fetch(`${host}/${endpointQuery}`);
 
 };
 
