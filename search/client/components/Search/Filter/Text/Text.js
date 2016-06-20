@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import ReactSelect from 'react-select';
+import TagsInput from 'react-tagsinput';
 
 import Url from '../../../../lib/Url';
 
@@ -20,7 +20,6 @@ class Text extends Component {
 
     this.onChange = this.onChange.bind(this);
     this.onInputChange = this.onInputChange.bind(this);
-    this.newOptionCreator = this.newOptionCreator.bind(this);
   }
 
   static propTypes = {
@@ -32,12 +31,9 @@ class Text extends Component {
     return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   }
 
-  componentWillUpdate() {
+  loadValuesState() {
     let params = Url.getParams();
-    let paramValues = params[this.props.paramField] || [];
-    let values = paramValues.map((value) => {
-      return { term: value };
-    });
+    let values = params[this.props.paramField] || [];
     if (JSON.stringify(this.state.selectedValues) !== JSON.stringify(values)) {
       this.setState({
         selectedValues: values
@@ -45,13 +41,19 @@ class Text extends Component {
     }
   }
 
+  componentDidMount() {
+    this.loadValuesState();
+  }
+
+  componentWillUpdate() {
+    this.loadValuesState();
+  }
+
   onChange(values) {
     let params = {};
     params[this.props.paramField] = [];
     if (values && values.length) {
-      params[this.props.paramField] = values.map((value) => {
-        return value.term;
-      });
+      params[this.props.paramField] = values;
     }
     Url.overwriteParams({ path: "/clinical-trials", params });
 
@@ -62,8 +64,14 @@ class Text extends Component {
     this.setState({ inputText: this.escapeRegexCharacters(input) });
   }
 
-  newOptionCreator(option) {
-    debugger;
+  renderTag(props) {
+    let {tag, key, onRemove, classNameRemove, ...other} = props
+    return (
+      <span key={key} {...other}>
+        <a className={classNameRemove} onClick={(e) => onRemove(key)} />
+        {tag}
+      </span>
+    )
   }
 
   render() {
@@ -71,24 +79,16 @@ class Text extends Component {
     const htmlId = paramField.split(".").join("-");
     const inputProps = {
       id: htmlId,
+      placeholder: ""
     };
 
     return (
       <div className={this.className}>
         <label htmlFor={htmlId}>{displayName}</label>
-        <ReactSelect name={paramField}
-                     value={this.state.selectedValues}
-                     multi={true}
-                     allowCreate
-                     valueKey="term"
-                     labelKey="term"
-                     onChange={this.onChange}
-                     inputProps={inputProps}
-                     placeholder={this.state.placeholderText}
-                     onInputChange={this.onInputChange}
-                     openOnFocus={false}
-                     noResultsText=""
-                     newOptionCreator={this.newOptionCreator} />
+        <TagsInput value={this.state.selectedValues}
+                   onChange={::this.onChange}
+                   renderTag={this.renderTag}
+                   inputProps={inputProps}/>
       </div>
     );
   }
