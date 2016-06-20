@@ -116,7 +116,7 @@ class OmniSuggest extends Component {
     if (term !== "") {
       params[term_type] = term;
     }
-    Url.newParams({ path: "/clinical-trials", params });
+    Url.newParamsWithDefault({ path: "/clinical-trials", params });
   }
 
   onSubmit(event) {

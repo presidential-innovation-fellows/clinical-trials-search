@@ -2,8 +2,12 @@ import { canUseDOM } from 'fbjs/lib/ExecutionEnvironment';
 import QueryString from 'query-string';
 import Location from './Location';
 
-// TODO: hacky
+// TODO: fix this, it's hacky
 let loc = canUseDOM ? location : {};
+
+const DEFAULT_PARAMS = {
+  "current_trial_status": "Active"
+}
 
 const _getUrlObj = () => {
   let params = QueryString.parse(loc.search);
@@ -94,6 +98,10 @@ class Url {
     _updateUrl(path, _addParams({}, params));
   }
 
+  static newParamsWithDefault({ path, params }) {
+    _updateUrl(path, _addParams(DEFAULT_PARAMS, params));
+  }
+
   static addParams({ path, params }) {
     let currentParams = _getUrlObj().params;
     _updateUrl(path, _addParams(currentParams, params));
@@ -111,6 +119,10 @@ class Url {
 
   static clearParams({ path }) {
     _updateUrl(path, {});
+  }
+
+  static clearParamsToDefault({ path }) {
+    _updateUrl(path, DEFAULT_PARAMS);
   }
 
 }
