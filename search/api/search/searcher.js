@@ -79,27 +79,28 @@ class Searcher {
 
   _addAllFilter(body, q) {
     if (q._all) {
-      body.query("match", "_all", q._all);
+      this._addStringFilter(body, "_all", q._all);
       delete q._all;
     }
   }
 
-  _addStringFilters(body, q) {
-    const _addStringFilter = (field, filter) => {
-      if(filter instanceof Array) {
-        let orBody = new Bodybuilder();
-        filter.forEach((filterElement) => {
-          orBody.orFilter("term", field, filterElement.toLowerCase());
-        });
-        body.filter("bool", "and", orBody.build("v2"));
-      } else {
-        body.filter("term", field, filter.toLowerCase());
-      }
-    };
+  _addStringFilter(body, field, filter) {
+    if(filter instanceof Array) {
+      let orBody = new Bodybuilder();
+      filter.forEach((filterElement) => {
+        logger.info(filterElement);
+        orBody.orFilter("term", field, filterElement.toLowerCase());
+      });
+      body.filter("bool", "and", orBody.build("v2"));
+    } else {
+      body.filter("term", field, filter.toLowerCase());
+    }
+  };
 
+  _addStringFilters(body, q) {
     searchPropsByType["string"].forEach((field) => {
       if(q[field]) {
-        _addStringFilter(field, q[field]);
+        this._addStringFilter(body, field, q[field]);
       }
     });
   }
