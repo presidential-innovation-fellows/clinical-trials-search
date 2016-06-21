@@ -12,7 +12,7 @@ const params = [
   }, {
     "param_key": "eligibility.structured.gender",
     "display_name": "Gender",
-    "filter_type": "select",
+    "filter_type": "gender",
     "category": "basic"
   }, {
     "param_key": "sites.org.name",

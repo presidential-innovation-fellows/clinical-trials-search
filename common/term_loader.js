@@ -21,7 +21,6 @@ class TermLoader {
       "anatomic_sites",
       "arms.interventions.intervention_type",
       "current_trial_status",
-      "eligibility.structured.gender",
       "phase.phase"
     ]
   }

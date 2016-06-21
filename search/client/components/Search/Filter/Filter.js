@@ -5,6 +5,7 @@ import FilterDate from './Date'
 import FilterSelect from './Select'
 import FilterSuggest from './Suggest'
 import FilterText from './Text'
+import FilterGender from './Gender'
 
 import Url from '../../../lib/Url';
 import ValidParams from '../../../lib/ValidParams';
@@ -48,6 +49,8 @@ export default class extends Component {
           return (<FilterSuggest key={paramKey} paramField={paramKey} displayName={displayName} />);
         case "text":
           return (<FilterText key={paramKey} paramField={paramKey} displayName={displayName} />);
+        case "gender":
+          return (<FilterGender key={paramKey} paramField={paramKey} displayName={displayName} />);
         default:
           return;
       };
