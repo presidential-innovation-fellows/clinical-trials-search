@@ -77,8 +77,6 @@ class OmniSuggest extends Component {
   }
 
   loadSuggestions(value) {
-    this.setState({});
-
     let term = escapeRegexCharacters(value);
     ApiFetch(`terms?term=${term}`)
       .then(response => response.json())
@@ -122,10 +120,16 @@ class OmniSuggest extends Component {
     let { value, suggestions } = this.state;
     if (suggestions.length) {
       let topSuggestion = suggestions.find((suggestion) => {
-        return value === suggestion.term;
+        let term = suggestion.term;
+        if (suggestion.sub_type) { term += ` (${suggestion.sub_type})`; }
+        return value === term;
       }) || suggestions[0];
       if (topSuggestion) {
         let term = topSuggestion.term;
+        if (topSuggestion.sub_type) {
+          term += ` (${topSuggestion.sub_type})`;
+          topSuggestion.term = term;
+        }
         if (topSuggestion.term_type === "_locations") {
           let locParts = topSuggestion.term.split(", ");
           value = value.split(", ")[0];
