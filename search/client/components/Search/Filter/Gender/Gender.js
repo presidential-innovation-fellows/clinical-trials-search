@@ -88,7 +88,7 @@ class Gender extends Component {
 
     return (
       <div className={this.className}>
-        <div>{displayName}</div>
+        <div className="checkbox-label">{displayName}</div>
         <label>
           <input name="male"
                  type="checkbox"
