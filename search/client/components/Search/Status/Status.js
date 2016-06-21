@@ -5,8 +5,6 @@ import StatusItem from './StatusItem';
 import Url from '../../../lib/Url';
 import ValidParams from '../../../lib/ValidParams';
 
-import './Status.scss';
-
 export default class extends Component {
 
   _getDisplayType(type) {

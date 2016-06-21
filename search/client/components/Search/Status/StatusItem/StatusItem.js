@@ -2,8 +2,6 @@ import React, { Component, PropTypes } from 'react';
 
 import Url from '../../../../lib/Url';
 
-import './StatusItem.scss';
-
 export default class extends Component {
 
   constructor() {

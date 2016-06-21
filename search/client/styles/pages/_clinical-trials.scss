@@ -15,6 +15,23 @@
     position: absolute;
     width: 680px;
   }
+
+  .search-status {
+    padding: 0px 40px;
+    .search-results {
+      font-size: 24px;
+      font-weight: 300;
+    }
+  }
+
+  .status-item {
+
+  }
+
+  .remove-status {
+    cursor: pointer;
+  }
+
 }
 
 .filter-page {
