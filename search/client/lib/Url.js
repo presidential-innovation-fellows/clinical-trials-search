@@ -5,10 +5,6 @@ import Location from './Location';
 // TODO: fix this, it's hacky
 let loc = canUseDOM ? location : {};
 
-const DEFAULT_PARAMS = {
-  "current_trial_status": "Active"
-}
-
 const _getUrlObj = () => {
   let params = QueryString.parse(loc.search);
   // ensure each param value is an array
@@ -81,6 +77,12 @@ const _updateUrl = (path, params) => {
 
 class Url {
 
+  static get DEFAULT_PARAMS() {
+    return {
+      "current_trial_status": "Active"
+    };
+  }
+
   static getParams() {
     return _getUrlObj()["params"];
   }
@@ -99,7 +101,7 @@ class Url {
   }
 
   static newParamsWithDefault({ path, params }) {
-    _updateUrl(path, _addParams(DEFAULT_PARAMS, params));
+    _updateUrl(path, _addParams(Url.DEFAULT_PARAMS, params));
   }
 
   static addParams({ path, params }) {
@@ -122,7 +124,7 @@ class Url {
   }
 
   static clearParamsToDefault({ path }) {
-    _updateUrl(path, DEFAULT_PARAMS);
+    _updateUrl(path, Url.DEFAULT_PARAMS);
   }
 
 }
