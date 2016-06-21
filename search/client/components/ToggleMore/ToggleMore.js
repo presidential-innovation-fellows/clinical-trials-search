@@ -1,7 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 
-import './ToggleMore.scss';
-
 export default class extends Component {
 
   constructor() {

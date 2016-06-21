@@ -9,8 +9,6 @@ import FilterText from './Text'
 import Url from '../../../lib/Url';
 import ValidParams from '../../../lib/ValidParams';
 
-import './Filter.scss';
-
 export default class extends Component {
 
   constructor() {

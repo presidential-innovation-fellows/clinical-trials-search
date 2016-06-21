@@ -5,8 +5,6 @@ import ApiFetch from '../../../lib/ApiFetch.js';
 import Link from '../../Link';
 import Url from '../../../lib/Url';
 
-import './Detail.scss';
-
 function createMarkup(text) {
   if(!text) { return {__html: ""}; }
   return {__html: text.replace(/(?:\r\n|\r|\n)/g, '<br />')};

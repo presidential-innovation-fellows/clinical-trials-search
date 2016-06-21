@@ -1,13 +1,11 @@
-@import '../variables.scss';
-
 .navigation {
-
-  margin: 0;
   background-color: $primary-color;
   height: 80px;
+  margin: 0;
 
   .nci-logo {
     padding: 20px 40px;
+
     img {
       height: 40px;
       width: auto;
@@ -15,25 +13,21 @@
   }
 
   .nci-home-link {
+    height: 40px;
+    line-height: 40px;
+    padding: 20px 40px;
     position: absolute;
     right: 0px;
     top: 0px;
-    height: 40px;
-    padding: 20px 40px;
 
-    line-height: 40px;
     a {
       color: darken($primary-color, 25%);
-      text-decoration: none;
       font-weight: bold;
-      // &:hover {
-      //   border-bottom: 3px solid darken($primary-color, 25%);
-      //   color: $text-color;
-      // }
+      text-decoration: none;
+
       &:visited {
         color: darken($primary-color, 25%);
       }
     }
   }
-
 }

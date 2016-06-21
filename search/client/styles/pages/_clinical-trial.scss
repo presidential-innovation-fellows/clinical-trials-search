@@ -1,0 +1,20 @@
+.clinical-trial-page {
+
+  .clinical-trial-detail {
+    @extend %card;
+    left: 40px;
+    margin-top: 2em;
+    padding-top: 40px;
+    position: absolute;
+    right: 0;
+    width: 640px;
+
+    h1 {
+      margin-top: 0;
+    }
+  }
+
+  .clinical-trial-location {
+    margin-bottom: 10px;
+  }
+}

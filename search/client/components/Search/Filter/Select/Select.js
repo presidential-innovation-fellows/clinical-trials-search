@@ -5,8 +5,6 @@ import AutosuggestHighlight from 'autosuggest-highlight';
 import ApiFetch from '../../../../lib/ApiFetch.js';
 import Url from '../../../../lib/Url';
 
-import './Select.scss';
-
 class Select extends Component {
 
   constructor() {

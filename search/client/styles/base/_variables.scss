@@ -1,0 +1,40 @@
+/*
+ * Scaffolding
+ * -------------------------------------------------------------------------- */
+
+$body-bg: darken(#fff, 5%);
+$text-color: #666;
+
+$primary-color: #2b7bba;
+$secondary-color: #bb0e3d;
+$tertiary-color: #099;
+
+/*
+ * Typography
+ * -------------------------------------------------------------------------- */
+
+$font-family-base: 'Source Sans Pro', 'Helvetica', sans-serif;
+
+/*
+ * Media queries breakpoints
+ * -------------------------------------------------------------------------- */
+
+$screen-sm-min: 768px;
+$screen-md-min: 992px;
+$screen-lg-min: 1200px;
+
+/*
+ * Responsive amounts
+ * -------------------------------------------------------------------------- */
+
+ @media(min-width: $screen-sm-min) {
+   $padding: 10px;
+ }
+
+ @media(min-width: $screen-md-min) {
+   $padding: 20px;
+ }
+
+ @media(min-width: $screen-lg-min) {
+   $padding: 40px;
+ }

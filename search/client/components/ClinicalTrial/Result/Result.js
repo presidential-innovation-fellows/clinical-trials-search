@@ -2,8 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import Link from '../../Link';
 import ToggleMore from '../../ToggleMore';
 
-import './Result.scss';
-
 export default class extends Component {
 
   static propTypes = {

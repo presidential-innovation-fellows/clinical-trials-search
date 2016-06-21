@@ -3,8 +3,6 @@ import Fetch from 'isomorphic-fetch';
 
 import Url from '../../../../lib/Url';
 
-import './Date.scss';
-
 class Date extends Component {
 
   static propTypes = {

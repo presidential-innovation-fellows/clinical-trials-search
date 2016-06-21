@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import Navigation from '../Navigation';
 
-import './Layout.scss';
+require('../../styles/main.scss');
 
 class Layout extends Component {
 

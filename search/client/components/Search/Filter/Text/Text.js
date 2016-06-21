@@ -3,8 +3,6 @@ import TagsInput from 'react-tagsinput';
 
 import Url from '../../../../lib/Url';
 
-import './Text.scss';
-
 class Text extends Component {
 
   constructor() {

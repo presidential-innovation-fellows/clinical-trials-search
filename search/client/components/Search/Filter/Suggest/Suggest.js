@@ -2,8 +2,6 @@ import Select from '../Select';
 
 import ApiFetch from '../../../../lib/ApiFetch.js';
 
-import './Suggest.scss';
-
 class Suggest extends Select {
 
   constructor() {

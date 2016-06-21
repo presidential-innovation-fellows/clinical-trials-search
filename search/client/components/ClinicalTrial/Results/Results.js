@@ -9,8 +9,6 @@ import Link from '../../Link'
 import Location from '../../../lib/Location';
 import Url from '../../../lib/Url';
 
-import './Results.scss';
-
 export default class extends Component {
 
   get LOAD_SIZE() {

@@ -1,17 +1,14 @@
 .filter-suggest {
+  margin-bottom: 10px;
+  max-width: 340px;
 
   label {
-    font-size: 14px;
     display: block;
+    font-size: 14px;
     margin-bottom: 4px;
   }
 
   .filter-select-highlight {
     font-weight: bold;
   }
-
-  margin-bottom: 10px;
-
-  max-width: 340px;
-
 }

@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
-import './Navigation.scss';
 import Link from '../Link';
-
-import './Navigation.scss';
 
 export default class extends Component {
 

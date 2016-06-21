@@ -7,8 +7,6 @@ import ApiFetch from '../../lib/ApiFetch.js';
 import Url from '../../lib/Url';
 import ValidParams from '../../lib/ValidParams';
 
-import './OmniSuggest.scss';
-
 function escapeRegexCharacters(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }

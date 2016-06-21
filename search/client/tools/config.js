@@ -23,6 +23,7 @@ const JS_LOADER = {
     path.resolve(__dirname, '../pages'),
     path.resolve(__dirname, '../app.js'),
     path.resolve(__dirname, '../config.js'),
+    path.resolve(__dirname, '../styles')
   ],
   loader: 'babel-loader',
 };
