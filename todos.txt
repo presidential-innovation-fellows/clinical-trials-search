@@ -1,4 +1,5 @@
-
+Add es alias-flipping
+Figure out why update cron isn't logging.
 Install some sort of error monitoring / Integrate with pingdom (or some other service)
 Log rotate
 
@@ -11,3 +12,6 @@ update date all/any fields
 
 look into biospecimen...
 Add robots.txt
+
+
+Fix cron + logging
