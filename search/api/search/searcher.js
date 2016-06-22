@@ -105,7 +105,7 @@ class Searcher {
     });
   }
 
-  _addRangeFilters(body, q) {
+  _addDateRangeFilters(body, q) {
     const _addRangeFilter = (field, lteRange, gteRange) => {
       let ranges = {};
 
@@ -130,10 +130,40 @@ class Searcher {
       body.filter("range", field, ranges);
     }
 
-    let possibleRangeProps = _.union(
-      searchPropsByType["date"],
-      searchPropsByType["long"]
-    )
+    let possibleRangeProps = searchPropsByType["date"]
+    possibleRangeProps.forEach((field) => {
+      let lteRange = q[field + "_lte"];
+      let gteRange = q[field + "_gte"];
+      if(lteRange || gteRange) {
+        _addRangeFilter(field, lteRange, gteRange);
+      }
+    });
+  }
+
+  _addLongRangeFilters(body, q) {
+    const _addRangeFilter = (field, lteRange, gteRange) => {
+      let ranges = {};
+
+      const _addRangeForRangeType = (rangeType, longRange) => {
+        if(longRange) {
+          if(!isNaN(parseInt(longRange))) {
+            ranges[rangeType] = longRange;
+          } else {
+            throw new Error(
+              `Invalid number supplied for ${field}_${rangeType}.`
+            );
+            return;
+          }
+        }
+      };
+
+      _addRangeForRangeType("lte", lteRange);
+      _addRangeForRangeType("gte", gteRange);
+
+      body.filter("range", field, ranges);
+    }
+
+    let possibleRangeProps = searchPropsByType["long"]
     possibleRangeProps.forEach((field) => {
       let lteRange = q[field + "_lte"];
       let gteRange = q[field + "_gte"];
@@ -205,7 +235,8 @@ class Searcher {
 
     this._addAllFilter(body, q);
     this._addStringFilters(body, q);
-    this._addRangeFilters(body, q);
+    this._addDateRangeFilters(body, q);
+    this._addLongRangeFilters(body, q);
     this._addBooleanFilters(body, q);
     this._addSizeFromParams(body, q);
     this._addIncludeExclude(body, q);
