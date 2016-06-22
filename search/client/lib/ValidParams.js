@@ -3,25 +3,25 @@ const params = [
     "param_key": "_diseases",
     "display_name": "Disease",
     "filter_type": "suggest",
-    "category": "basic"
+    "category": "get started"
   }, {
     "param_key": "_locations",
     "display_name": "Location",
     "filter_type": "suggest",
-    "category": "basic"
+    "category": "get started"
+  }, {
+    "param_key": "sites.org.family",
+    "display_name": "Network/Organization",
+    "filter_type": "suggest",
+    "category": "get started"
   }, {
     "param_key": "eligibility.structured.gender",
     "display_name": "Gender",
     "filter_type": "gender",
-    "category": "basic"
+    "category": "get started"
   }, {
     "param_key": "sites.org.name",
     "display_name": "Hospital/Center",
-    "filter_type": "suggest",
-    "category": "organization"
-  }, {
-    "param_key": "sites.org.family",
-    "display_name": "Network/Organization",
     "filter_type": "suggest",
     "category": "organization"
   }, {
@@ -41,7 +41,12 @@ const params = [
     "category": "advanced"
   }, {
     "param_key": "brief_title",
-    "display_name": "Title",
+    "display_name": "Brief Title",
+    "filter_type": "text",
+    "category": "advanced"
+  }, {
+    "param_key": "official_title",
+    "display_name": "Official Title",
     "filter_type": "text",
     "category": "advanced"
   }, {
@@ -50,16 +55,16 @@ const params = [
     "filter_type": "select",
     "category": "advanced"
   }, {
-  //   "param_key": "eligibility.structured.max_age",
-  //   "display_name": "Max Age",
-  //   "filter_type": "number",
-  //   "category": "basic"
-  // }, {
-  //   "param_key": "eligibility.structured.min_age",
-  //   "display_name": "Min Age",
-  //   "filter_type": "number",
-  //   "category": "basic"
-  // }, {
+    "param_key": "eligibility.structured.max_age_number",
+    "display_name": "Max Age",
+    "filter_type": "number",
+    "category": "get started"
+  }, {
+    "param_key": "eligibility.structured.min_age_number",
+    "display_name": "Min Age",
+    "filter_type": "number",
+    "category": "get started"
+  }, {
     "param_key": "nci_id",
     "display_name": "NCI ID",
     "filter_type": "text",
@@ -78,17 +83,17 @@ const params = [
   //   "param_key": "date_last_updated_anything",
   //   "display_name": "Date Updated",
   //   "filter_type": "date",
-  //   "category": "tertiary"
+  //   "category": "advanced"
   // }, {
   //   "param_key": "completion_date",
   //   "display_name": "Date Completed",
   //   "filter_type": "date",
-  //   "category": "tertiary"
+  //   "category": "advanced"
   // }, {
   //   "param_key": "start_date",
   //   "display_name": "Date Started",
   //   "filter_type": "date",
-  //   "category": "tertiary"
+  //   "category": "advanced"
   // }, {
     "param_key": "anatomic_sites",
     "display_name": "Anatomic Site",

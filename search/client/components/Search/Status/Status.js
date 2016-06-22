@@ -17,6 +17,23 @@ export default class extends Component {
 
     Object.keys(params).forEach((key) => {
       let values = params[key];
+      // TODO: handle special case, make this better (pull out explicit logic)
+      if (key === "eligibility.structured.max_age_number_gte") {
+        if (values && values[0] === "") {
+          return;
+        } else {
+          return fieldStatuses.push({
+            displayType: "Age",
+            key: "age",
+            statusItems: values.map((value) => {
+              return { key, value };
+            })
+          });
+        }
+      } else if (key === "eligibility.structured.min_age_number_lte") {
+        // nada
+        return;
+      }
       let fieldStatus = {
         displayType: this._getDisplayType(key),
         key,
@@ -46,7 +63,7 @@ export default class extends Component {
           <div key={fieldStatus.displayType}>
             <b>{fieldStatus.displayType}:</b>{" "}
             {fieldStatus.statusItems.map((statusItem, i) =>
-              <span>
+              <span key={statusItem.key}>
                 <StatusItem status={statusItem} />
                 {i < (fieldStatus.statusItems.length) - 1 ? " or " : ""}
               </span>

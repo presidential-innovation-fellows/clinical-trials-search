@@ -6,6 +6,7 @@ import FilterSelect from './Select'
 import FilterSuggest from './Suggest'
 import FilterText from './Text'
 import FilterGender from './Gender'
+import FilterAge from './Age'
 
 import Url from '../../../lib/Url';
 import ValidParams from '../../../lib/ValidParams';
@@ -17,11 +18,13 @@ export default class extends Component {
 
     this.state = {
       showFilters: false,
-      selectedCategory: "basic",
-      validParamsByCategory: ValidParams.getParamsByCategory()
+      selectedCategory: "get started",
+      validParamsByCategory: ValidParams.getParamsByCategory(),
+      validParamsByKey: ValidParams.getParamsByKey()
     }
 
     this.toggleFilters = this.toggleFilters.bind(this);
+    this.renderFilter = this.renderFilter.bind(this);
   }
 
   toggleFilters() {
@@ -33,28 +36,76 @@ export default class extends Component {
     this.setState({ selectedCategory: category });
   }
 
+  renderFilters() {
+    switch(this.state.selectedCategory) {
+      case "get started":
+        return this.renderGeneralFilters();
+      case "advanced":
+        return this.renderAdvancedFilters();
+    }
+  }
+
+  renderFilter(paramKey) {
+    const { validParamsByKey } = this.state;
+    let filterType = validParamsByKey[paramKey]["filter_type"];
+    let displayName = validParamsByKey[paramKey]["display_name"];
+    switch(filterType) {
+      case "date":
+        return <FilterDate key={paramKey} paramField={paramKey} displayName={displayName} />;
+      case "select":
+        return <FilterSelect key={paramKey} paramField={paramKey} displayName={displayName} />;
+      case "suggest":
+        return <FilterSuggest key={paramKey} paramField={paramKey} displayName={displayName} />;
+      case "text":
+        return <FilterText key={paramKey} paramField={paramKey} displayName={displayName} />;
+      case "gender":
+        return <FilterGender key={paramKey} paramField={paramKey} displayName={displayName} />;
+      default:
+        return;
+    };
+  }
+
+  renderGeneralFilters() {
+    return (
+      <div className="filters">
+        <div className="filters-column">
+          {this.renderFilter("_diseases")}
+          {this.renderFilter("_locations")}
+          {this.renderFilter("sites.org.family")}
+          {this.renderFilter("arms.interventions.intervention_type")}
+        </div>
+        <div className="filters-column">
+          {this.renderFilter("eligibility.structured.gender")}
+          <FilterAge key="age" />
+        </div>
+      </div>
+    )
+  }
+
+  renderAdvancedFilters() {
+    return (
+      <div className="filters">
+        <div className="filters-column">
+          {this.renderFilter("nci_id")}
+          {this.renderFilter("nct_id")}
+          {this.renderFilter("official_title")}
+          {this.renderFilter("brief_title")}
+          {this.renderFilter("acronym")}
+        </div>
+        <div className="filters-column">
+          {this.renderFilter("current_trial_status")}
+          {this.renderFilter("phase.phase")}
+          {this.renderFilter("anatomic_sites")}
+          {this.renderFilter("_all")}
+        </div>
+      </div>
+    )
+  }
+
   render() {
-    let { showFilters, selectedCategory, validParamsByCategory } = this.state;
-    let categories = Object.keys(validParamsByCategory);
-    let validParams = validParamsByCategory[selectedCategory];
-    let filters = Object.keys(validParams).map((paramKey) => {
-      let filterType = validParams[paramKey]["filter_type"];
-      let displayName = validParams[paramKey]["display_name"].toLowerCase();
-      switch(filterType) {
-        case "date":
-          return (<FilterDate key={paramKey} paramField={paramKey} displayName={displayName} />);
-        case "select":
-          return (<FilterSelect key={paramKey} paramField={paramKey} displayName={displayName} />);
-        case "suggest":
-          return (<FilterSuggest key={paramKey} paramField={paramKey} displayName={displayName} />);
-        case "text":
-          return (<FilterText key={paramKey} paramField={paramKey} displayName={displayName} />);
-        case "gender":
-          return (<FilterGender key={paramKey} paramField={paramKey} displayName={displayName} />);
-        default:
-          return;
-      };
-    });
+    let { showFilters, selectedCategory } = this.state;
+    let categories = ["get started", "advanced"];
+    let filters = this.renderFilters();
     var filterRender;
     if (showFilters) {
       filterRender = (
@@ -68,9 +119,7 @@ export default class extends Component {
             )}
             <div className="filter-category-postheaders">&nbsp;</div>
           </div>
-          <div className="filters">
-            {filters}
-          </div>
+          {filters}
           <div className="toggle-hide-filter" onClick={this.toggleFilters} key={showFilters}>
             Close
           </div>

@@ -54,11 +54,15 @@ const _removeParams = (params, removeParams) => {
       values = [values];
     }
     values.forEach((value) => {
-      let i = params[key].findIndex((pValue) => {
-        return pValue === value;
-      });
-      if (i >= 0) {
-        params[key].splice(i, 1);
+      if (value) {
+        let i = params[key].findIndex((pValue) => {
+          return pValue === value;
+        });
+        if (i >= 0) {
+          params[key].splice(i, 1);
+        }
+      } else {
+        params[key] = [];
       }
     });
     if (!params[key].length) {
