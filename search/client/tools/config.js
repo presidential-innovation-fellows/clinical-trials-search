@@ -1,6 +1,9 @@
 import path from 'path';
 import webpack from 'webpack';
 import merge from 'lodash.merge';
+var bourbon = require('bourbon').includePaths,
+    ExtractTextPlugin = require("extract-text-webpack-plugin"),
+    neat = require('bourbon-neat').includePaths;
 
 const DEBUG = !process.argv.includes('release');
 const VERBOSE = process.argv.includes('verbose');
@@ -101,6 +104,7 @@ const appConfig = merge({}, config, {
   // http://webpack.github.io/docs/configuration.html#devtool
   devtool: DEBUG ? 'cheap-module-eval-source-map' : false,
   plugins: [
+    new ExtractTextPlugin("style.css"),
     ...config.plugins,
     ...(DEBUG ? [] : [
       new webpack.optimize.DedupePlugin(),
@@ -116,6 +120,9 @@ const appConfig = merge({}, config, {
       new webpack.NoErrorsPlugin(),
     ] : []),
   ],
+  sassLoader: {
+    includePaths: [bourbon, neat]
+  },
   module: {
     loaders: [
       WATCH ? Object.assign({}, JS_LOADER, {
@@ -142,15 +149,10 @@ const appConfig = merge({}, config, {
       ...config.module.loaders,
       {
         test: /\.scss$/,
-        loaders: [
-          'style-loader',
-          'css-loader',
-          'sass-loader',
-          'postcss-loader?parser=postcss-scss'
-        ],
+        loader: ExtractTextPlugin.extract('css!sass')
       },
     ],
-  },
+  }
 });
 
 // Configuration for server-side pre-rendering bundle
@@ -171,15 +173,19 @@ const pagesConfig = merge({}, config, {
   },
   externals: /^[a-z][a-z\.\-\/0-9]*$/i,
   plugins: config.plugins.concat([
+    new ExtractTextPlugin("style.css"),
     new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 1 }),
   ]),
+  sassLoader: {
+    includePaths: [bourbon, neat]
+  },
   module: {
     loaders: [
       JS_LOADER,
       ...config.module.loaders,
       {
         test: /\.scss$/,
-        loaders: ['css-loader', 'postcss-loader?parser=postcss-scss'],
+        loader: ExtractTextPlugin.extract('css!sass')
       },
     ],
   },
