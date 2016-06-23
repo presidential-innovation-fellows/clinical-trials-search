@@ -14,16 +14,16 @@
 
   .react-tagsinput {
     background-color: #fff;
-    color: $text-color;
+    color: $dark-gray;
     overflow: hidden;
     padding-left: 5px;
     padding-top: 5px;
   }
 
   .react-tagsinput-tag {
-    background-color: lighten($text-color, 50%);
-    border: 1px solid lighten($text-color, 30%);
-    color: $text-color;
+    background-color: lighten($dark-gray, 50%);
+    border: 1px solid lighten($dark-gray, 30%);
+    color: $dark-gray;
     display: inline-block;
     font-size: 0.9em;
     line-height: 1.4;
@@ -40,7 +40,7 @@
   }
 
   .react-tagsinput-tag a::before {
-    color: $text-color;
+    color: $dark-gray;
     content: "× ";
   }
 

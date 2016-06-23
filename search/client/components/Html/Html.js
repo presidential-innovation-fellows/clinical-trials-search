@@ -21,7 +21,7 @@ class Html extends Component {
         <meta name="description" content={this.props.description || description} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="apple-touch-icon" href="apple-touch-icon.png" />
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,700" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,700" />
         <link rel="stylesheet" href="style.css" />
         <script src={'/app.js?' + new Date().getTime()}></script>
       </head>

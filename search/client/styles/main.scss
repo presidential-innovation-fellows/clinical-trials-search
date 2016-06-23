@@ -6,22 +6,6 @@
 @import "modules/all";
 @import "pages/all";
 
-html, body {
-  margin: 0;
-  padding: 0;
-  background-color: $body-bg;
-  color: $text-color;
-  font-family: $font-family-base;
-}
-
-a {
-  color: $primary-color;
-}
-
-a:visited {
-  color: darken($primary-color, 17%);
-}
-
 .layout {
   margin: 0 auto;
 }

@@ -1,1 +1,14 @@
 @import "variables";
+
+@import "container";
+@import "typography";
+
+
+body {
+  background-color: $base-background-color
+}
+
+html,
+body {
+  margin: 0;
+}

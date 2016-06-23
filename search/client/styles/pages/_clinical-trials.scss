@@ -18,6 +18,7 @@
 
   .search-status {
     padding: 0px 40px;
+
     .search-results {
       font-size: 24px;
       font-weight: 300;
@@ -45,7 +46,7 @@
   }
 
   .toggle-hide-filter {
-    background-color: darken($text-color, 20%);
+    background-color: darken($dark-gray, 20%);
     cursor: pointer;
     margin-top: -70px;
     padding: 10px 15px;

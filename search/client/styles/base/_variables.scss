@@ -2,39 +2,79 @@
  * Scaffolding
  * -------------------------------------------------------------------------- */
 
-$body-bg: darken(#fff, 5%);
-$text-color: #666;
+  $body-bg: darken(#fff, 5%);
 
-$primary-color: #2b7bba;
-$secondary-color: #bb0e3d;
-$tertiary-color: #099;
+/*
+ * Colors
+ * -------------------------------------------------------------------------- */
+
+  // General Colors
+  $black: #000000;
+  $blue: #477dca;
+  $dark-gray: #333;
+  $medium-gray: #999;
+  $light-gray: #ddd;
+  $extra-light-gray: #f2f2f2;
+  $pink: #df628a;
+  $white: #ffffff;
+  $red: #d50f25;
+
+  //App Specific Colors
+  $primary-color: #1DAAF1;
+  $secondary-color: #bb0e3d;
+  $tertiary-color: #099;
+
+  //Background Colors
+  $base-background-color: $extra-light-gray;
 
 /*
  * Typography
  * -------------------------------------------------------------------------- */
 
-$font-family-base: 'Source Sans Pro', 'Helvetica', sans-serif;
+  //Font Colors
+  $action-color: $primary-color;
+  $base-font-color: lighten($dark-gray, 10);
+
+  //Font Families
+  $base-font-family: 'Source Sans Pro', 'Helvetica', sans-serif;
+  $heading-font-family: 'Source Sans Pro', 'Helvetica', sans-serif;
+
+  // Font Sizes
+  $base-font-size: 1em;
+
+  // Line Height
+  $base-line-height: 1.5;
+  $heading-line-height: 1.2;
 
 /*
  * Media queries breakpoints
  * -------------------------------------------------------------------------- */
 
-$screen-sm-min: 768px;
-$screen-md-min: 992px;
-$screen-lg-min: 1200px;
+  $small-screen: 768px;
+  $medium-screen: 992px;
+  $large-screen: 1200px;
 
 /*
  * Responsive amounts
  * -------------------------------------------------------------------------- */
 
- @media(min-width: $screen-sm-min) {
+ @media(min-width: $small-screen) {
    $padding: 10px;
  }
 
- @media(min-width: $screen-md-min) {
+ @media(min-width: $medium-screen) {
    $padding: 20px;
  }
 
- @media(min-width: $screen-lg-min) {
+ @media(min-width: $large-screen) {
    $padding: 40px;
  }
+
+ /*
+  * Spacing
+  * -------------------------------------------------------------------------- */
+
+  $base-border-radius: 3px;
+  $base-spacing: $base-line-height * 1em;
+  $small-spacing: $base-spacing / 2;
+  $base-z-index: 0;

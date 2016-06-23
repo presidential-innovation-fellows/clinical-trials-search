@@ -7,33 +7,52 @@
       margin-top: 0;
     }
   }
+}
 
-  .index-about {
-    font-size: 16px;
-    max-width: 690px;
-    padding: 40px;
+.index-about {
+  margin-top: 2em;
 
-    h1 {
-      color: $text-color;
-      font-weight: 100px;
-      font-size: 24px;
+  h1 {
+    font-weight: normal;
+    font-size: 1.8em;
+    margin-bottom: 0.25em;
+
+    @include media($small-screen) {
+      font-size: 2em;
     }
   }
 
-  .index-search {
-    background-color: $primary-color;
-    padding: 20px 40px 10px 40px;
+  p {
+    color: lighten($base-font-color, 5);
   }
 
-  .search-prompt-container {
-    color: #fff;
-    font-size: 28px;
-    font-weight: 200;
-    margin-bottom: 20px;
+  .main-content {
+    @include media($small-screen) {
+      @include span-columns(8);
+    }
+  }
+}
+
+.index-search {
+  background-color: $primary-color;
+  padding: 2em 0 4em;
+
+  h1 {
+    color: $white;
+    font-weight: 300;
+    margin-bottom: 0.3em;
+  }
+
+  .search-container {
+    @include media($small-screen) {
+      @include span-columns(8);
+    }
   }
 }
 
 .omni-suggest {
+  @include clearfix;
+  width: 100%;
 
   .omni-suggest-highlight {
     // color: #ee0000;
@@ -46,36 +65,38 @@
 
   .react-autosuggest__input {
     border: none;
-    font-family: Helvetica, sans-serif;
-    font-size: 16px;
-    font-weight: 300;
+    float: left;
+    font-size: 1.1em;
     height: 50px;
     padding: 10px 20px;
-    width: 640px;
+    width: 85%;
+
+    @include media($small-screen) {
+      width: 90%;
+    }
 
     &:focus {
       outline: none;
     }
   }
 
-  .react-autosuggest__container--open .react-autosuggest__input {
-
-  }
-
   .react-autosuggest__suggestions-container {
-    background-color: #fff;
-    border: 1px solid #fff;
-    box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.1);
-    font-family: Helvetica, sans-serif;
-    font-size: 1em;
+    background-color: $white;
+    border: 1px solid $white;
+    box-shadow: 4px 4px 4px rgba($black, 0.1);
+    font-family: $base-font-family;
     font-weight: 300;
     list-style-type: none;
     margin: 0;
     padding: 0;
     position: absolute;
     top: 60px;
-    width: 640px;
+    width: 85%;
     z-index: 2;
+
+    @include media($small-screen) {
+      width: 90%;
+    }
   }
 
   .react-autosuggest__suggestion {
@@ -87,25 +108,30 @@
   }
 
   .react-autosuggest__suggestion--focused {
-    background-color: #eee;
+    background-color: $light-gray;
   }
 
   .search-icon {
-    background-color: $tertiary-color;
+    background-color: darken($primary-color, 20);
+    float: left;
     height: 50px;
-    left: 640px;
-    position: relative;
-    top: -50px;
-    width: 50px;
+    text-align: center;
+    width: 15%;
+
+    @include media($small-screen) {
+      width: 10%;
+    }
 
     input {
+      box-sizing: border-box;
       height: 50px;
-      padding: 10px;
-      width: 50px;
+      padding: 13px;
+      width: 100%;
     }
   }
 
   .suggestion-type {
-    color: #009999;
+    color: darken($primary-color, 10);
+    font-weight: normal;
   }
 }

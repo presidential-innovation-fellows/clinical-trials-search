@@ -2,23 +2,24 @@
   background-color: $primary-color;
   height: 80px;
   margin: 0;
+  padding: 20px 0;
 
   .nci-logo {
-    padding: 20px 40px;
+    float: left;
+    width: 320px;
+
+    @include media($small-screen) {
+      width: 400px;
+    }
 
     img {
-      height: 40px;
-      width: auto;
+      height: auto;
+      width: 100%;
     }
   }
 
   .nci-home-link {
-    height: 40px;
-    line-height: 40px;
-    padding: 20px 40px;
-    position: absolute;
-    right: 0px;
-    top: 0px;
+    float: right;
 
     a {
       color: darken($primary-color, 25%);

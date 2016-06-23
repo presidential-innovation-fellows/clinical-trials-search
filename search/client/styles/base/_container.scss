@@ -1,0 +1,8 @@
+.container {
+  @include outer-container;
+  padding: 0 1em;
+
+  @include media($medium-screen) {
+    padding: 0 2.5em;
+  }
+}
