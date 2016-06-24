@@ -1,0 +1,61 @@
+fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+
+legend {
+  font-weight: bold;
+  margin-bottom: 0.5em;
+}
+
+.checkbox-container {
+  margin-bottom: 0.5em;
+  position: relative;
+  width: 20px;
+
+  label {
+    background: darken($white, 5);
+    border-radius: 4px;
+    box-shadow: inset 0px 1px 1px $white, 0px 1px 3px rgba($black, 0.25);
+    cursor: pointer;
+    height: 20px;
+    left: 0;
+    line-height: 20px;
+    position: absolute;
+    top: 0;
+    width: 20px;
+
+    &:after {
+      background: $transparent;
+      border: 3px solid $dark-gray;
+      border-right: none;
+      border-top: none;
+      content: '';
+      height: 8px;
+      left: 4px;
+      opacity: 0;
+      position: absolute;
+      top: 4px;
+      transform: rotate(-45deg);
+      width: 12px;
+    }
+
+    &:hover::after {
+      opacity: 0.5;
+    }
+
+    span {
+      margin-left: 1.75em;
+      vertical-align: top;
+    }
+  }
+
+  input[type=checkbox] {
+    visibility: hidden;
+
+    &:checked + label:after {
+      opacity: 1;
+    }
+  }
+}

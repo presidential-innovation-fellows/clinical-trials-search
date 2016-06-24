@@ -88,21 +88,17 @@ class Gender extends Component {
 
     return (
       <div className={this.className}>
-        <div className="checkbox-label">{displayName}</div>
-        <label>
-          <input name="male"
-                 type="checkbox"
-                 checked={this.state.isMaleChecked}
-                 onChange={this.onChange} />
-          Male
-        </label>&nbsp;
-        <label>
-          <input name="female"
-                 type="checkbox"
-                 checked={this.state.isFemaleChecked}
-                 onChange={this.onChange} />
-          Female
-        </label>
+        <fieldset>
+          <legend>{displayName}</legend>
+          <div className="checkbox-container">
+            <input name="male" id="male" type="checkbox" checked={this.state.isMaleChecked} onChange={this.onChange}></input>
+            <label htmlFor="male"><span>Male</span></label>
+          </div>
+          <div className="checkbox-container">
+            <input name="female" id="female" type="checkbox" checked={this.state.isFemaleChecked} onChange={this.onChange}></input>
+            <label htmlFor="female"><span>Female</span></label>
+          </div>
+        </fieldset>
       </div>
     );
   }

@@ -76,8 +76,10 @@ export default class extends Component {
           {this.renderFilter("arms.interventions.intervention_type")}
         </div>
         <div className="filters-column">
-          {this.renderFilter("eligibility.structured.gender")}
-          <FilterAge key="age" />
+          <div className="gender-age-container">
+            {this.renderFilter("eligibility.structured.gender")}
+            <FilterAge key="age" />
+          </div>
         </div>
       </div>
     )
@@ -110,15 +112,13 @@ export default class extends Component {
     var filterRender;
     if (showFilters) {
       filterRender = (
-        <div>
+        <div className="container">
           <div className="filter-category-headers">
-            <div className="filter-category-preheaders">&nbsp;</div>
             {categories.map((category, i) =>
               <span key={category} className={"filter-category-header" + (category === selectedCategory ? " selected" : "")} onClick={() => this.selectCategory(category)}>
                 {category}
               </span>
             )}
-            <div className="filter-category-postheaders">&nbsp;</div>
           </div>
           {filters}
           <div className="toggle-hide-filter" onClick={this.toggleFilters} key={showFilters}>
@@ -128,8 +128,11 @@ export default class extends Component {
       );
     } else {
       filterRender = (
-        <div className="toggle-show-filter" onClick={this.toggleFilters} key={showFilters}>
-          Filter Results [+]
+        <div className="container">
+          <div className="toggle-show-filter" onClick={this.toggleFilters} key={showFilters}>
+            Filter Results
+            <i className="fa fa-caret-down"></i>
+          </div>
         </div>
       );
     }

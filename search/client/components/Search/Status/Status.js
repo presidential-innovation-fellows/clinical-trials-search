@@ -56,9 +56,9 @@ export default class extends Component {
     let { totalResults } = this.props;
     return (
       <div className="search-status">
-        <div className="search-results">
+        <h1 className="search-results">
           Showing <b>{totalResults}</b> {totalResults === 1 ? "trial" : "trials"}
-        </div>
+        </h1>
         {fieldStatuses.map((fieldStatus, i) =>
           <div key={fieldStatus.displayType}>
             <b>{fieldStatus.displayType}:</b>{" "}

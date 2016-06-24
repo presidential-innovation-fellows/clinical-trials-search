@@ -23,9 +23,10 @@ export default class extends Component {
     return (
       <div className="clinical-trials-page">
         <SearchFilter />
-        <br/>
-        <SearchStatus totalResults={this.state.totalResults} />
-        <ClinicalTrialResults reportTotalResults={this.reportTotalResults} />
+        <div className="container">
+          <SearchStatus totalResults={this.state.totalResults} />
+          <ClinicalTrialResults reportTotalResults={this.reportTotalResults} />
+        </div>
       </div>
     )
   }
