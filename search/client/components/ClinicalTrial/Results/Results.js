@@ -5,6 +5,7 @@ import Fetch from 'isomorphic-fetch';
 
 import ApiFetch from '../../../lib/ApiFetch.js';
 import ClinicalTrialResult from '../Result';
+import PromptFiltering from '../../Search/PromptFiltering';
 import Link from '../../Link'
 import Location from '../../../lib/Location';
 import Url from '../../../lib/Url';
@@ -106,6 +107,9 @@ export default class extends Component {
     if (total) {
       return (
         <div className="clinical-trials">
+          <aside className="card sidebar">
+            <PromptFiltering numResults={total} />
+          </aside>
           <div>
             {trials.map((trial, i) =>
               <ClinicalTrialResult key={trial.nci_id} trial={trial}>
