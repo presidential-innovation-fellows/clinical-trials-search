@@ -10,7 +10,7 @@ export default class extends Component {
           <div className="container">
             <div className="search-container">
               <h1>
-                <label for="clinical-trials-search">
+                <label htmlFor="clinical-trials-search">
                   Search Cancer Clinical Trials
                 </label>
               </h1>
