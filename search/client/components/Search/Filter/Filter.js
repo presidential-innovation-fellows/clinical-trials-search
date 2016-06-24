@@ -72,6 +72,7 @@ export default class extends Component {
           {this.renderFilter("_diseases")}
           {this.renderFilter("_locations")}
           {this.renderFilter("sites.org.family")}
+          {this.renderFilter("sites.org.name")}
           {this.renderFilter("arms.interventions.intervention_type")}
         </div>
         <div className="filters-column">
