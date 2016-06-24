@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import Navigation from '../Navigation';
+import CustomerServiceWidget from '../CustomerServiceWidget';
 
 require('../../styles/main.scss');
 
@@ -14,6 +15,7 @@ class Layout extends Component {
       <div className="layout">
         <Navigation />
         {this.props.children}
+        <CustomerServiceWidget />
       </div>
     );
   }
