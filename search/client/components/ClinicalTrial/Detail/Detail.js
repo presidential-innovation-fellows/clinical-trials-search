@@ -4,6 +4,7 @@ import Fetch from 'isomorphic-fetch';
 import ApiFetch from '../../../lib/ApiFetch.js';
 import Link from '../../Link';
 import Url from '../../../lib/Url';
+import Location from '../../../lib/Location';
 
 function createMarkup(text) {
   if(!text) { return {__html: ""}; }
@@ -40,7 +41,7 @@ export default class extends Component {
       return (
         <div className="container">
           <div className="back">
-            <a href="#">Back to Your Results</a>
+            <a href="#back" onClick={Location.goBack}>Back to Your Results</a>
           </div>
           <aside className="card sidebar">
             <h1>Download Trial Info</h1>
