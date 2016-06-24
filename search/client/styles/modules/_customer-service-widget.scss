@@ -1,0 +1,75 @@
+$widget-color: darken($primary-color, 10);
+
+.customer-service-widget {
+  background-color: $primary-color;
+  border-radius: 1.4em;
+  bottom: 2em;
+  color: $white;
+  height: 2.8em;
+  line-height: 2.8em;
+  position: fixed;
+  right: 3em;
+  width: 8em;
+
+  .widget-arrow {
+    border-style: solid;
+    border-width: 14px 12px 0 12px;
+    border-color: $widget-color $transparent $transparent $transparent;
+    bottom: -14px;
+    height: 0;
+    left: 50%;
+    margin-left: -12px;
+    position: absolute;
+    width: 0;
+  }
+
+  .widget-detail {
+    @include transition(top 0.4s ease);
+    background-color: $widget-color;
+    box-shadow: 4px 4px 4px rgba($black, 0.1);
+    left: 50%;
+    line-height: 1em;
+    margin-left: -5.5em;
+    opacity: 0;
+    padding: 1.25em 1em 1.5em;
+    position: absolute;
+    visibility: hidden;
+    top: -8.5em;
+    width: 11em;
+
+    &.active {
+      opacity: 1;
+      top: -9.5em;
+      visibility: visible;
+    }
+
+    h4 {
+      font-size: 1.1em;
+      font-weight: bold;
+      margin: 0;
+      text-align: center;
+    }
+
+    p {
+      font-size: 1em;
+      margin: 0;
+      text-align: center;
+
+      &.widget-number {
+        font-weight: bold;
+        margin-top: 1em;
+      }
+    }
+  }
+
+  .widget-label {
+    cursor: pointer;
+    font-weight: bold;
+    vertical-align: center;
+    text-align: center;
+
+    i {
+      margin: 0.1em 0.4em 0 0;
+    }
+  }
+}
