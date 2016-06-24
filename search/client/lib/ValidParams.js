@@ -107,10 +107,6 @@ const params = [
   }
 ];
 
-// TODO: add interventional and treatment
-// TF/IDF, later phases first (except phase 4), nctn, ncorps
-// Fix status (or)
-
 class ValidParams {
 
   static getParamsByCategory() {

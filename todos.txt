@@ -1,3 +1,9 @@
+================
+Backend stuff
+================
+
+add sorting (tf/idf for hairy cell problem, later phases first (except phase 4), nctn, ncorps)
+
 Add es alias-flipping
 Figure out why update cron isn't logging.
 Install some sort of error monitoring / Integrate with pingdom (or some other service)
@@ -15,3 +21,11 @@ Add robots.txt
 
 
 Fix cron + logging
+
+
+====================
+UX / Frontend Stuff
+====================
+
+add interventional and treatment fields to filters
+fix problem with status (or)
