@@ -63,7 +63,7 @@ export default class extends Component {
           <div key={fieldStatus.displayType}>
             <b>{fieldStatus.displayType}:</b>{" "}
             {fieldStatus.statusItems.map((statusItem, i) =>
-              <span key={statusItem.key}>
+              <span key={`${statusItem.key}_${statusItem.value}`}>
                 <StatusItem status={statusItem} />
                 {i < (fieldStatus.statusItems.length) - 1 ? " or " : ""}
               </span>
