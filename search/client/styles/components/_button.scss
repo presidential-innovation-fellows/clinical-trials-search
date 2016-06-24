@@ -1,0 +1,22 @@
+@mixin button($color: $primary-color) {
+  -webkit-font-smoothing: antialiased;
+  background-color: $color;
+  border-radius: $base-border-radius;
+  color: $white;
+  display: inline-block;
+  font-size: $base-font-size;
+  font-weight: bold;
+  line-height: 1;
+  padding: 0.75em 1em;
+  text-decoration: none;
+
+  &:hover {
+    background-color: darken($color, 10);
+    color: $white;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
