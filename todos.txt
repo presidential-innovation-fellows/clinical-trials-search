@@ -29,3 +29,4 @@ UX / Frontend Stuff
 
 add interventional and treatment fields to filters
 fix problem with status (or)
+add open filter trigger from sidebar
