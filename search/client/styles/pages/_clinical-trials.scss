@@ -3,7 +3,6 @@
   .clinical-trial-result {
     @extend %card;
     margin: 20px 0;
-    width: 640px;
 
     h3 {
       margin-top: 0;
@@ -11,66 +10,74 @@
   }
 
   .clinical-trials {
-    left: 40px;
-    position: absolute;
-    width: 680px;
-  }
 
-  .search-status {
-    padding: 0px 40px;
-
-    .search-results {
-      font-size: 24px;
-      font-weight: 300;
+    @include media($medium-screen) {
+      @include span-columns(8);
     }
   }
 
-  .status-item {
+  .gender-age-container {
 
+    .filter-age,
+    .filter-gender {
+      @include span-columns(6);
+    }
+  }
+
+  .search-status {
+    margin-top: 2em;
+
+    .search-results {
+      font-size: 2em;
+      font-weight: 300;
+      margin-bottom: 0.25em;
+    }
   }
 
   .remove-status {
     cursor: pointer;
   }
-
 }
 
 .filter-page {
   background-color: $primary-color;
   color: #fff;
+  padding-bottom: 2em;
+
+  .container {
+    position: relative;
+  }
 
   .toggle-show-filter {
+    @include button(darken($primary-color, 15));
     cursor: pointer;
-    font-weight: 700;
-    padding: 20px 0 40px 40px;
+    font-weight: bold;
+    padding: 1em 2em;
+
+    i {
+      margin-left: 0.4em;
+    }
   }
 
   .toggle-hide-filter {
-    background-color: darken($dark-gray, 20%);
+    @include button(darken($primary-color, 20));
     cursor: pointer;
-    margin-top: -70px;
-    padding: 10px 15px;
     position: absolute;
-    right: 40px;
+    right: 2.5em;
+    top: 0;
   }
 
   .filter-category-headers {
+    border-bottom: 1px solid darken($primary-color, 10);
     display: flex;
     margin-bottom: 20px;
-
-    .filter-category-preheaders {
-      border-bottom: 1px solid darken($primary-color, 12%);
-      padding: 10px;
-      width: 20px;
-    }
 
     .filter-category-header {
       background-color: darken($primary-color, 10%);
       border: 1px solid darken($primary-color, 12%);
-      border-collapse: collapse;
       cursor: pointer;
-      margin:-1px 0 0 -1px;
-      padding: 10px 15px;
+      font-weight: bold;
+      padding: 0.75em 2em;
 
       &.selected {
         background-color: darken($primary-color, 0%);
@@ -78,22 +85,13 @@
         cursor: default;
       }
     }
-
-    .filter-category-postheaders {
-      border-bottom: 1px solid darken($primary-color, 12%);
-      flex: 1;
-      padding: 10px;
-      width: 20px;
-    }
   }
 
   .filters {
-    padding: 0px 20px 20px 20px;
-    display: flex;
+    @include span-columns(6 pf 9);
 
     .filters-column {
-      flex: 1 1 auto;
-      padding: 0 20px;
+      @include span-columns(6);
     }
   }
 }
