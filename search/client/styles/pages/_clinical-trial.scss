@@ -1,20 +1,106 @@
 .clinical-trial-page {
 
-  .clinical-trial-detail {
+  .back {
+    margin-bottom: 2em;
+
+    a {
+      @include button(lighten($medium-gray, 5));
+
+      @include media($small-screen) {
+        font-size: 1.1em;
+      }
+    }
+  }
+
+  .card {
     @extend %card;
-    left: 40px;
-    margin-top: 2em;
-    padding-top: 40px;
-    position: absolute;
-    right: 0;
-    width: 640px;
+  }
+
+  .clinical-trial-detail {
 
     h1 {
       margin-top: 0;
+    }
+
+    h2 {
+      font-size: 1.65em;
+      margin: 1.5em 0 0.5em;
+    }
+
+    li {
+      font-size: 1.1em;
+    }
+
+    p {
+      &:last-child {
+        margin-top: 0;
+      }
+    }
+
+    ul {
+      list-style-type: none;
+      margin-top: 0;
+      padding: 0;
+    }
+
+    .card {
+      @include media($small-screen) {
+        padding: 2em 1.5em;
+      }
     }
   }
 
   .clinical-trial-location {
     margin-bottom: 10px;
+  }
+
+  .container {
+    margin-top: 2em;
+    @include direction-context(right-to-left){
+
+      .clinical-trial-detail {
+        @include media($small-screen) {
+          @include span-columns(6 of 9);
+        }
+      }
+
+      .sidebar {
+        @include media($small-screen) {
+          @include span-columns(3 of 9);
+        }
+      }
+    }
+  }
+
+  .sidebar {
+    margin-bottom: 2em;
+
+    @include media($small-screen) {
+      padding: 2em 1em;
+    }
+
+    a {
+      @include button();
+      display: inline-block;
+      margin-top: 0.5em;
+    }
+
+    h1 {
+      font-size: 1.35em;
+      margin-bottom: 0.25em;
+
+      @include media($small-screen) {
+        font-size: 1.75em;
+        margin-bottom: 0.5em;
+      }
+    }
+
+    p {
+      font-size: 1em;
+
+      @include media($small-screen) {
+        font-size: 1.1em;
+      }
+    }
   }
 }
