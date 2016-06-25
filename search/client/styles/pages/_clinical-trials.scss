@@ -10,10 +10,14 @@
   }
 
   .clinical-trials {
-
     @include media($medium-screen) {
       @include span-columns(8);
     }
+  }
+
+  .flash-message {
+    @extend %card;
+    background-color: lighten($yellow, 20);
   }
 
   .gender-age-container {

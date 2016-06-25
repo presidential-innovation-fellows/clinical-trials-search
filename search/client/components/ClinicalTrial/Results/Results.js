@@ -107,9 +107,9 @@ export default class extends Component {
     if (total) {
       return (
         <div className="clinical-trials">
-          <aside className="card sidebar">
+          <div className="flash-message">
             <PromptFiltering numResults={total} />
-          </aside>
+          </div>
           <div>
             {trials.map((trial, i) =>
               <ClinicalTrialResult key={trial.nci_id} trial={trial}>
