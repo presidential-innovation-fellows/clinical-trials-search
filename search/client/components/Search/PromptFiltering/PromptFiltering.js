@@ -6,7 +6,7 @@ export default class extends Component {
     super();
 
     this.state = {
-      numResultsTarget: 10
+      numResultsTarget: 100
     }
   }
 
@@ -18,16 +18,11 @@ export default class extends Component {
     let { numResultsTarget } = this.state;
     let { numResults } = this.props;
 
-    if (numResults < numResultsTarget) {
+    if (numResults > numResultsTarget) {
       return (
         <div className="prompt-filtering">
-          Print results...
-        </div>
-      )
-    } else {
-      return (
-        <div className="prompt-filtering">
-          Too many results, filter more...
+          That’s a lot of trials. Try using the filters above to narrow down
+          your results.
         </div>
       )
     }
