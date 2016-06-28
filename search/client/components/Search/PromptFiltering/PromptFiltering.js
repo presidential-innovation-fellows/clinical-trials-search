@@ -20,10 +20,16 @@ export default class extends Component {
 
     if (numResults > numResultsTarget) {
       return (
-        <div className="prompt-filtering">
-          That’s a lot of trials. Try using the filters above to narrow down
-          your results.
+        <div className="flash-message">
+          <div className="prompt-filtering">
+            That’s a lot of trials. Try using the filters above to narrow down
+            your results.
+          </div>
         </div>
+      )
+    } else {
+      return (
+        <div></div>
       )
     }
   }

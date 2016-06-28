@@ -107,9 +107,7 @@ export default class extends Component {
     if (total) {
       return (
         <div className="clinical-trials">
-          <div className="flash-message">
-            <PromptFiltering numResults={total} />
-          </div>
+          <PromptFiltering numResults={total} />
           <div>
             {trials.map((trial, i) =>
               <ClinicalTrialResult key={trial.nci_id} trial={trial}>
