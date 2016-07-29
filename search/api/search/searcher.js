@@ -43,7 +43,8 @@ class Searcher {
 
     if(id.substr(0, 4) === "NCI-")
       body.query("match", "nci_id", id);
-    else if(id.substr(0, 3) === "NCT")
+    else
+    // else if(id.substr(0, 3) === "NCT")
       body.query("match", "nct_id", id);
 
     let query = body.build("v2");
