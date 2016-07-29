@@ -1,0 +1,13 @@
+{
+  "Estrogen Receptor": ["Estrogen-Receptor", "estrogen receptor", "estrogen-receptor", "Estrogen-receptor", "Estrogen receptor", "hormone receptor-positive breast cancer", "ER "],
+  "HER-2/neu": ["HER2", "Her-2", "Her2/neu"],
+  "HIV RNA": ["HIV-1 RNA"],
+  "Serum CA125": ["CA-125"],
+  "B Cell": ["B-cell"],
+  "PGR isoform A": ["PR-alpha"],
+  "PGR isoform B": ["PR-beta"],
+  "Testosterone": ["testosterone"],
+  "BRAF V600E Mutation": ["BRAF V600E mutation", "V600E BRAF Mutation", "V600E BRAF mutation", "BRAF Mutation", "BRAF mutation"],
+  "ERBB2": ["Her-2", "Her2/neu"],
+  "Myeloma Protein": ["multiple myeloma"]
+}
