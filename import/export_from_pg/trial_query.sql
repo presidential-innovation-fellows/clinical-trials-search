@@ -254,34 +254,35 @@ SELECT
       WHERE
         study.nci_id = disease.nci_id and disease.inclusion_indicator='TRIAL'
     ),
-    -- 'biomarkers', (
-    --   SELECT
-    --     json_agg(
-    --       json_build_object(
-    --         'assay_purpose', biomarker.assay_purpose,
-    --         'assay_purpose_description', biomarker.assay_purpose_description,
-    --         'assay_type_code', biomarker.assay_type_code,
-    --         'assay_type_description', biomarker.assay_type_description,
-    --         'assay_use', biomarker.assay_use,
-    --         'long_name', biomarker.long_name,
-    --         'name', split_part(biomarker.name, ' (', 1),
-    --         'synonyms', (
-    --           string_to_array(replace(split_part(biomarker.name, '(', 2), ')', ''), '; ')
-    --         ),
-    --         'status_code', biomarker.status_code,
-    --         'tissue_collection_method_code', biomarker.tissue_collection_method_code,
-    --         'tissue_specimen_type_code', biomarker.tissue_specimen_type_code,
-    --         'hugo_biomarker_code', biomarker.hugo_biomarker_code,
-    --         'evaluation_type_code', biomarker.evaluation_type_code,
-    --         'evaluation_type_other_text', biomarker.evaluation_type_other_text,
-    --         'specimen_type_other_text', biomarker.specimen_type_other_text
-    --       )
-    --     )
-    --   FROM
-    --     dw_study_biomarker biomarker
-    --   WHERE
-    --     study.nci_id = biomarker.nci_id
-    -- ),
+    'biomarkers', (
+      SELECT
+        json_agg(
+          json_build_object(
+            'assay_purpose', biomarker.assay_purpose,
+            'assay_purpose_description', biomarker.assay_purpose_description,
+            'assay_type_code', biomarker.assay_type_code,
+            'assay_type_description', biomarker.assay_type_description,
+            'assay_use', biomarker.assay_use,
+            'long_name', biomarker.long_name,
+            'name', split_part(biomarker.name, ' (', 1),
+            'synonyms', (
+              string_to_array(replace(split_part(biomarker.name, '(', 2), ')', ''), '; ')
+              -- ,(?=[^\]]*(?:\[|$))
+            ),
+            'status_code', biomarker.status_code,
+            'tissue_collection_method_code', biomarker.tissue_collection_method_code,
+            'tissue_specimen_type_code', biomarker.tissue_specimen_type_code,
+            'hugo_biomarker_code', biomarker.hugo_biomarker_code,
+            'evaluation_type_code', biomarker.evaluation_type_code,
+            'evaluation_type_other_text', biomarker.evaluation_type_other_text,
+            'specimen_type_other_text', biomarker.specimen_type_other_text
+          )
+        )
+      FROM
+        dw_study_biomarker biomarker
+      WHERE
+        study.nci_id = biomarker.nci_id
+    ),
 
     'minimum_target_accrual_number', study.minimum_target_accrual_number,
     -- 'accruals', (

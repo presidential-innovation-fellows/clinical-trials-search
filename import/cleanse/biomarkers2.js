@@ -52,18 +52,21 @@ class CleanseStream extends Transform {
         if (biomarker.synonyms) {
           biomarkerNames = biomarkerNames.concat(biomarker.synonyms);
         }
+        biomarkerNames = _.uniq(_.compact(biomarkerNames));
 
         let result = {
           biomarker: biomarker.name,
           assay_purpose: biomarker.assay_purpose,
           assay_use: biomarker.assay_use,
           biomarkers_found: [],
+          relevant_eligibility_inclusion_indicator: [],
           relevant_eligibility_text: []
         };
         biomarkerNames.forEach((biomarkerName) => {
           trial.eligibility.unstructured.forEach((eligibility) => {
             if (eligibility.description.includes(biomarkerName)) {
               result.biomarkers_found.push(biomarkerName);
+              result.relevant_eligibility_inclusion_indicator.push(eligibility.inclusion_indicator);
               result.relevant_eligibility_text.push(eligibility.description);
             }
           });
@@ -72,9 +75,10 @@ class CleanseStream extends Transform {
         if (result.biomarkers_found.length > 0) {
           this.push({
             nci_id: trial.nci_id,
-            trial_status: trial.status,
+            trial_status: trial.current_trial_status,
             biomarker: result.biomarker,
             biomarkers_found: result.biomarkers_found.join("; "),
+            relevant_eligibility_inclusion_indicator: result.relevant_eligibility_inclusion_indicator.join("; "),
             relevant_eligibility_text: result.relevant_eligibility_text.join("; "),
             assay_purpose: result.assay_purpose,
             assay_use: result.assay_use
@@ -95,7 +99,7 @@ class TrialsCleanser {
     let js = JSONStream.parse("*");
     let cs = new CleanseStream();
     let jw = JSONStream.stringify();
-    let ws = fs.createWriteStream("../../data/biomarker_results.csv");
+    let ws = fs.createWriteStream("../../data/biomarker_results.json");
 
     rs.pipe(js).pipe(cs).pipe(jw).pipe(ws).on("finish", callback);
   }
