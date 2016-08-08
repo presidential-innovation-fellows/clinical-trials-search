@@ -581,6 +581,10 @@
                 "analyzer": "keyword_ci",
                 "include_in_all": false
               },
+              "coordinates" :{
+                "type": "geo_point",
+                "include_in_all": false
+              },
               "state_or_province": {
                 "type": "string",
                 "analyzer": "keyword_ci",
