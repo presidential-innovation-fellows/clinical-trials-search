@@ -9,10 +9,46 @@ const Utils               = require("../../common/utils");
 const TermLoader          = require("../../common/term_loader");
 const Logger              = require("../../common/logger");
 
+const ZIP_CODES           = require("../../data/zip_codes.json");
+
 let logger = new Logger({name: "export-cleanser"});
 
 const TRIALS_FILEPATH = path.join(__dirname,
   '../../data/trials.json');
+
+/**
+ * Stream Transformer for geocoding trial study sites.
+ * (Currently uses a basic zip_code => lat/lon map file for geocoding)
+ * 
+ * @class GeoCodingStream
+ * @extends {Transform}
+ */
+class GeoCodingStream extends Transform {
+  constructor() {
+    super({objectMode: true});
+  }
+
+  _transform(trial, enc, next) {
+    logger.info(`Geocoding trial with nci_id (${trial.nci_id}).`);
+
+    if (trial.sites) {
+      trial.sites.forEach((site) => {
+        let org = site.org;
+
+        if (org && org.postal_code) {
+          let geopoint = ZIP_CODES[org.postal_code];
+          if (geopoint) {
+            org.coordinates = geopoint;
+          }
+        }
+      })
+    }
+    
+    this.push(trial);
+    next();
+  }
+
+}
 
 class CleanseStream extends Transform {
 
@@ -91,10 +127,11 @@ class TrialsCleanser {
     let rs = fs.createReadStream(TRIALS_FILEPATH);
     let js = JSONStream.parse("*");
     let cs = new CleanseStream(this.terms);
+    let gs = new GeoCodingStream();
     let jw = JSONStream.stringify();
     let ws = fs.createWriteStream("../../data/trials_cleansed.json");
 
-    rs.pipe(js).pipe(cs).pipe(jw).pipe(ws).on("finish", callback);
+    rs.pipe(js).pipe(cs).pipe(gs).pipe(jw).pipe(ws).on("finish", callback);
   }
 
   static cleanse() {
