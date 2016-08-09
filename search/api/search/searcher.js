@@ -173,6 +173,45 @@ class Searcher {
       }
     });
   }
+  
+  _addGeoDistanceFilters(body, q) {
+
+    //We need to put lat/long/distance into a single filter
+    const _addGeoDistanceFilter = (field, lat, lon, dist) => {
+      let err = "";
+      if (!(lat) || isNaN(parseFloat(lat))) {
+        err +=  `Geo Distance filter for ${field} missing or invalid latitude.  Please supply valid ${field}_lat. \n`                      
+      }
+      if (!(lon) || isNaN(parseFloat(lon))) {
+        err +=  `Geo Distance filter for ${field} missing or invalid longitude.  Please supply valid ${field}_lon. \n`                      
+      }
+
+      //TODO: add in validation of values for distance
+
+      if (err != "") {
+        throw new Error(err);
+        return;
+      }
+
+      //add in filter.
+      body.filter("geodistance", field, dist, { lat: lat, lon: lon})
+    }
+
+
+    //iterate over geo_point fields.
+    //make sure that we have lat/lon/and dist for each (maybe dist is optional)
+    let possibleGeoProps = searchPropsByType["geo_point"]
+    possibleGeoProps.forEach((field) => {
+      let latParam = q[field + "_lat"];
+      let lonParam = q[field + "_lon"];
+      let distParam = q[field + "_dist"];
+
+      if (latParam || lonParam || distParam) {
+        _addGeoDistanceFilter(field, latParam, lonParam, distParam);
+      }
+    });
+
+  }
 
   _addBooleanFilters(body, q) {
     const _addBooleanFilter = (field, filter) => {
@@ -238,12 +277,13 @@ class Searcher {
     this._addStringFilters(body, q);
     this._addDateRangeFilters(body, q);
     this._addLongRangeFilters(body, q);
+    this._addGeoDistanceFilters(body, q);
     this._addBooleanFilters(body, q);
     this._addSizeFromParams(body, q);
     this._addIncludeExclude(body, q);
 
     let query = body.build("v2");
-    // logger.info(query);
+     logger.info(query);
 
     return query;
   }

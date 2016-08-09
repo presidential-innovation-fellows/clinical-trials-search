@@ -39,6 +39,16 @@ const _getInvalidTrialQueryParams = (queryParams) => {
       ) {
         return false;
       }
+    } else if (
+      queryParam.endsWith("_lon") || 
+      queryParam.endsWith("_lat") || 
+      queryParam.endsWith("_dist")
+    ) {
+      //Special endings for geo distance filtering.
+      let paramWithoutOp = queryParam.substring(0, queryParam.lastIndexOf("_"));      
+      if ( _.includes(searchPropsByType["geo_point"], paramWithoutOp) ) {
+        return false;
+      }
     }
     return true;
   });
