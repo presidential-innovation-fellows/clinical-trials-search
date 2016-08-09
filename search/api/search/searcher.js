@@ -283,7 +283,7 @@ class Searcher {
     this._addIncludeExclude(body, q);
 
     let query = body.build("v2");
-     logger.info(query);
+    // logger.info(query);
 
     return query;
   }
