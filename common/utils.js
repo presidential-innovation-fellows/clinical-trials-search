@@ -38,6 +38,13 @@ class Utils {
 
     const _recurseMappingTree = (mappingTree, pathArr) => {
       if (mappingTree["properties"]) {
+        //We need to add any nested objects for groupings.
+        if (mappingTree["type"] == "nested") {
+          if (!props[mappingTree["type"]]) {
+            props[mappingTree["type"]] = [];
+          }
+          props[mappingTree["type"]].push(pathArr.join("."));
+        }
         _recurseMappingTree(mappingTree["properties"], pathArr);
       } else if (mappingTree["type"]) {
         if (!props[mappingTree["type"]]) {
