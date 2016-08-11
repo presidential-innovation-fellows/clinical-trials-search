@@ -523,8 +523,8 @@
             "include_in_all": false
           },
           "org": {
-            "type": "nested",
-            "include_in_root": true,
+            "type": "object",
+            "enabled": "true",
             "properties": {
               "address_line_1": {
                 "type": "string",
