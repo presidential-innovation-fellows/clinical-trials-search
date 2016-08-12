@@ -89,9 +89,171 @@ class Searcher {
     }
   }
 
+  // TODO(Balint): might need to modify BodyBuilder
+  // _addFullTextQuery(body, q) {
+  //   if (q._fulltext) {
+  //     body.query("match", "_diseases._fulltext", q._fulltext);
+  //     body.query("match", "brief_title", q._fulltext);
+  //     body.query("match", "brief_summary", q._fulltext);
+  //     body.query("match", "official_title", q._fulltext);
+  //     body.query("match", "detail_description", q._fulltext);
+  //
+  //   }
+  // }
+
+  _fullTextQuery(q) {
+    return {
+      "query": {
+        "bool": {
+          "should": [{
+              "multi_match": {
+                "query": q._fulltext,
+                "fields": ["*_id", "other_ids.value"]
+              }
+            }, {
+              "match_phrase": {
+                "_diseases.ft": {
+                  "query": q._fulltext,
+                  "boost": 4
+                }
+              }
+            }, {
+              "match_phrase": {
+                "brief_title": {
+                  "query": q._fulltext,
+                  "boost": 4
+                }
+              }
+            }, {
+              "match_phrase": {
+                "brief_summary": {
+                  "query": q._fulltext
+                }
+              }
+            }, {
+              "match_phrase": {
+                "official_title": {
+                  "query": q._fulltext,
+                  "boost": 4
+                }
+              }
+            }, {
+              "match_phrase": {
+                "detail_description": {
+                  "query": q._fulltext,
+                  "boost": 4
+                }
+              }
+            }, {
+              "common": {
+                "official_title": {
+                  "query": q._fulltext,
+                  "cutoff_frequency": 0.001,
+                  "low_freq_operator": "and",
+                  "boost": 4
+                }
+              }
+            }, {
+              "common": {
+                "brief_title": {
+                  "query": q._fulltext,
+                  "cutoff_frequency": 0.001,
+                  "low_freq_operator": "and"
+                }
+              }
+            }, {
+              "common": {
+                "brief_summary": {
+                  "query": q._fulltext,
+                  "cutoff_frequency": 0.001,
+                  "low_freq_operator": "and"
+                }
+              }
+            }, {
+              "common": {
+                "_diseases.ft": {
+                  "query": q._fulltext,
+                  "cutoff_frequency": 0.001,
+                  "low_freq_operator": "and"
+                }
+              }
+            }, {
+              "common": {
+                "detail_description": {
+                  "query": q._fulltext,
+                  "cutoff_frequency": 0.001,
+                  "low_freq_operator": "and"
+                }
+              }
+            }, {
+              "common": {
+                "sites.org.name.ft": {
+                  "query": q._fulltext,
+                  "cutoff_frequency": 0.001,
+                  "low_freq_operator": "and",
+                  "minimum_should_match": "100%"
+                }
+              }
+            },
+            {
+              "common": {
+                "collaborators.name.ft": {
+                  "query": q._fulltext,
+                  "cutoff_frequency": 0.001,
+                  "low_freq_operator": "and",
+                  "minimum_should_match": "100%"
+                }
+              }
+            }, {
+              "match": {
+                "principal_investigator.ft": q._fulltext
+              }
+            }, {
+              "match": {
+                "sites.contact_name.ft": q._fulltext
+              }
+            }, {
+              "match": {
+                "sites.org.city.ft": q._fulltext
+              }
+            }, {
+              "match": {
+                "sites.org.state_or_province.ft": q._fulltext
+              }
+            }, {
+              "bool": {
+                "must": [{
+                    "nested": {
+                      "path": "arms.interventions",
+                      "score_mode": "avg",
+                      "query": {
+                        "bool": {
+                          "must": [{
+                              "term": {
+                                "arms.interventions.intervention_type": "drug"
+                              }
+                            }, {
+                              "match": {
+                                "arms.interventions.intervention_name": q._fulltext
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+
   _addNestedFilters(body, q) {
     //Get the list of property paths to treat as a Nested Filter.
-    let possibleNestedFilterProps = 
+    let possibleNestedFilterProps =
       _.chain(searchPropsByType["nested"]) //Get nested properties
       .intersection(NESTED_SEARCH_PROPS_FILTER) //Filter from whitelist
       .sort()
@@ -99,7 +261,7 @@ class Searcher {
 
     //iterate over the possibilities to see if there are at least 2 fields,
     //if there are 2 or more properties to nest we will, otherwise we will
-    //pass off to the normal filter handlers. 
+    //pass off to the normal filter handlers.
     possibleNestedFilterProps.forEach((nestedfield) => {
       let paramsForNesting = _.pickBy(q, (value, key) => {
         return key.startsWith(nestedfield);
@@ -112,15 +274,15 @@ class Searcher {
         // you can add filters to queries in 2.x
 
         //We will need to add a nested query to our main body.
-        //A nested query needs a query, so we will create a 
-        // boolean "must", which holds its own query. 
+        //A nested query needs a query, so we will create a
+        // boolean "must", which holds its own query.
 
         let nestedBodyQuery = new Bodybuilder();
         let boolMustContents = new Bodybuilder();
 
         this._addFieldFilters(nestedBodyQuery, paramsForNesting);
         body.query("nested", nestedfield, 'avg', nestedBodyQuery.build("v2"));
-        
+
         //Now that we have added the keys, we need to remove the params
         //from the original request params so we don't add duplicate
         //filters.
@@ -220,17 +382,17 @@ class Searcher {
       }
     });
   }
-  
+
   _addGeoDistanceFilters(body, q) {
 
     //We need to put lat/long/distance into a single filter
     const _addGeoDistanceFilter = (field, lat, lon, dist) => {
       let err = "";
       if (!(lat) || isNaN(parseFloat(lat))) {
-        err +=  `Geo Distance filter for ${field} missing or invalid latitude.  Please supply valid ${field}_lat. \n`                      
+        err +=  `Geo Distance filter for ${field} missing or invalid latitude.  Please supply valid ${field}_lat. \n`
       }
       if (!(lon) || isNaN(parseFloat(lon))) {
-        err +=  `Geo Distance filter for ${field} missing or invalid longitude.  Please supply valid ${field}_lon. \n`                      
+        err +=  `Geo Distance filter for ${field} missing or invalid longitude.  Please supply valid ${field}_lon. \n`
       }
 
       //TODO: add in validation of values for distance
@@ -243,7 +405,6 @@ class Searcher {
       //add in filter.
       body.filter("geodistance", field, dist, { lat: lat, lon: lon})
     }
-
 
     //iterate over geo_point fields.
     //make sure that we have lat/lon/and dist for each (maybe dist is optional)
@@ -319,7 +480,7 @@ class Searcher {
 
   /**
    * This adds all of our data field filters to a bodybuilder object
-   * 
+   *
    * @param {any} body An instance of a Bodybuilder class
    * @param {any} q The query parameters a user is searching for
    */
@@ -332,15 +493,21 @@ class Searcher {
   }
 
   _searchTrialsQuery(q) {
-    let body = new Bodybuilder();
+    var query;
+    if (q._fulltext) {
+      query = this._fullTextQuery(q);
+    } else {
+      let body = new Bodybuilder();
 
-    this._addAllFilter(body, q);
-    this._addNestedFilters(body, q);
-    this._addFieldFilters(body, q);    
-    this._addSizeFromParams(body, q);
-    this._addIncludeExclude(body, q);
+      this._addAllFilter(body, q);
+      this._addNestedFilters(body, q);
+      this._addFieldFilters(body, q);
+      this._addSizeFromParams(body, q);
+      this._addIncludeExclude(body, q);
 
-    let query = body.build("v2");
+      query = body.build("v2");
+    }
+
     logger.info(query);
 
     return query;

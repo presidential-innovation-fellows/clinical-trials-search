@@ -6,7 +6,7 @@
         "analyzer": "keyword_ci",
         "include_in_all": false,
         "fields": {
-          "ft": {
+          "_fulltext": {
             "type": "string",
             "analyzer": "englishfulltext"
           }
@@ -22,7 +22,7 @@
         "analyzer": "keyword_ci",
         "include_in_all": false,
         "fields": {
-          "ft": {
+          "_fulltext": {
             "type": "string",
             "analyzer": "englishfulltext"
           }
@@ -219,7 +219,7 @@
             "analyzer": "keyword_ci",
             "include_in_all": true,
             "fields": {
-              "ft": {
+              "_fulltext": {
                 "type": "string",
                 "analyzer": "englishfulltext"
               }
@@ -408,7 +408,7 @@
         "analyzer": "keyword_ci",
         "include_in_all": true,
         "fields": {
-          "ft": {
+          "_fulltext": {
             "type": "string",
             "analyzer": "englishfulltext"
           }
@@ -536,7 +536,7 @@
         "analyzer": "keyword_ci",
         "include_in_all": false,
         "fields": {
-          "ft": {
+          "_fulltext": {
             "type": "string"
           }
         }
@@ -565,7 +565,7 @@
             "index": "not_analyzed",
             "include_in_all": false,
             "fields": {
-              "ft": {
+              "_fulltext": {
                 "type": "string"
               }
             }
@@ -613,7 +613,7 @@
             "analyzer": "keyword_ci",
             "include_in_all": false,
             "fields": {
-              "ft": {
+              "_fulltext": {
                 "type": "string"
               }
             }
@@ -646,7 +646,7 @@
             "analyzer": "keyword_ci",
             "include_in_all": true,
             "fields": {
-              "ft": {
+              "_fulltext": {
                 "type": "string",
                 "analyzer": "englishfulltext"
               }
@@ -672,7 +672,7 @@
             "analyzer": "keyword_ci",
             "include_in_all": false,
             "fields": {
-              "ft": {
+              "_fulltext": {
                 "type": "string"
               }
             }

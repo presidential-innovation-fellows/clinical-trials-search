@@ -27,7 +27,7 @@ router.get('/clinical-trial/:id', (req, res, next) => {
 
 const _getInvalidTrialQueryParams = (queryParams) => {
   let without = _.without(queryParams,
-    "from", "size", "sort", "_all", "include", "exclude");
+    "from", "size", "sort", "_all", "_fulltext", "include", "exclude");
   return without.filter((queryParam) => {
     if (_.includes(searchPropsByType["string"], queryParam)) {
       return false;
@@ -40,12 +40,12 @@ const _getInvalidTrialQueryParams = (queryParams) => {
         return false;
       }
     } else if (
-      queryParam.endsWith("_lon") || 
-      queryParam.endsWith("_lat") || 
+      queryParam.endsWith("_lon") ||
+      queryParam.endsWith("_lat") ||
       queryParam.endsWith("_dist")
     ) {
       //Special endings for geo distance filtering.
-      let paramWithoutOp = queryParam.substring(0, queryParam.lastIndexOf("_"));      
+      let paramWithoutOp = queryParam.substring(0, queryParam.lastIndexOf("_"));
       if ( _.includes(searchPropsByType["geo_point"], paramWithoutOp) ) {
         return false;
       }
