@@ -33,21 +33,46 @@ class TransformStream extends Transform {
 
   constructor(thesaurus) {
     super({ objectMode: true });
-    this.thesaurus = thesaurus;
+
+    let thesaurusById = {};
+    let thesaurusByName = {};
+    thesaurus.forEach((row) => {
+      if (row.code) {
+        thesaurusById[row.code] = row;
+      }
+      if (row.synonyms) {
+        let name = row.synonyms.split("|")[0];
+        thesaurusByName[name] = row;
+      }
+    });
+    this.thesaurusById = thesaurusById;
+    this.thesaurusByName = thesaurusByName;
   }
 
   _addThesaurusTerms(trial) {
     if (trial.diseases) {
       trial.diseases.forEach((disease) => {
         let diseaseId = disease.nci_thesaurus_concept_id;
-        if (diseaseId && this.thesaurus[diseaseId]) {
-          if (this.thesaurus[diseaseId].parents) {
-            disease.parents = this.thesaurus[diseaseId].parents.split("|");
+        if (diseaseId && this.thesaurusById[diseaseId]) {
+          if (this.thesaurusById[diseaseId].parents) {
+            disease.parents = this.thesaurusById[diseaseId].parents.split("|");
           }
-          if (this.thesaurus[diseaseId].synonyms) {
-            disease.synonyms = this.thesaurus[diseaseId].synonyms.split("|");
+          if (this.thesaurusById[diseaseId].synonyms) {
+            disease.synonyms = this.thesaurusById[diseaseId].synonyms.split("|");
           }
         }
+      });
+    }
+
+    if (trial.arms) {
+      trial.arms.forEach((arm) => {
+        arm.interventions.forEach((intervention) => {
+          // TODO: retrieve by id (likely have to modify data warehouse)
+          if (this.thesaurusByName[intervention.intervention_name]) {
+            intervention.synonyms =
+              this.thesaurusByName[intervention.intervention_name].synonyms.split("|");
+          }
+        });
       });
     }
   }
@@ -261,12 +286,7 @@ class TrialsTransformer {
     babyparse.parseFiles(THESAURUS_FILEPATH, {
       header: true,
       complete: (results) => {
-        let thesaurus = {}
-        results.data.forEach((row) => {
-          thesaurus[row.code] = row;
-        });
-        this.thesaurus = thesaurus;
-
+        this.thesaurus = results.data
         return callback();
       },
       error: (err) => {
@@ -284,7 +304,12 @@ class TrialsTransformer {
     let jw = JSONStream.stringify();
     let ws = fs.createWriteStream(TRIALS_TRANSFORMED_FILEPATH);
 
-    rs.pipe(ls).pipe(ts).pipe(gs).pipe(jw).pipe(ws).on("finish", callback);
+    rs.pipe(ls)
+      .pipe(ts)
+      .pipe(gs)
+      .pipe(jw)
+      .pipe(ws)
+      .on("finish", callback);
   }
 
   _loadTerms(callback) {
@@ -310,7 +335,11 @@ class TrialsTransformer {
     let jw = JSONStream.stringify();
     let ws = fs.createWriteStream(TRIALS_CLEANSED_FILEPATH);
 
-    rs.pipe(js).pipe(cs).pipe(jw).pipe(ws).on("finish", callback);
+    rs.pipe(js)
+      .pipe(cs)
+      .pipe(jw)
+      .pipe(ws)
+      .on("finish", callback);
   }
 
   static cleanse() {
