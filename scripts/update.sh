@@ -1,20 +1,9 @@
 #!/bin/sh
 set -e
 
-# download and import ctrp data warehouse drop
-cd ../import/import_into_pg/ctrp
-./download_ctrp.sh
-./import_ctrp_into_pg.sh
-cd ../../..
-
-# export the trials from pg
-cd import/export_from_pg
-npm run export-trials
-cd ../..
-
-# cleanse trials
-cd import/cleanse
-npm run cleanse-trials
+# transform trials
+cd import/transform
+npm run transform-trials
 cd ../..
 
 # index trials and terms in es

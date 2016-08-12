@@ -176,83 +176,20 @@ SELECT
       SELECT
         json_agg(
           json_build_object(
-            'disease', (
-              json_build_object(
-                'id', disease.code,
-                'display_name', disease.display_name,
-                'lead_disease_indicator', disease.lead_disease_indicator,
-                'date_last_created', disease.date_last_created,
-                'date_last_updated', disease.date_last_updated,
-                'parents', disease.parents,
-                'synonyms', disease.synonyms
-              )
-            ),
-            'parents', (
-              SELECT
-                json_agg(
-                  json_build_object(
-                    'id', ancestors.code,
-                    'display_name', ancestors.display_name,
-                    'parents', ancestors.parents,
-                    'synonyms', ancestors.synonyms
-                  )
-                )
-                FROM (
-                  SELECT
-                    code,
-                    parents,
-                    synonyms[1] as display_name,
-                    synonyms
-                  FROM (
-                    WITH RECURSIVE parent_terms(original, child, parent, depth) AS (
-                        SELECT n.child, n.child, n.parent, 1
-                        FROM nci_thesaurus_relationships n WHERE n.child=disease.code
-                      UNION ALL
-                        SELECT ct.original, n.child, n.parent, ct.depth + 1
-                        FROM nci_thesaurus_relationships n, parent_terms ct
-                        WHERE ct.parent = n.child
-                    )
-                    SELECT child, array_agg(DISTINCT parent) AS parents
-                    FROM parent_terms
-                    WHERE child !=disease.code AND parent NOT IN ('root_node')
-                    GROUP BY child
-                  ) as c
-                  INNER JOIN
-                  (
-                    SELECT code, string_to_array(synonyms, '|') as synonyms
-                    FROM nci_thesaurus
-                  ) as ncit
-                  ON c.child = ncit.code
-                ) ancestors
-
-            )
+            'disease_code', disease.disease_code,
+            'disease_preferred_name', disease.disease_preferred_name,
+            'disease_menu_display_name', disease.disease_menu_display_name,
+            'inclusion_indicator', disease.inclusion_indicator,
+            'lead_disease_indicator', disease.lead_disease_indicator,
+            'nci_thesaurus_concept_id', disease.nci_thesaurus_concept_id,
+            'date_last_created', disease.date_last_created,
+            'date_last_updated', disease.date_last_updated
           )
         )
-      FROM (
-        SELECT
-          nci_id,
-          code,
-          synonyms[1] as display_name,
-          synonyms,
-          parents,
-          inclusion_indicator,
-          lead_disease_indicator,
-          date_last_created,
-          date_last_updated
-        FROM
-          dw_study_disease
-        INNER JOIN (
-          SELECT
-            code,
-            string_to_array(synonyms, '|') as synonyms,
-            string_to_array(parents, '|') as parents
-          FROM
-            nci_thesaurus
-        ) as thesaurus
-        ON dw_study_disease.nci_thesaurus_concept_id = thesaurus.code
-      ) disease
+      FROM
+        dw_study_disease disease
       WHERE
-        study.nci_id = disease.nci_id and disease.inclusion_indicator='TRIAL'
+        study.nci_id = disease.nci_id
     ),
     -- 'biomarkers', (
     --   SELECT
