@@ -77,15 +77,50 @@ class TransformStream extends Transform {
     }
   }
 
+  _modifyStructure(trial) {
+    if (trial.diseases) {
+      trial.diseases.forEach((disease) => {
+        disease.display_name = disease.disease_menu_display_name;
+        disease.preferred_name = disease.disease_preferred_name;
+
+        delete disease.disease_menu_display_name;
+        delete disease.disease_preferred_name;
+      });
+    }
+
+    if (trial.sites) {
+      trial.sites.forEach((site) => {
+        if (site.org) {
+          site.org_address_line_1 = site.org.address_line_1;
+          site.org_address_line_2 = site.org.address_line_2;
+          site.org_city = site.org.city;
+          site.org_country = site.org.country;
+          site.org_email = site.org.email;
+          site.org_family = site.org.family;
+          site.org_fax = site.org.fax;
+          site.org_name = site.org.name;
+          site.org_to_family_relationship = site.org.org_to_family_relationship;
+          site.org_phone = site.org.phone;
+          site.org_postal_code = site.org.postal_code;
+          site.org_state_or_province = site.org.state_or_province;
+          site.org_status = site.org.status;
+          site.org_status_date = site.org.status_date;
+          site.org_tty = site.org.tty;
+
+          delete site.org;
+        }
+      });
+    }
+  }
+
   _createLocations(trial) {
     if (!trial.sites) { return; }
     let locations = {};
     trial.sites.forEach((site) => {
-      let org = site.org;
       let location = _.compact([
-        org.city,
-        org.state_or_province,
-        org.country
+        site.org_city,
+        site.org_state_or_province,
+        site.org_country
       ]).join(", ");
       if (location) {
         locations[location] = 1;
@@ -153,9 +188,7 @@ class TransformStream extends Transform {
     if (trial.sites) {
       trial.sites.forEach((site) => {
         _addDateToArr(site.recruitment_status_date);
-        if (site.org) {
-          _addDateToArr(site.org.status_date);
-        }
+        _addDateToArr(site.org_status_date);
       });
     }
 
@@ -256,12 +289,10 @@ class GeoCodingStream extends Transform {
 
     if (trial.sites) {
       trial.sites.forEach((site) => {
-        let org = site.org;
-
-        if (org && org.postal_code) {
-          let geopoint = ZIP_CODES[org.postal_code];
+        if (site && site.postal_code) {
+          let geopoint = ZIP_CODES[site.postal_code];
           if (geopoint) {
-            org.coordinates = geopoint;
+            site.coordinates = geopoint;
           }
         }
       });

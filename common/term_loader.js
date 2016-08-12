@@ -15,8 +15,8 @@ class TermLoader {
     return [
       "_diseases",
       "_locations",
-      "sites.org.name",
-      "sites.org.family",
+      "sites.org_name",
+      "sites.org_family",
       "_treatments",
       "anatomic_sites",
       "arms.interventions.intervention_type",

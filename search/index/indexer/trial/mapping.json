@@ -1,6 +1,33 @@
 {
   "trial": {
     "properties": {
+      "_diseases": {
+        "type": "string",
+        "analyzer": "keyword_ci",
+        "include_in_all": false,
+        "fields": {
+          "ft": {
+            "type": "string",
+            "analyzer": "englishfulltext"
+          }
+        }
+      },
+      "_locations": {
+        "type": "string",
+        "analyzer": "keyword_ci",
+        "include_in_all": false
+      },
+      "_treatments": {
+        "type": "string",
+        "analyzer": "keyword_ci",
+        "include_in_all": false,
+        "fields": {
+          "ft": {
+            "type": "string",
+            "analyzer": "englishfulltext"
+          }
+        }
+      },
       "accepts_healthy_volunteers_indicator": {
         "type": "string",
         "analyzer": "keyword_ci",
@@ -13,9 +40,8 @@
       },
       "amendment_date": {
         "type": "date",
-        "index": "not_analyzed",
-        "include_in_all": false,
-        "format": "strict_date_optional_time||epoch_millis"
+        "format": "strict_date_optional_time||epoch_millis",
+        "include_in_all": false
       },
       "anatomic_sites": {
         "type": "string",
@@ -26,6 +52,11 @@
         "type": "nested",
         "include_in_root": true,
         "properties": {
+          "arm_description": {
+            "type": "string",
+            "analyzer": "standard",
+            "include_in_all": false
+          },
           "arm_name": {
             "type": "string",
             "analyzer": "keyword_ci",
@@ -36,27 +67,35 @@
             "analyzer": "keyword_ci",
             "include_in_all": false
           },
-          "arm_description": {
-            "type": "string",
-            "analyzer": "standard",
-            "include_in_all": false
-          },
           "date_created_arm": {
             "type": "date",
-            "index": "not_analyzed",
-            "include_in_all": false,
-            "format": "strict_date_optional_time||epoch_millis"
+            "format": "strict_date_optional_time||epoch_millis",
+            "include_in_all": false
           },
           "date_updated_arm": {
             "type": "date",
-            "index": "not_analyzed",
-            "include_in_all": false,
-            "format": "strict_date_optional_time||epoch_millis"
+            "format": "strict_date_optional_time||epoch_millis",
+            "include_in_all": false
           },
           "interventions": {
             "type": "nested",
             "include_in_root": true,
             "properties": {
+              "date_created_intervention": {
+                "type": "date",
+                "format": "strict_date_optional_time||epoch_millis",
+                "include_in_all": false
+              },
+              "date_updated_intervention": {
+                "type": "date",
+                "format": "strict_date_optional_time||epoch_millis",
+                "include_in_all": false
+              },
+              "intervention_description": {
+                "type": "string",
+                "analyzer": "standard",
+                "include_in_all": false
+              },
               "intervention_name": {
                 "type": "string",
                 "analyzer": "keyword_ci",
@@ -67,22 +106,10 @@
                 "analyzer": "keyword_ci",
                 "include_in_all": false
               },
-              "intervention_description": {
+              "synonyms": {
                 "type": "string",
-                "analyzer": "standard",
+                "analyzer": "keyword_ci",
                 "include_in_all": false
-              },
-              "date_created_intervention": {
-                "type": "date",
-                "index": "not_analyzed",
-                "include_in_all": false,
-                "format": "strict_date_optional_time||epoch_millis"
-              },
-              "date_updated_intervention": {
-                "type": "date",
-                "index": "not_analyzed",
-                "include_in_all": false,
-                "format": "strict_date_optional_time||epoch_millis"
               }
             }
           }
@@ -117,17 +144,29 @@
             "type": "string",
             "analyzer": "keyword_ci",
             "include_in_all": false
+          },
+          "f1": {
+            "type": "string"
+          },
+          "f2": {
+            "type": "string"
+          },
+          "f3": {
+            "type": "string"
+          },
+          "f4": {
+            "type": "string"
           }
         }
       },
       "brief_summary": {
         "type": "string",
-        "analyzer": "standard",
+        "analyzer": "englishhtml",
         "include_in_all": false
       },
       "brief_title": {
         "type": "string",
-        "analyzer": "standard",
+        "analyzer": "englishfulltext",
         "include_in_all": false
       },
       "ccr_id": {
@@ -170,15 +209,21 @@
         "type": "nested",
         "include_in_root": true,
         "properties": {
-          "name": {
-            "type": "string",
-            "analyzer": "keyword_ci",
-            "include_in_all": true
-          },
           "functional_role": {
             "type": "string",
             "analyzer": "keyword_ci",
             "include_in_all": false
+          },
+          "name": {
+            "type": "string",
+            "analyzer": "keyword_ci",
+            "include_in_all": true,
+            "fields": {
+              "ft": {
+                "type": "string",
+                "analyzer": "englishfulltext"
+              }
+            }
           },
           "status": {
             "type": "string",
@@ -190,7 +235,6 @@
       "completion_date": {
         "type": "date",
         "format": "strict_date_optional_time||epoch_millis",
-        "index": "not_analyzed",
         "include_in_all": false
       },
       "completion_date_type_code": {
@@ -211,25 +255,21 @@
       "current_trial_status_date": {
         "type": "date",
         "format": "strict_date_optional_time||epoch_millis",
-        "index": "not_analyzed",
         "include_in_all": false
       },
       "date_last_created": {
         "type": "date",
         "format": "strict_date_optional_time||epoch_millis",
-        "index": "not_analyzed",
         "include_in_all": false
       },
       "date_last_updated": {
         "type": "date",
         "format": "strict_date_optional_time||epoch_millis",
-        "index": "not_analyzed",
         "include_in_all": false
       },
       "date_last_updated_anything": {
         "type": "date",
         "format": "strict_date_optional_time||epoch_millis",
-        "index": "not_analyzed",
         "include_in_all": false
       },
       "dcp_id": {
@@ -250,12 +290,27 @@
             "type": "nested",
             "include_in_root": true,
             "properties": {
-              "id": {
+              "synonyms": {
                 "type": "string",
                 "analyzer": "keyword_ci",
                 "include_in_all": false
               },
+              "date_last_created": {
+                "type": "date",
+                "format": "strict_date_optional_time||epoch_millis",
+                "include_in_all": false
+              },
+              "date_last_updated": {
+                "type": "date",
+                "format": "strict_date_optional_time||epoch_millis",
+                "include_in_all": false
+              },
               "display_name": {
+                "type": "string",
+                "analyzer": "keyword_ci",
+                "include_in_all": false
+              },
+              "preferred_name": {
                 "type": "string",
                 "analyzer": "keyword_ci",
                 "include_in_all": false
@@ -265,21 +320,14 @@
                 "analyzer": "keyword_ci",
                 "include_in_all": false
               },
-              "_synonyms": {
+              "inclusion_indicator": {
                 "type": "string",
                 "analyzer": "keyword_ci",
                 "include_in_all": false
               },
-              "date_last_created": {
-                "type": "date",
-                "format": "strict_date_optional_time||epoch_millis",
-                "index": "not_analyzed",
-                "include_in_all": false
-              },
-              "date_last_updated": {
-                "type": "date",
-                "format": "strict_date_optional_time||epoch_millis",
-                "index": "not_analyzed",
+              "nci_thesaurus_concept_id": {
+                "type": "string",
+                "analyzer": "keyword_ci",
                 "include_in_all": false
               }
             }
@@ -306,7 +354,6 @@
               },
               "max_age_number": {
                 "type": "long",
-                "index": "not_analyzed",
                 "include_in_all": false
               },
               "max_age_unit": {
@@ -321,7 +368,6 @@
               },
               "min_age_number": {
                 "type": "long",
-                "index": "not_analyzed",
                 "include_in_all": false
               },
               "min_age_unit": {
@@ -341,9 +387,7 @@
                 "include_in_all": false
               },
               "inclusion_indicator": {
-                "type": "boolean",
-                "index": "not_analyzed",
-                "include_in_all": false
+                "type": "boolean"
               }
             }
           }
@@ -362,7 +406,13 @@
       "lead_org": {
         "type": "string",
         "analyzer": "keyword_ci",
-        "include_in_all": true
+        "include_in_all": true,
+        "fields": {
+          "ft": {
+            "type": "string",
+            "analyzer": "englishfulltext"
+          }
+        }
       },
       "masking": {
         "type": "nested",
@@ -402,7 +452,6 @@
       },
       "minimum_target_accrual_number": {
         "type": "long",
-        "index": "not_analyzed",
         "include_in_all": false
       },
       "nci_id": {
@@ -417,7 +466,6 @@
       },
       "number_of_arms": {
         "type": "long",
-        "index": "not_analyzed",
         "include_in_all": false
       },
       "official_title": {
@@ -486,7 +534,12 @@
       "principal_investigator": {
         "type": "string",
         "analyzer": "keyword_ci",
-        "include_in_all": false
+        "include_in_all": false,
+        "fields": {
+          "ft": {
+            "type": "string"
+          }
+        }
       },
       "protocol_id": {
         "type": "string",
@@ -510,103 +563,25 @@
           "contact_name": {
             "type": "string",
             "index": "not_analyzed",
-            "include_in_all": false
+            "include_in_all": false,
+            "fields": {
+              "ft": {
+                "type": "string"
+              }
+            }
           },
           "contact_phone": {
             "type": "string",
             "index": "not_analyzed",
             "include_in_all": false
           },
+          "generic_contact": {
+            "type": "string"
+          },
           "local_site_identifier": {
             "type": "string",
             "index": "not_analyzed",
             "include_in_all": false
-          },
-          "org": {
-            "type": "object",
-            "enabled": "true",
-            "properties": {
-              "address_line_1": {
-                "type": "string",
-                "analyzer": "keyword_ci",
-                "include_in_all": false
-              },
-              "address_line_2": {
-                "type": "string",
-                "analyzer": "keyword_ci",
-                "include_in_all": false
-              },
-              "city": {
-                "type": "string",
-                "analyzer": "keyword_ci",
-                "include_in_all": false
-              },
-              "country": {
-                "type": "string",
-                "analyzer": "keyword_ci",
-                "include_in_all": false
-              },
-              "email": {
-                "type": "string",
-                "analyzer": "keyword_ci",
-                "include_in_all": false
-              },
-              "family": {
-                "type": "string",
-                "analyzer": "keyword_ci",
-                "include_in_all": true
-              },
-              "fax": {
-                "type": "string",
-                "index": "not_analyzed",
-                "include_in_all": false
-              },
-              "name": {
-                "type": "string",
-                "analyzer": "keyword_ci",
-                "include_in_all": true
-              },
-              "org_to_family_relationship": {
-                "type": "string",
-                "analyzer": "keyword_ci",
-                "include_in_all": false
-              },
-              "phone": {
-                "type": "string",
-                "analyzer": "keyword_ci",
-                "include_in_all": false
-              },
-              "postal_code": {
-                "type": "string",
-                "analyzer": "keyword_ci",
-                "include_in_all": false
-              },
-              "coordinates" :{
-                "type": "geo_point",
-                "include_in_all": false
-              },
-              "state_or_province": {
-                "type": "string",
-                "analyzer": "keyword_ci",
-                "include_in_all": false
-              },
-              "status": {
-                "type": "string",
-                "analyzer": "keyword_ci",
-                "include_in_all": false
-              },
-              "status_date": {
-                "type": "date",
-                "format": "strict_date_optional_time||epoch_millis",
-                "index": "not_analyzed",
-                "include_in_all": false
-              },
-              "tty": {
-                "type": "string",
-                "analyzer": "keyword_ci",
-                "include_in_all": false
-              }
-            }
           },
           "program_code": {
             "type": "string",
@@ -621,7 +596,101 @@
           "recruitment_status_date": {
             "type": "date",
             "format": "strict_date_optional_time||epoch_millis",
+            "include_in_all": false
+          },
+          "org_address_line_1": {
+            "type": "string",
+            "analyzer": "keyword_ci",
+            "include_in_all": false
+          },
+          "org_address_line_2": {
+            "type": "string",
+            "analyzer": "keyword_ci",
+            "include_in_all": false
+          },
+          "org_city": {
+            "type": "string",
+            "analyzer": "keyword_ci",
+            "include_in_all": false,
+            "fields": {
+              "ft": {
+                "type": "string"
+              }
+            }
+          },
+          "coordinates": {
+            "type": "geo_point"
+          },
+          "org_country": {
+            "type": "string",
+            "analyzer": "keyword_ci",
+            "include_in_all": false
+          },
+          "org_email": {
+            "type": "string",
+            "analyzer": "keyword_ci",
+            "include_in_all": false
+          },
+          "org_family": {
+            "type": "string",
+            "analyzer": "keyword_ci",
+            "include_in_all": true
+          },
+          "org_fax": {
+            "type": "string",
             "index": "not_analyzed",
+            "include_in_all": false
+          },
+          "org_name": {
+            "type": "string",
+            "analyzer": "keyword_ci",
+            "include_in_all": true,
+            "fields": {
+              "ft": {
+                "type": "string",
+                "analyzer": "englishfulltext"
+              }
+            }
+          },
+          "org_to_family_relationship": {
+            "type": "string",
+            "analyzer": "keyword_ci",
+            "include_in_all": false
+          },
+          "org_phone": {
+            "type": "string",
+            "analyzer": "keyword_ci",
+            "include_in_all": false
+          },
+          "org_postal_code": {
+            "type": "string",
+            "analyzer": "keyword_ci",
+            "include_in_all": false
+          },
+          "org_state_or_province": {
+            "type": "string",
+            "analyzer": "keyword_ci",
+            "include_in_all": false,
+            "fields": {
+              "ft": {
+                "type": "string"
+              }
+            }
+
+          },
+          "org_status": {
+            "type": "string",
+            "analyzer": "keyword_ci",
+            "include_in_all": false
+          },
+          "org_status_date": {
+            "type": "date",
+            "format": "strict_date_optional_time||epoch_millis",
+            "include_in_all": false
+          },
+          "org_tty": {
+            "type": "string",
+            "analyzer": "keyword_ci",
             "include_in_all": false
           }
         }
@@ -629,7 +698,6 @@
       "start_date": {
         "type": "date",
         "format": "strict_date_optional_time||epoch_millis",
-        "index": "not_analyzed",
         "include_in_all": false
       },
       "start_date_type_code": {
@@ -658,21 +726,6 @@
         "include_in_all": false
       },
       "study_subtype_code": {
-        "type": "string",
-        "analyzer": "keyword_ci",
-        "include_in_all": false
-      },
-      "_locations": {
-        "type": "string",
-        "analyzer": "keyword_ci",
-        "include_in_all": false
-      },
-      "_treatments": {
-        "type": "string",
-        "analyzer": "keyword_ci",
-        "include_in_all": false
-      },
-      "_diseases": {
         "type": "string",
         "analyzer": "keyword_ci",
         "include_in_all": false
