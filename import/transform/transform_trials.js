@@ -153,7 +153,6 @@ class TransformStream extends Transform {
       diseases[disease.disease_menu_display_name] = 1;
       if (disease.synonyms) {
         disease.synonyms.forEach((synonym) => {
-          // logger.info(trial.nci_id, disease.nci_thesaurus_concept_id, synonym);
           diseases[synonym] = 1;
         });
       }
