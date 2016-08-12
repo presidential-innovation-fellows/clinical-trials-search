@@ -10,6 +10,8 @@
     "JSONStream": "1.1.4",
     "async": "2.0.1",
     "babyparse": "0.4.6",
-    "lodash": "4.13.1"
+    "byline": "^5.0.0",
+    "lodash": "4.13.1",
+    "moment": "^2.14.1"
   }
 }

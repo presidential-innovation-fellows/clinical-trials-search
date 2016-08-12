@@ -2,7 +2,9 @@ const fs                  = require("fs");
 const path                = require("path");
 const async               = require("async");
 const _                   = require("lodash");
+const moment              = require("moment");
 const babyparse           = require("babyparse");
+const byline              = require('byline');
 const JSONStream          = require("JSONStream");
 const Transform           = require("stream").Transform;
 
@@ -15,28 +17,26 @@ const ZIP_CODES           = require("../../data/zip_codes.json");
 let logger = new Logger({ name: "import-transform" });
 
 const THESAURUS_FILEPATH = "../../data/nci_thesaurus.txt";
-const TRIALS_FILEPATH = "../../data/trials.json";
-const TRIALS_WITH_THESAURUS_TERMS_FILEPATH = "../../data/trials_with_thesaurus_terms.json";
+const TRIALS_FILEPATH = "../../data/trials.out";
 const TRIALS_TRANSFORMED_FILEPATH = "../../data/trials_transformed.json";
+const TRIALS_CLEANSED_FILEPATH = "../../data/trials_cleansed.json";
 
 // TODO(Balint): Need error logging for all streams!
 
 /**
- * Thesaurus Transformer for adding NCI Thesaurus terms to trials
+ * Transforms trials by adding appropriate NCIt values and other terms
  *
- * @class ThesaurusStream
+ * @class TransformStream
  * @extends {Transform}
  */
-class ThesaurusStream extends Transform {
+class TransformStream extends Transform {
 
   constructor(thesaurus) {
     super({ objectMode: true });
     this.thesaurus = thesaurus;
   }
 
-  _transform(trial, enc, next) {
-    logger.info(`Adding NCI Thesaurus terms to trial with nci_id (${trial.nci_id}).`);
-
+  _addThesaurusTerms(trial) {
     if (trial.diseases) {
       trial.diseases.forEach((disease) => {
         let diseaseId = disease.nci_thesaurus_concept_id;
@@ -50,8 +50,111 @@ class ThesaurusStream extends Transform {
         }
       });
     }
+  }
 
-    this.push(trial);
+  _createLocations(trial) {
+    if (!trial.sites) { return; }
+    let locations = {};
+    trial.sites.forEach((site) => {
+      let org = site.org;
+      let location = _.compact([
+        org.city,
+        org.state_or_province,
+        org.country
+      ]).join(", ");
+      if (location) {
+        locations[location] = 1;
+      }
+    });
+    trial._locations = Object.keys(locations);
+  }
+
+  _createTreatments(trial) {
+    if (!trial.arms) { return; }
+    let treatments = {};
+    trial.arms.forEach((arm) => {
+      arm.interventions.forEach((intervention) => {
+        let treatment = intervention.intervention_name;
+        if (treatment) {
+          if (intervention.intervention_type) {
+            treatment += ` (${intervention.intervention_type})`;
+          }
+          treatments[treatment] = 1;
+        }
+      });
+    });
+    trial._treatments = Object.keys(treatments);
+  }
+
+  _createDiseases(trial) {
+    if (!trial.diseases) { return; }
+    let diseases = {};
+    trial.diseases.forEach((disease) => {
+      diseases[disease.disease_menu_display_name] = 1;
+      if (disease.synonyms) {
+        disease.synonyms.forEach((synonym) => {
+          // logger.info(trial.nci_id, disease.nci_thesaurus_concept_id, synonym);
+          diseases[synonym] = 1;
+        });
+      }
+    });
+    trial._diseases = Object.keys(diseases);
+  }
+
+  // looks through all date fields, finds the latest one and uses that
+  // for the "date_last_updated_anything" field
+  _addDateLastUpdatedAnythingField(trial) {
+    let updateDates = [];
+
+    const _addDateToArr = (stringDate) => {
+      let momentDate = moment(stringDate);
+      if (stringDate && momentDate.isValid()) updateDates.push(momentDate);
+    }
+
+    [
+      trial.amendment_date, trial.current_trial_status_date,
+      trial.date_last_created, trial.date_last_updated
+    ].forEach(_addDateToArr);
+
+    if (trial.diseases) {
+      trial.diseases.forEach((disease) => {
+        if (disease.disease) {
+          let d = disease.disease;
+          [d.date_last_created, d.date_last_updated].forEach(_addDateToArr);
+        }
+      });
+    }
+
+    if (trial.sites) {
+      trial.sites.forEach((site) => {
+        _addDateToArr(site.recruitment_status_date);
+        if (site.org) {
+          _addDateToArr(site.org.status_date);
+        }
+      });
+    }
+
+    let updatedDate = moment.max(updateDates);
+
+    trial.date_last_updated_anything = updatedDate.utc().format("YYYY-MM-DD");
+  }
+
+  _transform(buffer, enc, next) {
+
+    let line = buffer.toString();
+    if (line.slice(0, 2) === " {") {
+      let trial = JSON.parse(line);
+      logger.info(`Transforming trial with nci_id (${trial.nci_id})...`);
+
+      this._addThesaurusTerms(trial);
+      this._createLocations(trial);
+      this._createTreatments(trial);
+      this._createDiseases(trial);
+      this._addDateLastUpdatedAnythingField(trial);
+
+      this.push(trial);
+    }
+
     next();
   }
 
@@ -172,20 +275,21 @@ class TrialsTransformer {
     });
   }
 
-  _addThesaurusTermsToTrials(callback) {
+  _transformTrials(callback) {
     logger.info("Adding Thesaurus terms to trials...");
     let rs = fs.createReadStream(path.join(__dirname, TRIALS_FILEPATH));
-    let js = JSONStream.parse("*");
-    let cs = new ThesaurusStream(this.thesaurus);
+    let ls = byline.createStream();
+    let ts = new TransformStream(this.thesaurus);
+    let gs = new GeoCodingStream();
     let jw = JSONStream.stringify();
-    let ws = fs.createWriteStream(TRIALS_WITH_THESAURUS_TERMS_FILEPATH);
+    let ws = fs.createWriteStream(TRIALS_TRANSFORMED_FILEPATH);
 
-    rs.pipe(js).pipe(cs).pipe(jw).pipe(ws).on("finish", callback);
+    rs.pipe(ls).pipe(ts).pipe(gs).pipe(jw).pipe(ws).on("finish", callback);
   }
 
   _loadTerms(callback) {
     logger.info("Loading terms...");
-    let rs = fs.createReadStream(path.join(__dirname, TRIALS_WITH_THESAURUS_TERMS_FILEPATH));
+    let rs = fs.createReadStream(path.join(__dirname, TRIALS_TRANSFORMED_FILEPATH));
     let termLoader = new TermLoader();
     termLoader.loadTermsFromTrialsJsonReadStream(rs, (err) => {
       if (err) {
@@ -200,13 +304,13 @@ class TrialsTransformer {
 
   _cleanseTrials(callback) {
     logger.info("Cleansing trials...");
-    let rs = fs.createReadStream(path.join(__dirname, TRIALS_WITH_THESAURUS_TERMS_FILEPATH));
+    let rs = fs.createReadStream(path.join(__dirname, TRIALS_TRANSFORMED_FILEPATH));
     let js = JSONStream.parse("*");
     let cs = new CleanseStream(this.terms);
     let jw = JSONStream.stringify();
-    let ws = fs.createWriteStream(TRIALS_TRANSFORMED_FILEPATH);
+    let ws = fs.createWriteStream(TRIALS_CLEANSED_FILEPATH);
 
-    rs.pipe(js).pipe(cs).pipe(gs).pipe(jw).pipe(ws).on("finish", callback);
+    rs.pipe(js).pipe(cs).pipe(jw).pipe(ws).on("finish", callback);
   }
 
   static cleanse() {
@@ -214,7 +318,7 @@ class TrialsTransformer {
     let trialsTransformer = new this();
     async.waterfall([
       (next) => { trialsTransformer._loadThesaurus(next); },
-      (next) => { trialsTransformer._addThesaurusTermsToTrials(next); },
+      (next) => { trialsTransformer._transformTrials(next); },
       (next) => { trialsTransformer._loadTerms(next); },
       (next) => { trialsTransformer._cleanseTrials(next); }
     ], (err) => {
