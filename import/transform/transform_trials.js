@@ -22,6 +22,13 @@ const TRIALS_KOSHER_CHARS_FILEPATH = "../../data/trials_kosher_chars.txt";
 const TRIALS_TRANSFORMED_FILEPATH = "../../data/trials_transformed.json";
 const TRIALS_CLEANSED_FILEPATH = "../../data/trials_cleansed.json";
 
+/**
+ * Removes special characters from file so that other streams can function
+ * properly.
+ *
+ * @class SpecialCharsStream
+ * @extends {Transform}
+ */
 class SpecialCharsStream extends Transform {
 
   _transform(buffer, enc, next) {
