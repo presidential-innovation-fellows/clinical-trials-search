@@ -18,10 +18,22 @@ let logger = new Logger({ name: "import-transform" });
 
 const THESAURUS_FILEPATH = "../../data/nci_thesaurus.txt";
 const TRIALS_FILEPATH = "../../data/trials.out";
+const TRIALS_KOSHER_CHARS_FILEPATH = "../../data/trials_kosher_chars.txt";
 const TRIALS_TRANSFORMED_FILEPATH = "../../data/trials_transformed.json";
 const TRIALS_CLEANSED_FILEPATH = "../../data/trials_cleansed.json";
 
-// TODO(Balint): Need error logging for all streams!
+class SpecialCharsStream extends Transform {
+
+  _transform(buffer, enc, next) {
+    let bufferString = buffer.toString();
+    let kosherString = bufferString.replace(/\u2028/g, "")
+      .replace(/\u2029/g, "");
+
+    this.push(kosherString);
+    next();
+  }
+
+}
 
 /**
  * Transforms trials by adding appropriate NCIt values and other terms
@@ -200,7 +212,16 @@ class TransformStream extends Transform {
 
     let line = buffer.toString();
     if (line.slice(0, 2) === " {") {
-      let trial = JSON.parse(line);
+      var trial;
+      try {
+        trial = JSON.parse(line);
+      } catch (err) {
+        // TODO: send this as an alert email/sms
+        // logger.error("Could not parse trial: " + line);
+        logger.error(err);
+        return next();
+      }
+
       logger.info(`Transforming trial with nci_id (${trial.nci_id})...`);
 
       this._addThesaurusTerms(trial);
@@ -309,6 +330,20 @@ class TrialsTransformer {
     this.terms = {};
   }
 
+  _removeSpecialChars(callback) {
+    logger.info(`Removing special chars from ${TRIALS_FILEPATH}...`);
+    let rs = fs.createReadStream(path.join(__dirname, TRIALS_FILEPATH));
+    let ss = new SpecialCharsStream();
+    let ws = fs.createWriteStream(TRIALS_KOSHER_CHARS_FILEPATH);
+
+    rs.on("error", (err) => { logger.error(err); })
+      .pipe(ss)
+      .on("error", (err) => { logger.error(err); })
+      .pipe(ws)
+      .on("error", (err) => { logger.error(err); })
+      .on("finish", callback);
+  }
+
   _loadThesaurus(callback) {
     logger.info("Loading NCI Thesaurus...");
     // let rs = fs.createReadStream(path.join(__dirname, THESAURUS_FILEPATH));
@@ -327,18 +362,24 @@ class TrialsTransformer {
 
   _transformTrials(callback) {
     logger.info("Adding Thesaurus terms to trials...");
-    let rs = fs.createReadStream(path.join(__dirname, TRIALS_FILEPATH));
+    let rs = fs.createReadStream(path.join(__dirname, TRIALS_KOSHER_CHARS_FILEPATH));
     let ls = byline.createStream();
     let ts = new TransformStream(this.thesaurus);
     let gs = new GeoCodingStream();
     let jw = JSONStream.stringify();
     let ws = fs.createWriteStream(TRIALS_TRANSFORMED_FILEPATH);
 
-    rs.pipe(ls)
+    rs.on("error", (err) => { logger.error(err); })
+      .pipe(ls)
+      .on("error", (err) => { logger.error(err); })
       .pipe(ts)
+      .on("error", (err) => { logger.error(err); })
       .pipe(gs)
+      .on("error", (err) => { logger.error(err); })
       .pipe(jw)
+      .on("error", (err) => { logger.error(err); })
       .pipe(ws)
+      .on("error", (err) => { logger.error(err); })
       .on("finish", callback);
   }
 
@@ -365,10 +406,15 @@ class TrialsTransformer {
     let jw = JSONStream.stringify();
     let ws = fs.createWriteStream(TRIALS_CLEANSED_FILEPATH);
 
-    rs.pipe(js)
+    rs.on("error", (err) => { logger.error(err); })
+      .pipe(js)
+      .on("error", (err) => { logger.error(err); })
       .pipe(cs)
+      .on("error", (err) => { logger.error(err); })
       .pipe(jw)
+      .on("error", (err) => { logger.error(err); })
       .pipe(ws)
+      .on("error", (err) => { logger.error(err); })
       .on("finish", callback);
   }
 
@@ -376,6 +422,7 @@ class TrialsTransformer {
     logger.info("Started transforming trials.json.");
     let trialsTransformer = new this();
     async.waterfall([
+      (next) => { trialsTransformer._removeSpecialChars(next); },
       (next) => { trialsTransformer._loadThesaurus(next); },
       (next) => { trialsTransformer._transformTrials(next); },
       (next) => { trialsTransformer._loadTerms(next); },
