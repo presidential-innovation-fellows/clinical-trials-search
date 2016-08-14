@@ -296,6 +296,7 @@ class SupplementStream extends Transform {
       this._createTreatments(trial);
       this._createDiseases(trial);
       this._addDateLastUpdatedAnythingField(trial);
+      this._modifyStructure(trial);
 
       this.push(trial);
     }
