@@ -24,10 +24,10 @@ class GeoCodingStream extends Transform {
 
     if (trial.sites) {
       trial.sites.forEach((site) => {
-        if (site && site.postal_code) {
-          let geopoint = ZIP_CODES[site.postal_code];
+        if (site && site.org_postal_code) {
+          let geopoint = ZIP_CODES[site.org_postal_code];
           if (geopoint) {
-            site.coordinates = geopoint;
+            site.org_coordinates = geopoint;
           }
         }
       });
