@@ -64,10 +64,10 @@ export default class extends Component {
                 <ul className="clinical-trial-locations">
                   {trial.sites.map((site, i) =>
                     <li className="clinical-trial-location">
-                      <a href={`http://maps.google.com/?q=${[site.org.name, site.org.address_line_1, site.org.city, site.org.state_or_province, site.org.postal_code].join(' ')}`}>
-                        {site.org.name}<br/>
-                        {site.org.address_line_1}<br/>
-                        {site.org.city}, {site.org.state_or_province} {site.org.postal_code}<br/>
+                      <a href={`http://maps.google.com/?q=${[site.org_name, site.org_address_line_1, site.org_city, site.org_state_or_province, site.org_postal_code].join(' ')}`}>
+                        {site.org_name}<br/>
+                        {site.org_address_line_1}<br/>
+                        {site.org_city}, {site.org_state_or_province} {site.org_postal_code}<br/>
                       </a>
                     </li>
                   )}

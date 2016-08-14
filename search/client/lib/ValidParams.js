@@ -10,7 +10,7 @@ const params = [
     "filter_type": "suggest",
     "category": "get started"
   }, {
-    "param_key": "sites.org.family",
+    "param_key": "sites.org_family",
     "display_name": "Network/Organization",
     "filter_type": "suggest",
     "category": "get started"
@@ -20,7 +20,7 @@ const params = [
     "filter_type": "gender",
     "category": "get started"
   }, {
-    "param_key": "sites.org.name",
+    "param_key": "sites.org_name",
     "display_name": "Hospital/Center",
     "filter_type": "suggest",
     "category": "organization"
