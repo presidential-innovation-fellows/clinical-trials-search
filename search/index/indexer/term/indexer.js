@@ -65,8 +65,14 @@ class TermIndexer extends AbstractIndexer {
 
   indexTermsForType(termType, callback) {
     let is = new TermIndexerStream(this);
+    is.on("error", (err) => { this.logger.error(err); });
 
     this.indexCounter = 0;
+
+    // if we don't have any terms to index, don't let everything fail, return
+    if (!this.terms || !this.terms[termType] || _.isEmpty(this.terms[termType])) {
+      return callback();
+    }
 
     let maxTermCount = _.max(
       _.map(_.values(this.terms[termType]), (term) => {
