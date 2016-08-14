@@ -112,7 +112,7 @@ class Searcher {
               }
             }, {
               "match_phrase": {
-                "_diseases.ft": {
+                "_diseases._fulltext": {
                   "query": q._fulltext,
                   "boost": 4
                 }
@@ -171,7 +171,7 @@ class Searcher {
               }
             }, {
               "common": {
-                "_diseases.ft": {
+                "_diseases._fulltext": {
                   "query": q._fulltext,
                   "cutoff_frequency": 0.001,
                   "low_freq_operator": "and"
@@ -187,17 +187,16 @@ class Searcher {
               }
             }, {
               "common": {
-                "sites.org.name.ft": {
+                "sites.org_name._fulltext": {
                   "query": q._fulltext,
                   "cutoff_frequency": 0.001,
                   "low_freq_operator": "and",
                   "minimum_should_match": "100%"
                 }
               }
-            },
-            {
+            }, {
               "common": {
-                "collaborators.name.ft": {
+                "collaborators.name._fulltext": {
                   "query": q._fulltext,
                   "cutoff_frequency": 0.001,
                   "low_freq_operator": "and",
@@ -206,19 +205,19 @@ class Searcher {
               }
             }, {
               "match": {
-                "principal_investigator.ft": q._fulltext
+                "principal_investigator._fulltext": q._fulltext
               }
             }, {
               "match": {
-                "sites.contact_name.ft": q._fulltext
+                "sites.contact_name._fulltext": q._fulltext
               }
             }, {
               "match": {
-                "sites.org.city.ft": q._fulltext
+                "sites.org_city._fulltext": q._fulltext
               }
             }, {
               "match": {
-                "sites.org.state_or_province.ft": q._fulltext
+                "sites.org_state_or_province._fulltext": q._fulltext
               }
             }, {
               "bool": {
@@ -547,8 +546,8 @@ class Searcher {
     return [
       "_diseases",
       "_locations",
-      "sites.org.name",
-      "sites.org.family",
+      "sites.org_name",
+      "sites.org_family",
       "_treatments"
     ];
   }
