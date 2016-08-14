@@ -1,14 +1,11 @@
 const _                   = require("lodash");
-const ElasticSearch       = require("elasticsearch");
 const Bodybuilder         = require("bodybuilder");
 const moment              = require("moment");
 
 const Logger              = require("../../../common/logger");
 const Utils               = require("../../../common/utils");
-const CONFIG              = require("../../config.json");
 const trialMapping        = require("../../index/indexer/trial/mapping.json");
 
-let logger = new Logger({name: "searcher"});
 
 const transformStringToKey = Utils.transformStringToKey;
 const DATE_FORMAT = "YYYY-MM-DD";
@@ -23,19 +20,12 @@ const searchPropsByType =
 //to filter against.
 const NESTED_SEARCH_PROPS_FILTER = ['sites'];
 
-class SearchLogger extends Logger {
-  get DEFAULT_LOGGER_NAME() {
-    return "searcher-elasticsearch";
-  }
-}
+let logger = new Logger({name: "searcher"});
 
 class Searcher {
 
-  constructor() {
-    this.client = new ElasticSearch.Client({
-      host: `${CONFIG.ES_HOST}:${CONFIG.ES_PORT}`,
-      log: SearchLogger
-    });
+  constructor(client) {
+    this.client = client.getClient();
   }
 
   /***********************************************************************
@@ -635,5 +625,4 @@ class Searcher {
 
 }
 
-let searcher = new Searcher();
-module.exports = searcher;
+module.exports = Searcher;
