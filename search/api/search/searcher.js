@@ -89,17 +89,168 @@ class Searcher {
     }
   }
 
-  // TODO(Balint): might need to modify BodyBuilder
-  // _addFullTextQuery(body, q) {
-  //   if (q._fulltext) {
-  //     body.query("match", "_diseases._fulltext", q._fulltext);
-  //     body.query("match", "brief_title", q._fulltext);
-  //     body.query("match", "brief_summary", q._fulltext);
-  //     body.query("match", "official_title", q._fulltext);
-  //     body.query("match", "detail_description", q._fulltext);
-  //
-  //   }
-  // }
+  _addFullTextQuery(body, q) {
+    if (q._fulltext) {
+      body.query("bool", "should", {
+        "multi_match": {
+          "query": q._fulltext,
+          "fields": ["*_id", "other_ids.value"]
+        }
+      });
+      body.query("bool", "should", {
+        "match_phrase": {
+          "_diseases._fulltext": {
+            "query": q._fulltext,
+            "boost": 4
+          }
+        }
+      });
+      body.query("bool", "should", {
+        "match_phrase": {
+          "brief_title": {
+            "query": q._fulltext,
+            "boost": 4
+          }
+        }
+      });
+      body.query("bool", "should", {
+        "match_phrase": {
+          "brief_summary": {
+            "query": q._fulltext
+          }
+        }
+      });
+      body.query("bool", "should", {
+        "match_phrase": {
+          "official_title": {
+            "query": q._fulltext,
+            "boost": 4
+          }
+        }
+      });
+      body.query("bool", "should", {
+        "match_phrase": {
+          "detail_description": {
+            "query": q._fulltext,
+            "boost": 4
+          }
+        }
+      });
+      body.query("bool", "should", {
+        "common": {
+          "official_title": {
+            "query": q._fulltext,
+            "cutoff_frequency": 0.001,
+            "low_freq_operator": "and",
+            "boost": 4
+          }
+        }
+      });
+      body.query("bool", "should", {
+        "common": {
+          "brief_title": {
+            "query": q._fulltext,
+            "cutoff_frequency": 0.001,
+            "low_freq_operator": "and"
+          }
+        }
+      });
+      body.query("bool", "should", {
+        "common": {
+          "brief_summary": {
+            "query": q._fulltext,
+            "cutoff_frequency": 0.001,
+            "low_freq_operator": "and"
+          }
+        }
+      });
+      body.query("bool", "should", {
+        "common": {
+          "_diseases._fulltext": {
+            "query": q._fulltext,
+            "cutoff_frequency": 0.001,
+            "low_freq_operator": "and"
+          }
+        }
+      });
+      body.query("bool", "should", {
+        "common": {
+          "detail_description": {
+            "query": q._fulltext,
+            "cutoff_frequency": 0.001,
+            "low_freq_operator": "and"
+          }
+        }
+      });
+      body.query("bool", "should", {
+        "common": {
+          "sites.org_name._fulltext": {
+            "query": q._fulltext,
+            "cutoff_frequency": 0.001,
+            "low_freq_operator": "and",
+            "minimum_should_match": "100%"
+          }
+        }
+      });
+      body.query("bool", "should", {
+        "common": {
+          "collaborators.name._fulltext": {
+            "query": q._fulltext,
+            "cutoff_frequency": 0.001,
+            "low_freq_operator": "and",
+            "minimum_should_match": "100%"
+          }
+        }
+      });
+      body.query("bool", "should", {
+        "match": {
+          "principal_investigator._fulltext": q._fulltext
+        }
+      });
+      body.query("bool", "should", {
+        "match": {
+          "sites.contact_name._fulltext": q._fulltext
+        }
+      });
+      body.query("bool", "should", {
+        "match": {
+          "sites.org_city._fulltext": q._fulltext
+        }
+      });
+      body.query("bool", "should", {
+        "match": {
+          "sites.org_state_or_province._fulltext": q._fulltext
+        }
+      });
+
+      // TODO: break this up using another bodybuilder
+      body.query("bool", "should", {
+        "bool": {
+          "must": [{
+              "nested": {
+                "path": "arms.interventions",
+                "score_mode": "avg",
+                "query": {
+                  "bool": {
+                    "must": [{
+                        "term": {
+                          "arms.interventions.intervention_type": "drug"
+                        }
+                      }, {
+                        "match": {
+                          "arms.interventions.intervention_name": q._fulltext
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        }
+      });
+    }
+  }
 
   _fullTextQuery(q) {
     return {
@@ -493,20 +644,16 @@ class Searcher {
 
   _searchTrialsQuery(q) {
     var query;
-    if (q._fulltext) {
-      query = this._fullTextQuery(q);
-    } else {
-      let body = new Bodybuilder();
+    let body = new Bodybuilder();
 
-      this._addAllFilter(body, q);
-      this._addNestedFilters(body, q);
-      this._addFieldFilters(body, q);
-      this._addSizeFromParams(body, q);
-      this._addIncludeExclude(body, q);
+    this._addAllFilter(body, q);
+    this._addNestedFilters(body, q);
+    this._addFieldFilters(body, q);
+    this._addSizeFromParams(body, q);
+    this._addIncludeExclude(body, q);
+    this._addFullTextQuery(body, q);
 
-      query = body.build("v2");
-    }
-
+    query = body.build("v2");
     logger.info(query);
 
     return query;
