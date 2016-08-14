@@ -197,7 +197,7 @@ class SupplementStream extends Transform {
     let isStageOrGrade =
       ( preferredName.toLowerCase().includes("stage") ||
         preferredName.toLowerCase().includes("grade")
-      ) && !preferredName.toLowerCase().includes("ajcc_v");
+      ) && !preferredName.toLowerCase().includes("ajcc v");
     let isFinding = preferredName.toLowerCase().includes("finding");
     let isStatus = preferredName.toLowerCase().includes("status");
     let isTestResult = preferredName.toLowerCase().includes("test result");
