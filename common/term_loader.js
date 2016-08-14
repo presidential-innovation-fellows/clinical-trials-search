@@ -32,7 +32,7 @@ class TermLoader {
   }
 
   loadTermsFromTrialsJsonReadStream(rs, callback) {
-    logger.info("Loading terms from \"trials.json\" stream.");
+    logger.info("Loading terms from input file stream.");
     let js = JSONStream.parse("*");
 
     let _loadTerms = (trial) => {
@@ -44,7 +44,7 @@ class TermLoader {
     };
 
     rs.pipe(js).on("data", _loadTerms).on("end", () => {
-      logger.info("Loaded terms from \"trials.json\" stream.");
+      logger.info("Loaded terms from input file stream.");
       this._calcMostFrequentTerm();
       this._dealWithEdgeCases();
       return callback();
