@@ -505,8 +505,8 @@ class Searcher {
     this._addFullTextQuery(body, q);
 
     query = body.build("v2");
-    logger.info(query);
 
+    // logger.info(query);
     return query;
   }
 
