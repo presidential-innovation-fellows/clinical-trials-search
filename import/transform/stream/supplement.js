@@ -189,7 +189,7 @@ class SupplementStream extends Transform {
     };
 
     let ncitCode = disease.nci_thesaurus_concept_id;
-    let preferredName = disease.disease_preferred_name
+    let preferredName = disease.preferred_name
     let isNeoplasm = _isNeoplasm(ncitCode);
     let isInNeoplasmCore = _.has(this.neoplasmCoreById, ncitCode);
     let isTrialTerm = disease.inclusion_indicator.toLowerCase() === "trial";
@@ -291,12 +291,12 @@ class SupplementStream extends Transform {
 
       logger.info(`Transforming trial with nci_id (${trial.nci_id})...`);
 
+      this._modifyStructure(trial);
       this._addThesaurusTerms(trial);
       this._createLocations(trial);
       this._createTreatments(trial);
       this._createDiseases(trial);
       this._addDateLastUpdatedAnythingField(trial);
-      this._modifyStructure(trial);
 
       this.push(trial);
     }
