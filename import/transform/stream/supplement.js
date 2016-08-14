@@ -228,7 +228,15 @@ class SupplementStream extends Transform {
       if (this._isValidDiseaseTerm(disease)) {
         diseases[disease.disease_preferred_name] = 1;
         // TODO(Balint): add display term when NCIt export is updated...
-        // diseases[this.thesaurusById[disease.disease_code].display_name] = 1;
+        // diseases[this.thesaurusById[disease.nci_thesaurus_concept_id].display_name] = 1;
+        // REMOVE/REPLACE code chunk below with above when time is right
+        let thesLookup = this.thesaurusById[disease.nci_thesaurus_concept_id];
+        if (thesLookup && thesLookup.synonyms) {
+          let synonyms = thesLookup.synonyms.split("|");
+          if (synonyms.length) {
+            diseases[synonyms[0]] = 1;
+          }
+        }
         // TODO(Balint): consider adding synonyms...
         // disease.synonyms.forEach((synonym) => {
         //   diseases[synonym] = 1;
