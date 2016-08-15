@@ -26,8 +26,19 @@ class AbstractIndexer {
     this.esType = params.esType;
     this.esMapping = params.esMapping;
     this.esSettings = params.esSettings;
+
+    let hosts = [];
+
+    if (Array.isArray(CONFIG.ES_HOST)) {
+      CONFIG.ES_HOST.forEach(host => {
+        hosts.push(`${host}:${CONFIG.ES_PORT}`)
+      });
+    } else {
+      hosts.push(`${CONFIG.ES_HOST}:${CONFIG.ES_PORT}`);
+    } 
+  
     this.client = new ElasticSearch.Client({
-      host: `${CONFIG.ES_HOST}:${CONFIG.ES_PORT}`,
+      hosts: hosts,
       log: ElasticSearchLogger
     });
   }
