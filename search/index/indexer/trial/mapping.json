@@ -618,7 +618,7 @@
               }
             }
           },
-          "coordinates": {
+          "org_coordinates": {
             "type": "geo_point"
           },
           "org_country": {
