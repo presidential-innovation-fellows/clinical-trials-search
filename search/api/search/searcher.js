@@ -41,7 +41,7 @@ class Searcher {
     // else if(id.substr(0, 3) === "NCT")
       body.query("match", "nct_id", id);
 
-    let query = body.build("v2");
+    let query = body.build();
     // logger.info(query);
 
     return query;
@@ -272,7 +272,7 @@ class Searcher {
         let boolMustContents = new Bodybuilder();
 
         this._addFieldFilters(nestedBodyQuery, paramsForNesting);
-        body.query("nested", nestedfield, 'avg', nestedBodyQuery.build("v2"));
+        body.query("nested", nestedfield, 'avg', nestedBodyQuery.build());
 
         //Now that we have added the keys, we need to remove the params
         //from the original request params so we don't add duplicate
@@ -292,7 +292,7 @@ class Searcher {
         logger.info(filterElement);
         orBody.orFilter("term", field, filterElement.toLowerCase());
       });
-      body.filter("bool", "and", orBody.build("v2"));
+      body.filter("bool", "and", orBody.build());
     } else {
       body.filter("term", field, filter.toLowerCase());
     }
@@ -422,7 +422,7 @@ class Searcher {
         filter.forEach((filterEl) => {
           orBody.orFilter("term", field, _stringToBool(filterEl));
         });
-        body.filter("bool", "and", orBody.build("v2"));
+        body.filter("bool", "and", orBody.build());
       } else {
         body.filter("term", field, _stringToBool(filter));
       }
@@ -487,14 +487,16 @@ class Searcher {
     var query;
     let body = new Bodybuilder();
 
+    // TODO: remove _all filter...
     this._addAllFilter(body, q);
+
     this._addNestedFilters(body, q);
     this._addFieldFilters(body, q);
     this._addSizeFromParams(body, q);
     this._addIncludeExclude(body, q);
     this._addFullTextQuery(body, q);
 
-    query = body.build("v2");
+    query = body.build();
 
     // logger.info(query);
     return query;
@@ -564,7 +566,7 @@ class Searcher {
     });
 
     // build the query and add custom fields (that bodyparser can't handle)
-    let functionQuery = body.build("v2");
+    let functionQuery = body.build();
     // boost exact match
     if (q.term) {
       functionQuery.query.bool.should = {
