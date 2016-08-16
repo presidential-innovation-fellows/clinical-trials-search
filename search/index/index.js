@@ -11,6 +11,8 @@ logger.info("Started indexing.");
 let trialIndexInfo = false;
 let termIndexInfo = false;
 
+//Create instance of SearchAdapter.
+
 async.waterfall([
   (next) => { TrialIndexer.init(next); },
   (info, next) => {

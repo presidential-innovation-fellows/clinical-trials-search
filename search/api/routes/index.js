@@ -1,7 +1,7 @@
 const _                   = require("lodash");
 const express             = require("express");
 const md                  = require("marked");
-const searcherClient      = require("../search/clients/searcher_esclient");
+const searcherAdapter      = require("../../common/search_adapters/elasticsearch_adapter");
 const Searcher            = require("../search/searcher");
 const Logger              = require('../../../common/logger');
 const Utils               = require("../../../common/utils");
@@ -9,7 +9,7 @@ const trialMapping        = require("../../index/indexer/trial/mapping.json");
 
 let logger = new Logger({name: "api-router"});
 
-let searcher = new Searcher(searcherClient);
+let searcher = new Searcher(searcherAdapter);
 
 const router = express.Router();
 
