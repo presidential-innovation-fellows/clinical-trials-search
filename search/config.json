@@ -1,4 +1,4 @@
 {
-  "ES_HOST": "ncias-s1561-v",
-  "ES_PORT": "9299"
+  "ES_HOST": "localhost",
+  "ES_PORT": "9200"
 }
