@@ -12,7 +12,7 @@ const CONFIG = require("../../../config.json");
 const ES_MAPPING = require("./mapping.json");
 const ES_SETTINGS = require("./settings.json");
 const ES_PARAMS = {
-  "esIndex": "cancer-terms",
+  "esAlias": "cancer-terms",
   "esType": "term",
   "esMapping": ES_MAPPING,
   "esSettings": ES_SETTINGS
@@ -142,7 +142,10 @@ class TermIndexer extends AbstractIndexer {
     ], (err) => {
       if(err) { indexer.logger.error(err); }
       indexer.logger.info(`Finished indexing (${indexer.esType}) indices.`);
-      callback(err);
+      callback(err,{
+        esIndex: indexer.esIndex,
+        esAlias: indexer.esAlias
+      });
     });
   }
 

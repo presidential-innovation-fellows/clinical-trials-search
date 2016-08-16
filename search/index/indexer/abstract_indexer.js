@@ -22,7 +22,15 @@ class AbstractIndexer {
 
   constructor(params) {
     this.logger = new Logger({name: this.LOGGER_NAME});
-    this.esIndex = params.esIndex;
+    this.esAlias = params.esAlias;
+
+    //Index is based on time stamp
+    //Get timestamp to append to alias name
+    var now = new Date();    
+    let timestamp = `${now.getFullYear()}${now.getMonth()+1}${now.getDate()}_${now.getHours()}${now.getHours()}${now.getSeconds()}`;
+    //Set the index name to be alias appended with a timestamp.  Seconds should be good for now.
+    this.esIndex = this.esAlias + timestamp;
+
     this.esType = params.esType;
     this.esMapping = params.esMapping;
     this.esSettings = params.esSettings;
