@@ -24,8 +24,8 @@ let logger = new Logger({name: "searcher"});
 
 class Searcher {
 
-  constructor(client) {
-    this.client = client.getClient();
+  constructor(adapter) {
+    this.client = adapter.getClient();
   }
 
   /***********************************************************************
