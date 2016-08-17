@@ -37,7 +37,8 @@ and for the API to consume content.  The configuration (config.json) should be a
 
 ## Indexing Content
 ### Pre-Steps
-1. copy files
+1. Run the importer/transform 
+1. Copy the resulting trials_cleansed.json to the data folder
 
 ### Steps to Index
 1. cd &lt;root&gt;/search/index
