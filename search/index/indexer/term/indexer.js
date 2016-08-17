@@ -58,8 +58,8 @@ class TermIndexer extends AbstractIndexer {
     return "term-indexer";
   }
 
-  constructor(params) {
-    super(params);
+  constructor(adapter, params) {
+    super(adapter, params);
     this.indexCounter = 0;
   }
 
@@ -123,8 +123,8 @@ class TermIndexer extends AbstractIndexer {
     });
   }
 
-  static init(callback) {
-    let indexer = new TermIndexer(ES_PARAMS);
+  static init(adapter, callback) {
+    let indexer = new TermIndexer(adapter, ES_PARAMS);
     indexer.logger.info(`Started indexing (${indexer.esType}) indices.`);
     async.waterfall([
       (next) => { indexer.indexExists(next); },
