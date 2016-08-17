@@ -35,8 +35,6 @@ SELECT
     ),
 
     'amendment_date', study.amendment_date,
-    'date_last_created', study.date_last_created,
-    'date_last_updated', study.date_last_updated,
     'current_trial_status', study.current_trial_status,
     'current_trial_status_date', study.current_trial_status_date,
     'start_date', study.start_date,
@@ -108,8 +106,7 @@ SELECT
         json_agg(
           json_build_object(
             'name', collaborator.name,
-            'functional_role', collaborator.functional_role,
-            'status', collaborator.status
+            'functional_role', collaborator.functional_role
           )
         )
       FROM
@@ -127,23 +124,23 @@ SELECT
             'generic_contact', site.generic_contact,
             'org', (
               SELECT
-                  json_build_object(
-                    'address_line_1', org.address_line_1,
-                    'address_line_2', org.address_line_2,
-                    'postal_code', org.postal_code,
-                    'city', org.city,
-                    'state_or_province', org.state_or_province,
-                    'country', org.country,
-                    'name', org.name,
-                    'status', org.status,
-                    'status_date', org.status_date,
-                    'email', org.email,
-                    'fax', org.fax,
-                    'phone', org.phone,
-                    'tty', org.tty,
-                    'family', org.family,
-                    'org_to_family_relationship', org.org_to_family_relationship
-                  )
+                json_build_object(
+                  'address_line_1', org.address_line_1,
+                  'address_line_2', org.address_line_2,
+                  'postal_code', org.postal_code,
+                  'city', org.city,
+                  'state_or_province', org.state_or_province,
+                  'country', org.country,
+                  'name', org.name,
+                  'status', org.status,
+                  'status_date', org.status_date,
+                  'email', org.email,
+                  'fax', org.fax,
+                  'phone', org.phone,
+                  'tty', org.tty,
+                  'family', org.family,
+                  'org_to_family_relationship', org.org_to_family_relationship
+                )
               FROM
                 dw_organization org
               WHERE
@@ -275,8 +272,6 @@ SELECT
             'arm_name', arm.arm_name,
             'arm_type', arm.arm_type,
             'arm_description', arm.arm_description,
-            'date_created_arm', arm.date_created_arm,
-            'date_updated_arm', arm.date_updated_arm,
             'interventions', arm.interventions
           )
         )
@@ -286,16 +281,12 @@ SELECT
           arm_name,
           arm_type,
           arm_description,
-          date_created_arm,
-          date_updated_arm,
           coalesce(
             json_agg(
               json_build_object(
                 'intervention_name', intervention_name,
                 'intervention_type', intervention_type,
-                'intervention_description', intervention_description,
-                'date_created_intervention', date_created_intervention,
-                'date_updated_intervention', date_updated_intervention
+                'intervention_description', intervention_description
               )
             )
             filter(
@@ -314,9 +305,7 @@ SELECT
           nci_id,
           arm_name,
           arm_type,
-          arm_description,
-          date_created_arm,
-          date_updated_arm
+          arm_description
       ) AS arm
       WHERE
         study.nci_id = arm.nci_id
@@ -326,4 +315,7 @@ FROM
   dw_study study
 WHERE
   -- lower(current_trial_status) = 'active' AND
-  lower(processing_status) LIKE 'abstraction verified%';
+  lower(processing_status) LIKE 'abstraction verified no response' OR
+  lower(processing_status) LIKE 'abstraction verified response' OR
+  lower(processing_status) LIKE 'verification pending' OR
+  lower(processing_status) LIKE 'abstraction';
