@@ -2,6 +2,7 @@ const async                 = require("async");
 const TrialIndexer          = require("./indexer/trial/indexer");
 const TermIndexer           = require("./indexer/term/indexer");
 const AliasSwapper          = require("./indexer/alias_swapper");
+const IndexOptimizer        = require("./indexer/index_optimizer");
 const Logger                = require("../../common/logger");
 const elasticsearchAdapter  = require("../common/search_adapters/elasticsearch_adapter");
 
@@ -11,8 +12,6 @@ logger.info("Started indexing.");
 
 let trialIndexInfo = false;
 let termIndexInfo = false;
-
-//Create instance of SearchAdapter.
 
 async.waterfall([
   (next) => { TrialIndexer.init(elasticsearchAdapter, next); },
@@ -27,6 +26,8 @@ async.waterfall([
     termIndexInfo = info; 
     return next(null); 
   },
+  //Optimize the index
+  (next) => { IndexOptimizer.init(elasticsearchAdapter, trialIndexInfo, termIndexInfo, next); },
   //if all went well, swap aliases
   (next) => { AliasSwapper.init(elasticsearchAdapter, trialIndexInfo, termIndexInfo, next); }    
 ], (err) => {
