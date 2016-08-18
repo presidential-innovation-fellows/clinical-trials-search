@@ -20,9 +20,9 @@ class AbstractIndexer {
     return "abstract-indexer";
   }
 
-  constructor(adapter, params) {
+  constructor(adapter, trials_file, params) {
     this.logger = new Logger({name: this.LOGGER_NAME});
-
+    this.trials_file = trials_file;
     this.client = adapter.getClient();
 
     this.esAlias = params.esAlias;

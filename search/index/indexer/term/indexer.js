@@ -1,5 +1,4 @@
 const fs                  = require("fs");
-const path                = require("path");
 const async               = require("async");
 const _                   = require("lodash");
 const Writable            = require("stream").Writable;
@@ -8,7 +7,6 @@ const AbstractIndexer     = require("../abstract_indexer");
 const Utils               = require("../../../../common/utils");
 const TermLoader          = require("../../../../common/term_loader");
 
-const CONFIG = require("../../../config.json");
 const ES_MAPPING = require("./mapping.json");
 const ES_SETTINGS = require("./settings.json");
 const ES_PARAMS = {
@@ -17,8 +15,6 @@ const ES_PARAMS = {
   "esMapping": ES_MAPPING,
   "esSettings": ES_SETTINGS
 };
-const TRIALS_FILEPATH = path.join(__dirname,
-  '../../../../data/trials_cleansed.json');
 
 class TermIndexerStream extends Writable {
 
@@ -58,8 +54,8 @@ class TermIndexer extends AbstractIndexer {
     return "term-indexer";
   }
 
-  constructor(adapter, params) {
-    super(adapter, params);
+  constructor(adapter, trials_file, params) {
+    super(adapter, trials_file, params);
     this.indexCounter = 0;
   }
 
@@ -111,7 +107,7 @@ class TermIndexer extends AbstractIndexer {
   }
 
   loadTermsFromTrialsJsonFile(callback) {
-    let rs = fs.createReadStream(TRIALS_FILEPATH);
+    let rs = fs.createReadStream(this.trials_file);
     let termLoader = new TermLoader();
     termLoader.loadTermsFromTrialsJsonReadStream(rs, (err) => {
       if (err) {
@@ -123,8 +119,8 @@ class TermIndexer extends AbstractIndexer {
     });
   }
 
-  static init(adapter, callback) {
-    let indexer = new TermIndexer(adapter, ES_PARAMS);
+  static init(adapter, trials_file, callback) {
+    let indexer = new TermIndexer(adapter, trials_file, ES_PARAMS);
     indexer.logger.info(`Started indexing (${indexer.esType}) indices.`);
     async.waterfall([
       (next) => { indexer.indexExists(next); },
