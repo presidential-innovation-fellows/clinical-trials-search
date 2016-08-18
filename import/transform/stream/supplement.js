@@ -89,7 +89,8 @@ class SupplementStream extends Transform {
     if (trial.diseases) {
       trial.diseases.forEach((disease) => {
         disease.preferred_name = disease.disease_preferred_name;
-        disease.display_name = this.thesaurusById[disease.nci_thesaurus_concept_id];
+        disease.display_name =
+          this.thesaurusById[disease.nci_thesaurus_concept_id].display_name;
         // NOTE: don't use the disease_menu_display_name, it isn't the
         //       display name that we actually want, use the one from the NCIt
         // disease.display_name = disease.disease_menu_display_name;
