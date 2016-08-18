@@ -178,9 +178,7 @@ SELECT
             'disease_menu_display_name', disease.disease_menu_display_name,
             'inclusion_indicator', disease.inclusion_indicator,
             'lead_disease_indicator', disease.lead_disease_indicator,
-            'nci_thesaurus_concept_id', disease.nci_thesaurus_concept_id,
-            'date_last_created', disease.date_last_created,
-            'date_last_updated', disease.date_last_updated
+            'nci_thesaurus_concept_id', disease.nci_thesaurus_concept_id
           )
         )
       FROM
