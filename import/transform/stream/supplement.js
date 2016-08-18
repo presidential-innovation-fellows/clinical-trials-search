@@ -88,8 +88,11 @@ class SupplementStream extends Transform {
   _modifyStructure(trial) {
     if (trial.diseases) {
       trial.diseases.forEach((disease) => {
-        disease.display_name = disease.disease_menu_display_name;
         disease.preferred_name = disease.disease_preferred_name;
+        disease.display_name = this.thesaurusById[disease.nci_thesaurus_concept_id];
+        // NOTE: don't use the disease_menu_display_name, it isn't the
+        //       display name that we actually want, use the one from the NCIt
+        // disease.display_name = disease.disease_menu_display_name;
 
         delete disease.disease_menu_display_name;
         delete disease.disease_preferred_name;
@@ -221,21 +224,37 @@ class SupplementStream extends Transform {
   }
 
   _createDiseases(trial) {
+    const _pushOrCreateArr = (arr, value) => {
+      if (arr) {
+        arr.push(value);
+      } else {
+        arr = [value];
+      }
+      return arr;
+    };
     if (!trial.diseases) { return; }
     let diseases = {};
     trial.diseases.forEach((disease) => {
       // validate that we should use this disease
       if (this._isValidDiseaseTerm(disease)) {
-        diseases[disease.disease_preferred_name] = 1;
-        // TODO(Balint): add display term when NCIt export is updated...
-        // diseases[this.thesaurusById[disease.nci_thesaurus_concept_id].display_name] = 1;
-        // REMOVE/REPLACE code chunk below with above when time is right
-        let thesLookup = this.thesaurusById[disease.nci_thesaurus_concept_id];
-        if (thesLookup && thesLookup.synonyms) {
-          let synonyms = thesLookup.synonyms.split("|");
-          if (synonyms.length) {
-            diseases[synonyms[0]] = 1;
-          }
+        let ncitCode = disease.nci_thesaurus_concept_id;
+        // add preferred name
+        if (disease.preferred_name && disease.preferred_name !== "") {
+          diseases[disease.preferred_name] =
+            _pushOrCreateArr(
+              diseases[disease.preferred_name],
+              ncitCode
+            );
+        }
+        // add display name
+        let displayName =
+          this.thesaurusById[disease.nci_thesaurus_concept_id].display_name;
+        if (displayName && displayName !== "") {
+          diseases[displayName] =
+            _pushOrCreateArr(
+              diseases[displayName],
+              ncitCode
+            );
         }
         // TODO(Balint): consider adding synonyms...
         // disease.synonyms.forEach((synonym) => {
@@ -244,9 +263,16 @@ class SupplementStream extends Transform {
       }
     });
 
-    trial._diseases = Object.keys(diseases);
-  }
+    let diseasesArr = [];
+    _.forOwn(diseases, (value, key) => {
+      diseasesArr.push({
+        term: key,
+        codes: value
+      });
+    })
 
+    trial._diseases = diseasesArr;
+  }
 
   _transform(buffer, enc, next) {
 
