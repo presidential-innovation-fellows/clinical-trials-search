@@ -89,6 +89,9 @@ class TermIndexer extends AbstractIndexer {
         "count": count,
         "count_normalized": count_normalized
       };
+      if (termType === "_diseases") {
+        doc.codes = termObj["codes"];
+      }
       is.write(doc);
     });
     is.end();

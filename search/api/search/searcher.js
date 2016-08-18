@@ -566,7 +566,7 @@ class Searcher {
     });
 
     // build the query and add custom fields (that bodyparser can't handle)
-    let functionQuery = body.build();
+    let functionQuery = body.build("v2");
     // boost exact match
     if (q.term) {
       functionQuery.query.bool.should = {
