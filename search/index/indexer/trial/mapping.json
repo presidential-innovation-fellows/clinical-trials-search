@@ -67,30 +67,10 @@
             "analyzer": "keyword_ci",
             "include_in_all": false
           },
-          "date_created_arm": {
-            "type": "date",
-            "format": "strict_date_optional_time||epoch_millis",
-            "include_in_all": false
-          },
-          "date_updated_arm": {
-            "type": "date",
-            "format": "strict_date_optional_time||epoch_millis",
-            "include_in_all": false
-          },
           "interventions": {
             "type": "nested",
             "include_in_root": true,
             "properties": {
-              "date_created_intervention": {
-                "type": "date",
-                "format": "strict_date_optional_time||epoch_millis",
-                "include_in_all": false
-              },
-              "date_updated_intervention": {
-                "type": "date",
-                "format": "strict_date_optional_time||epoch_millis",
-                "include_in_all": false
-              },
               "intervention_description": {
                 "type": "string",
                 "analyzer": "standard",
@@ -224,11 +204,6 @@
                 "analyzer": "englishfulltext"
               }
             }
-          },
-          "status": {
-            "type": "string",
-            "analyzer": "keyword_ci",
-            "include_in_all": false
           }
         }
       },
@@ -257,21 +232,6 @@
         "format": "strict_date_optional_time||epoch_millis",
         "include_in_all": false
       },
-      "date_last_created": {
-        "type": "date",
-        "format": "strict_date_optional_time||epoch_millis",
-        "include_in_all": false
-      },
-      "date_last_updated": {
-        "type": "date",
-        "format": "strict_date_optional_time||epoch_millis",
-        "include_in_all": false
-      },
-      "date_last_updated_anything": {
-        "type": "date",
-        "format": "strict_date_optional_time||epoch_millis",
-        "include_in_all": false
-      },
       "dcp_id": {
         "type": "string",
         "analyzer": "keyword_ci",
@@ -293,16 +253,6 @@
               "synonyms": {
                 "type": "string",
                 "analyzer": "keyword_ci",
-                "include_in_all": false
-              },
-              "date_last_created": {
-                "type": "date",
-                "format": "strict_date_optional_time||epoch_millis",
-                "include_in_all": false
-              },
-              "date_last_updated": {
-                "type": "date",
-                "format": "strict_date_optional_time||epoch_millis",
                 "include_in_all": false
               },
               "display_name": {
