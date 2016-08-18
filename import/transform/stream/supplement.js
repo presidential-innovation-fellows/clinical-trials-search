@@ -198,10 +198,10 @@ class SupplementStream extends Transform {
     let isInNeoplasmCore = _.has(this.neoplasmCoreById, ncitCode);
     let isTrialTerm = disease.inclusion_indicator.toLowerCase() === "trial";
     let isTreeTerm = !isTrialTerm;
-    let isStageOrGrade =
-      ( preferredName.toLowerCase().includes("stage") ||
-        preferredName.toLowerCase().includes("grade")
-      ) && !preferredName.toLowerCase().includes("ajcc v");
+    let isStageOrGrade = (
+      preferredName.toLowerCase().includes("stage") ||
+      preferredName.toLowerCase().includes("grade")
+    )
     let isFinding = preferredName.toLowerCase().includes("finding");
     let isStatus = preferredName.toLowerCase().includes("status");
     let isTestResult = preferredName.toLowerCase().includes("test result");
@@ -209,16 +209,18 @@ class SupplementStream extends Transform {
     let isNonNeoplasmTreeTerm = !isNeoplasm && isTreeTerm;
 
     let isValidDisease = (
-      (
-        isInNeoplasmCore ||
-        !isNeoplasm ||
-        (isNeoplasm && isStageOrGrade)
-      ) &&
-      !isNonNeoplasmTreeTerm &&
-      !isFinding &&
-      !isStatus &&
-      !isTestResult &&
-      !isInBlacklist
+      isTrialTerm || (
+        (
+          isInNeoplasmCore ||
+          !isNeoplasm ||
+          (isNeoplasm && isStageOrGrade)
+        ) &&
+        !isNonNeoplasmTreeTerm &&
+        !isFinding &&
+        !isStatus &&
+        !isTestResult &&
+        !isInBlacklist
+      )
     );
 
     return isValidDisease;
