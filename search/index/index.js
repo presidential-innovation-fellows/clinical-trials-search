@@ -54,10 +54,10 @@ class Indexer {
       //if all went well, swap aliases
       (next) => { AliasSwapper.init(elasticsearchAdapter, trialIndexInfo, termIndexInfo, next); }
     ], (err, status) => {
-      if (!err && status == "done") {
-        this.logger.info("Finished indexing.");
+      if (err) {
+        this.logger.info("Errors encountered. Exiting.");
       } else {
-        this.logger.error(`An error may have occurred: ${err}`);
+        this.logger.info("Finished indexing.");
       }
     });
   }
@@ -69,3 +69,5 @@ if (require.main === module) {
   let indexer = new Indexer();
   indexer.index(TRIALS_FILEPATH);
 }
+
+module.exports = Indexer;
