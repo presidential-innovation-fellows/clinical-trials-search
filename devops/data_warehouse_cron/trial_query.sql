@@ -41,6 +41,7 @@ SELECT
     'start_date_type_code', study.start_date_type_code,
     'completion_date', study.completion_date,
     'completion_date_type_code', study.completion_date_type_code,
+    'record_verification_date', study.record_verification_date,
     'brief_title', study.brief_title,
     'official_title', study.official_title,
     'acronym', study.acronym,
