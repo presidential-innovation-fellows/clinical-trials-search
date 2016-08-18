@@ -247,41 +247,6 @@ class SupplementStream extends Transform {
     trial._diseases = Object.keys(diseases);
   }
 
-  // looks through all date fields, finds the latest one and uses that
-  // for the "date_last_updated_anything" field
-  _addDateLastUpdatedAnythingField(trial) {
-    let updateDates = [];
-
-    const _addDateToArr = (stringDate) => {
-      let momentDate = moment(stringDate);
-      if (stringDate && momentDate.isValid()) updateDates.push(momentDate);
-    }
-
-    [
-      trial.amendment_date, trial.current_trial_status_date,
-      trial.date_last_created, trial.date_last_updated
-    ].forEach(_addDateToArr);
-
-    if (trial.diseases) {
-      trial.diseases.forEach((disease) => {
-        if (disease.disease) {
-          let d = disease.disease;
-          [d.date_last_created, d.date_last_updated].forEach(_addDateToArr);
-        }
-      });
-    }
-
-    if (trial.sites) {
-      trial.sites.forEach((site) => {
-        _addDateToArr(site.recruitment_status_date);
-        _addDateToArr(site.org_status_date);
-      });
-    }
-
-    let updatedDate = moment.max(updateDates);
-
-    trial.date_last_updated_anything = updatedDate.utc().format("YYYY-MM-DD");
-  }
 
   _transform(buffer, enc, next) {
 
@@ -304,7 +269,6 @@ class SupplementStream extends Transform {
       this._createLocations(trial);
       this._createTreatments(trial);
       this._createDiseases(trial);
-      this._addDateLastUpdatedAnythingField(trial);
 
       this.push(trial);
     }
