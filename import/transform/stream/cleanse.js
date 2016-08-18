@@ -50,7 +50,10 @@ class CleanseStream extends Transform {
     logger.info(`Cleansing trial with nci_id (${trial.nci_id}).`);
 
     TermLoader.VALID_TERM_TYPES.forEach((termType) => {
-      this._transformTrialForTermType(trial, termType);
+      // special case: don't cleanse disease terms
+      if (termType !== "_diseases") {
+        this._transformTrialForTermType(trial, termType);
+      }
     });
 
     this.push(trial);

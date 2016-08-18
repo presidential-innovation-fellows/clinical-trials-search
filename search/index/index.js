@@ -17,19 +17,19 @@ async.waterfall([
   (next) => { TrialIndexer.init(elasticsearchAdapter, next); },
   (info, next) => {
     //Save out alias and trial index name
-    trialIndexInfo = info; 
-    return next(null); 
+    trialIndexInfo = info;
+    return next(null);
   },
   (next) => { TermIndexer.init(elasticsearchAdapter, next); },
   (info, next) => {
     //Save out term index
-    termIndexInfo = info; 
-    return next(null); 
+    termIndexInfo = info;
+    return next(null);
   },
   //Optimize the index
   (next) => { IndexOptimizer.init(elasticsearchAdapter, trialIndexInfo, termIndexInfo, next); },
   //if all went well, swap aliases
-  (next) => { AliasSwapper.init(elasticsearchAdapter, trialIndexInfo, termIndexInfo, next); }    
+  (next) => { AliasSwapper.init(elasticsearchAdapter, trialIndexInfo, termIndexInfo, next); }
 ], (err) => {
   logger.info("Finished indexing.");
 });

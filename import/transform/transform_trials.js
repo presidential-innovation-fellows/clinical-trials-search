@@ -46,13 +46,19 @@ class TrialsTransformer {
 
   _loadThesaurus(callback) {
     logger.info("Loading the NCI Thesaurus...");
-    let header = ["code", "concept_name", "parents", "synonyms"];
+    let header = [
+      "code", "concept_name", "parents", "synonyms",
+      "definition", "display_name", "semantic_types"
+    ];
     let delimiter = "\t";
+    let exclude = [
+      "definition", "semantic_types"
+    ]
     this.thesaurus = [];
 
     let rs = fs.createReadStream(path.join(__dirname, THESAURUS_FILEPATH));
     let ls = byline.createStream();
-    let cs = new CsvStream({header, delimiter});
+    let cs = new CsvStream({header, delimiter, exclude});
 
     rs.on("error", (err) => { logger.error(err); })
       .pipe(ls)

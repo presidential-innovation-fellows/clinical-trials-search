@@ -39,7 +39,11 @@ class TermLoader {
       // logger.info(
       //   `Loading terms from trial with nci_id (${trial.nci_id}).`);
       TermLoader.VALID_TERM_TYPES.forEach((termType) => {
-        this._loadTermsFromTrialForTermType(trial, termType);
+        if (termType === "_diseases") {
+          this._loadTermsFromTrialForDiseases(trial);
+        } else {
+          this._loadTermsFromTrialForTermType(trial, termType);
+        }
       });
     };
 
@@ -63,7 +67,8 @@ class TermLoader {
         this["terms"][termTypeKey][termKey] = {
           term: maxTerm["term"],
           terms: termObj["terms"],
-          count: termObj["count"]
+          count: termObj["count"],
+          codes: termObj["codes"]
         };
       });
     });
@@ -85,6 +90,37 @@ class TermLoader {
     });
   }
 
+  _extractTermsUsingPath(trial, path) {
+    let termsArr = [];
+    let pathArr = path.split(".");
+
+    const _extractTermsRecursive = (obj, pathArr) => {
+      if (!obj || !pathArr) { return; }
+      let thisObj = obj[pathArr[0]];
+      if (!thisObj) { return; }
+      if (pathArr.length === 1) {
+        if (thisObj instanceof Array) {
+          termsArr = termsArr.concat(thisObj);
+        } else {
+          termsArr.push(thisObj);
+        }
+      } else {
+        let newPathArr = pathArr.slice(1, pathArr.length);
+        if (thisObj instanceof Array) {
+          thisObj.forEach((o) => {
+            _extractTermsRecursive(o, newPathArr);
+          });
+        } else {
+          _extractTermsRecursive(thisObj, newPathArr);
+        }
+      }
+    };
+
+    _extractTermsRecursive(trial, pathArr);
+
+    return termsArr;
+  }
+
   _loadTermsFromTrialForTermType(trial, termType) {
     /*
       Produces this.terms[termType] = {
@@ -100,31 +136,7 @@ class TermLoader {
     */
 
     let terms = {};
-    let termsArr = [];
-    let pathArr = termType.split(".");
-
-    const _extractTerms = (obj, pathArr) => {
-      if (!obj || !pathArr) { return; }
-      let thisObj = obj[pathArr[0]];
-      if (!thisObj) { return; }
-      if (pathArr.length === 1) {
-        if (thisObj instanceof Array) {
-          termsArr = termsArr.concat(thisObj);
-        } else {
-          termsArr.push(thisObj);
-        }
-      } else {
-        let newPathArr = pathArr.slice(1, pathArr.length);
-        if (thisObj instanceof Array) {
-          thisObj.forEach((o) => {
-            _extractTerms(o, newPathArr);
-          });
-        } else {
-          _extractTerms(thisObj, newPathArr);
-        }
-      }
-    };
-    _extractTerms(trial, pathArr);
+    let termsArr = this._extractTermsUsingPath(trial, termType);
     termsArr = _.chain(termsArr).uniq().compact().value();
 
     termsArr.forEach((term) => {
@@ -161,6 +173,74 @@ class TermLoader {
         }
         this.terms[termType][termKey]["terms"][term] +=
           terms[termKey]["terms"][term];
+      });
+    });
+  }
+
+  _loadTermsFromTrialForDiseases(trial) {
+    /*
+      Produces this.terms[termType] = {
+        term_one: {
+          count: 10,
+          terms: {
+            "Term One": 26,
+            "term one": 14
+          },
+          codes: ["C12345"]
+        },
+        ...
+      }
+    */
+
+    let termType = "_diseases";
+    let diseases = {};
+    let diseasesArr = this._extractTermsUsingPath(trial, termType);
+    // TODO: deal with uniqueness of terms in a trial (might not be a concern,
+    //       especially if we aren't dealing with synonyms)
+    // diseasesArr = _.chain(diseasesArr).uniq().compact().value();
+
+    diseasesArr.forEach((disease) => {
+      let diseaseKey = Utils.transformStringToKey(disease.term);
+      if (typeof diseases[diseaseKey] === "undefined") {
+        diseases[diseaseKey] = {
+          count: 1,
+          terms: {},
+          codes: []
+        };
+      }
+      diseases[diseaseKey]["codes"] = _.uniq(
+        diseases[diseaseKey]["codes"].concat(disease.codes)
+      );
+      if (typeof diseases[diseaseKey]["terms"][disease.term] === "undefined") {
+        diseases[diseaseKey]["terms"][disease.term] = 1;
+      } else {
+        diseases[diseaseKey]["terms"][disease.term]++;
+      }
+    });
+
+    if (typeof this.terms[termType] === "undefined") {
+      this.terms[termType] = {};
+    }
+    Object.keys(diseases).forEach((diseaseKey) => {
+      if (typeof this.terms[termType][diseaseKey] === "undefined") {
+        this.terms[termType][diseaseKey] = {
+          count: 0,
+          terms: {},
+          codes: []
+        };
+      }
+      this.terms[termType][diseaseKey]["codes"] = _.uniq(
+        this.terms[termType][diseaseKey]["codes"].concat(diseases[diseaseKey]["codes"])
+      );
+      this.terms[termType][diseaseKey]["count"] +=
+        diseases[diseaseKey]["count"];
+
+      Object.keys(diseases[diseaseKey]["terms"]).forEach((disease) => {
+        if (typeof this.terms[termType][diseaseKey]["terms"][disease] === "undefined") {
+          this.terms[termType][diseaseKey]["terms"][disease] = 0;
+        }
+        this.terms[termType][diseaseKey]["terms"][disease] +=
+          diseases[diseaseKey]["terms"][disease];
       });
     });
   }

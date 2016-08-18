@@ -1,3 +1,4 @@
+const _                   = require("lodash");
 const babyparse           = require("babyparse");
 const Transform           = require("stream").Transform;
 const Logger              = require("../../../common/logger");
@@ -14,10 +15,11 @@ let logger = new Logger({ name: "csv-stream" });
  */
 class CsvStream extends Transform {
 
-  constructor({header, delimiter}) {
+  constructor({header, delimiter, exclude}) {
     super({ objectMode: true });
     this.header = header;
     this.delimiter = delimiter;
+    this.exclude = exclude;
     this.isFirstLine = true;
   }
 
@@ -30,7 +32,9 @@ class CsvStream extends Transform {
     csv.data.forEach((row) => {
       let rowHash = {};
       this.header.forEach((headerField, i) => {
-        rowHash[headerField] = row[i];
+        if (!_.includes(this.exclude, headerField)) {
+          rowHash[headerField] = row[i];
+        }
       });
       if (this.isFirstLine) {
         this.isFirstLine = false;
