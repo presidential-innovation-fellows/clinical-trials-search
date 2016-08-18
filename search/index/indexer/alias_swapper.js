@@ -22,24 +22,15 @@ class AliasSwapper {
     return "alias-swapper";
   }
 
-  constructor() {
+  /**
+   * Creates an instance of AliasSwapper.
+   * 
+   * @param {any} adapter The search adapter to use for connecting to ElasticSearch
+   */
+  constructor(adapter) {
     this.logger = new Logger({name: this.LOGGER_NAME});
 
-
-    let hosts = [];
-
-    if (Array.isArray(CONFIG.ES_HOST)) {
-      CONFIG.ES_HOST.forEach(host => {
-        hosts.push(`${host}:${CONFIG.ES_PORT}`)
-      });
-    } else {
-      hosts.push(`${CONFIG.ES_HOST}:${CONFIG.ES_PORT}`);
-    } 
-  
-    this.client = new ElasticSearch.Client({
-      hosts: hosts,
-      log: ElasticSearchLogger
-    });
+    this.client = adapter.getClient();
   }
 
   /**
@@ -108,14 +99,15 @@ class AliasSwapper {
    * Initializes and executes the swapping of aliases for trials and terms
    * 
    * @static
+   * @param {any} adapter The search adapter to use for making requests to ElasticSearch
    * @param {any} trialIndexInfo Information about the index and alias for trials
    * @param {any} termIndexInfo Information about the index and alias for terms
    * @param {any} callback
    */
-  static init(trialIndexInfo, termIndexInfo, callback) {
+  static init(adapter, trialIndexInfo, termIndexInfo, callback) {
 
 
-    let swapper = new AliasSwapper();
+    let swapper = new AliasSwapper(adapter);
     swapper.logger.info(`Starting alias swapping.`);
 
     //Find out who is using aliases

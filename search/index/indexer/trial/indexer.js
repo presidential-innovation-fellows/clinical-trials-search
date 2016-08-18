@@ -61,8 +61,8 @@ class TrialIndexer extends AbstractIndexer {
     return "trial-indexer";
   }
 
-  constructor(params) {
-    super(params);
+  constructor(adapter, params) {
+    super(adapter, params);
     this.indexCounter = 0;
   }
 
@@ -77,8 +77,8 @@ class TrialIndexer extends AbstractIndexer {
     });
   }
 
-  static init(callback) {
-    let indexer = new TrialIndexer(ES_PARAMS);
+  static init(adapter, callback) {
+    let indexer = new TrialIndexer(adapter, ES_PARAMS);
     indexer.logger.info(`Started indexing (${indexer.esType}) indices.`);
     async.waterfall([
       (next) => { indexer.indexExists(next); },
