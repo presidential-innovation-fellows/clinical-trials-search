@@ -39,6 +39,19 @@ Example: [/clinical-trials?date_last_updated_anything_gte=2016-06-16](/clinical-
 
 -------
 
+For field params which are geolocation coordinates (`geo_point`), please supply the following to the end of the field param:
+* `_lat` - The latitude in decimal degrees and plus/minus. 
+* `_lon` - The longitude in decimal degrees and plus/minus.
+* `_dist` - The radius to search within. Format must be an integer followed by a unit defined as:
+  * mi - miles (for example `2mi`)
+  * km - kilometer (for example `5km`)  
+
+`/clinical-trials?<field_param>_lat=<field_value_latitude>&<field_param>_lon=<field_value_longitude>&<field_param>_dist=<field_value_dist>`
+
+Example: [/clinical-trials?sites.org_coordinates_lat=39.1292&sites.org_coordinates_lon=-77.2953&sites.org_coordinates_dist=100mi](/clinical-trials?sites.org_coordinates_lat=39.1292&sites.org_coordinates_lon=-77.2953&sites.org_coordinates_dist=100mi)
+
+-------
+
 If you are crafting more complicated queries, it might be best to use the `POST` endpoint of the same name.
 
 ### `POST /clinical-trials`
