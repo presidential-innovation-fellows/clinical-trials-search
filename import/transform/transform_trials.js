@@ -100,7 +100,7 @@ class TrialsTransformer {
 
   _loadDiseaseBlacklist(callback) {
     logger.info("Loading the Disease Blacklist...");
-    let header = ["code", "concept_name"];
+    let header = ["code", "preferred_name"];
     let delimiter = "";
     this.diseaseBlacklist = [];
 
