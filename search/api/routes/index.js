@@ -104,6 +104,18 @@ router.get('/terms', (req, res, next) => {
   });
 });
 
+router.post('/terms', (req, res, next) => {
+  let q = _.pick(req.body, ["term", "term_type", "size", "from", "codes"]);
+
+  searcher.searchTerms(q, (err, terms) => {
+    // TODO: add better error handling
+    if(err) {
+      return res.sendStatus(500);
+    }
+    res.json(terms);
+  });
+});
+
 /* get a term by its key */
 router.get('/term/:key', (req, res, next) => {
   let key = req.params.key;
