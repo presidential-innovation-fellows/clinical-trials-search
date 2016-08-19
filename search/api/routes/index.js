@@ -93,7 +93,7 @@ router.post('/clinical-trials', (req, res, next) => {
 
 /* get key terms that can be used to search through clinical trials */
 router.get('/terms', (req, res, next) => {
-  let q = _.pick(req.query, ["term", "term_type", "size", "from"]);
+  let q = _.pick(req.query, ["term", "term_type", "size", "from", "codes"]);
 
   searcher.searchTerms(q, (err, terms) => {
     // TODO: add better error handling
@@ -103,6 +103,19 @@ router.get('/terms', (req, res, next) => {
     res.json(terms);
   });
 });
+
+/* get a term by its key */
+router.get('/term/:key', (req, res, next) => {
+  let key = req.params.key;
+  searcher.getTermByKey(key, (err, term) => {
+    // TODO: add better error handling
+    if(err) {
+      return res.sendStatus(500);
+    }
+    res.json(term);
+  });
+});
+
 
 router.get('/clinical-trial.json', (req, res, next) => {
   let clinicalTrialJson = Utils.omitPrivateKeys(trialMapping);
