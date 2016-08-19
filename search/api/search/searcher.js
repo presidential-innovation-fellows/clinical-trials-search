@@ -613,7 +613,7 @@ class Searcher {
       "from": from
     };
 
-     logger.info(query);
+     //logger.info(query);
     return query;
   }
 
