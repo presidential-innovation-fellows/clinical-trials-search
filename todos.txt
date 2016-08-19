@@ -1,30 +1,10 @@
-================
-Backend stuff
-================
+===========================================================================
+                                  TODOs
+===========================================================================
 
-add sorting (tf/idf for hairy cell problem, later phases first (except phase 4), nctn, ncorps)
-
-Add es alias-flipping
-Figure out why update cron isn't logging.
-Install some sort of error monitoring / Integrate with pingdom (or some other service)
-Log rotate
-
-Upgrade to jsonapi spec (https://github.com/holidayextras/jsonapi-server)
-Write tests
-Alter schema using feedback provided
-Write email regarding things we could change / things we couldn't
-
-update date all/any fields
-
-look into biospecimen...
-Add robots.txt
-
-Fix cron + logging
-
-
-====================
-UX / Frontend Stuff
-====================
-
-add interventional and treatment fields to filters
-add open filter trigger from sidebar
++ Add alerting that checks transform and index process (check counts in
+  each part of the pipeline)
++ Create transformer tests
++ Add versioning
++ Update API documentation (new structure + `record_verification_date`)
++ Send email to coalition with updates
