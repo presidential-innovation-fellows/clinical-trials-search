@@ -1,5 +1,6 @@
 {
   "trial": {
+    
     "properties": {
       "_diseases": {
         "type": "nested",
@@ -256,42 +257,46 @@
         "type": "nested",
         "include_in_root": true,
         "properties": {
-          "disease": {
-            "type": "nested",
-            "include_in_root": true,
-            "properties": {
-              "synonyms": {
-                "type": "string",
-                "analyzer": "keyword_ci",
-                "include_in_all": false
-              },
-              "display_name": {
-                "type": "string",
-                "analyzer": "keyword_ci",
-                "include_in_all": false
-              },
-              "preferred_name": {
-                "type": "string",
-                "analyzer": "keyword_ci",
-                "include_in_all": false
-              },
-              "lead_disease_indicator": {
-                "type": "string",
-                "analyzer": "keyword_ci",
-                "include_in_all": false
-              },
-              "inclusion_indicator": {
-                "type": "string",
-                "analyzer": "keyword_ci",
-                "include_in_all": false
-              },
-              "nci_thesaurus_concept_id": {
-                "type": "string",
-                "analyzer": "keyword_ci",
-                "include_in_all": false
-              }
-            }
-          }
+            "disease_code": {
+              "type": "string",
+              "analyzer": "keyword_ci",
+              "include_in_all": false              
+            },
+            "synonyms": {
+              "type": "string",
+              "analyzer": "keyword_ci",
+              "include_in_all": false
+            },
+            "display_name": {
+              "type": "string",
+              "analyzer": "keyword_ci",
+              "include_in_all": false
+            },
+            "preferred_name": {
+              "type": "string",
+              "analyzer": "keyword_ci",
+              "include_in_all": false
+            },
+            "lead_disease_indicator": {
+              "type": "string",
+              "analyzer": "keyword_ci",
+              "include_in_all": false
+            },
+            "inclusion_indicator": {
+              "type": "string",
+              "analyzer": "keyword_ci",
+              "include_in_all": false
+            },
+            "nci_thesaurus_concept_id": {
+              "type": "string",
+              "analyzer": "keyword_ci",
+              "include_in_all": false
+            },
+            "parents": {
+              "type": "string",
+              "analyzer": "keyword_ci",
+              "include_in_all": false
+            }            
         }
       },
       "eligibility": {
