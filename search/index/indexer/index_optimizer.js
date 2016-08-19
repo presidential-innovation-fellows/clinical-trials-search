@@ -46,7 +46,8 @@ class IndexOptimizer {
     this.client.indices.forcemerge({
         maxNumSegments: 1,
         waitForMerge: true,
-        index: indexName
+        index: indexName,
+        requestTimeout: 90000
     }, (err, response, status) => {
       if(err) { this.logger.error(err); }
       return callback(err, response);
