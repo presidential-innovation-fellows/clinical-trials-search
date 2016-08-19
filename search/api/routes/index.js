@@ -38,7 +38,8 @@ const _getInvalidTrialQueryParams = (queryParams) => {
       let paramWithoutOp = queryParam.substring(0, queryParam.length - 4);
       if (
         _.includes(searchPropsByType["date"], paramWithoutOp) ||
-        _.includes(searchPropsByType["long"], paramWithoutOp)
+        _.includes(searchPropsByType["long"], paramWithoutOp) ||
+        _.includes(searchPropsByType["float"], paramWithoutOp)
       ) {
         return false;
       }
