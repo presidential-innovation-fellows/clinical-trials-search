@@ -498,6 +498,8 @@ class Searcher {
 
     query = body.build();
 
+    // TODO: add default sort order
+
     // logger.info(query);
     return query;
   }
