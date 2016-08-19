@@ -126,6 +126,44 @@ class SupplementStream extends Transform {
     }
   }
 
+  _standardizeEligibilityAge(trial) {
+    if(!trial.eligibility || !trial.eligibility.structured) {
+      return;
+    }
+
+    const _getAgeInYears = (age, unit) => {
+      switch(unit.toLowerCase()) {
+        case "years":
+          return age;
+        case "months":
+          return age/12;
+        case "days":
+          return age/365;
+        case "hours":
+          return age/365*24;
+        default:
+          logger.error(`Invalid age unit (${unit}).`);
+          return age;
+      }
+    }
+
+    const _alterAge = (type) => {
+      // type = "max" or "min"
+      if (trial.eligibility.structured[`${type}_age_unit`]) {
+        let ageInYears = _getAgeInYears(
+          trial.eligibility.structured[`${type}_age_number`],
+          trial.eligibility.structured[`${type}_age_unit`]
+        );
+        trial.eligibility.structured[`${type}_age_number`] = ageInYears;
+        trial.eligibility.structured[`${type}_age_unit`] = "Years";
+        trial.eligibility.structured[`${type}_age`] = `${ageInYears} Years`;
+      }
+    }
+
+    _alterAge("max");
+    _alterAge("min");
+  }
+
   _createLocations(trial) {
     if (!trial.sites) { return; }
     let locations = {};
@@ -294,6 +332,7 @@ class SupplementStream extends Transform {
       logger.info(`Transforming trial with nci_id (${trial.nci_id})...`);
 
       this._modifyStructure(trial);
+      this._standardizeEligibilityAge(trial);
       this._addThesaurusTerms(trial);
       this._createLocations(trial);
       this._createTreatments(trial);
