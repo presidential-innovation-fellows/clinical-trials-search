@@ -69,7 +69,7 @@ curl -XPOST 'https://clinicaltrialsapi.cancer.gov/clinical-trials' \
       }'
 ```
 
-## Fetching Daily Updates
+## Fetching Daily Updates (TODO: no longer working, update...)
 
 Updates to the API are made daily (with future plans to make updates in realtime). Although the API does not do a `diff` to track changes, it is possible to query the `date_last_updated_anything` field for any clinical trials that have been updated. This field uses all other `date` fields which track changes in a clinical trial (and selects the latest/max `date` value). For example, if you wish to see which clinical trials have changed in any way since 2016-06-16...
 
