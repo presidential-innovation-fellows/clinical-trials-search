@@ -89,7 +89,7 @@ class Searcher {
       });
       body.query("bool", "should", {
         "match_phrase": {
-          "_diseases._fulltext": {
+          "_diseases.term._fulltext": {
             "query": q._fulltext,
             "boost": 4
           }
