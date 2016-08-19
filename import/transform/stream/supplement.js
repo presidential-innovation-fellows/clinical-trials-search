@@ -126,7 +126,7 @@ class SupplementStream extends Transform {
     }
   }
 
-  _standardizeEligibilityAge(trial) {
+  _createAgeInYears(trial) {
     if(!trial.eligibility || !trial.eligibility.structured) {
       return;
     }
@@ -154,9 +154,7 @@ class SupplementStream extends Transform {
           trial.eligibility.structured[`${type}_age_number`],
           trial.eligibility.structured[`${type}_age_unit`]
         );
-        trial.eligibility.structured[`${type}_age_number`] = ageInYears;
-        trial.eligibility.structured[`${type}_age_unit`] = "Years";
-        trial.eligibility.structured[`${type}_age`] = `${ageInYears} Years`;
+        trial.eligibility.structured[`${type}_age_in_years`] = ageInYears;
       }
     }
 
@@ -332,7 +330,7 @@ class SupplementStream extends Transform {
       logger.info(`Transforming trial with nci_id (${trial.nci_id})...`);
 
       this._modifyStructure(trial);
-      this._standardizeEligibilityAge(trial);
+      this._createAgeInYears(trial);
       this._addThesaurusTerms(trial);
       this._createLocations(trial);
       this._createTreatments(trial);
