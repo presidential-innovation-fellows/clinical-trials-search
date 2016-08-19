@@ -625,6 +625,38 @@ class Searcher {
     });
   }
 
+  _searchTermByKey(key) {
+    let body = new Bodybuilder();
+
+    body.query("match", "term_key", key);
+
+    let query = body.build();
+    // logger.info(query);
+
+    return query;
+  }
+
+  // queries on term key
+  getTermByKey(key, callback) {
+    logger.info("Getting term", {key});
+    this.client.search({
+      index: 'cancer-terms',
+      type: 'term',
+      body: this._searchTermByKey(key)
+    }, (err, res) => {
+      if(err) {
+        logger.error(err);
+        return callback(err);
+      }
+      // return callback(null, res);
+      if(!res.hits || !res.hits.hits || !res.hits.hits[0]) {
+        return callback(null, {});
+      }
+      let term = Utils.omitPrivateKeys(res.hits.hits[0]._source);
+      return callback(null, term);
+    });
+  }
+
 }
 
 module.exports = Searcher;
