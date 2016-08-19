@@ -156,7 +156,7 @@ class Searcher {
       });
       body.query("bool", "should", {
         "common": {
-          "_diseases._fulltext": {
+          "_diseases.term._fulltext": {
             "query": q._fulltext,
             "cutoff_frequency": 0.001,
             "low_freq_operator": "and"
