@@ -374,6 +374,39 @@ class Searcher {
     });
   }
 
+  _addFloatRangeFilters(body, q) {
+    const _addRangeFilter = (field, lteRange, gteRange) => {
+      let ranges = {};
+
+      const _addRangeForRangeType = (rangeType, floatRange) => {
+        if(floatRange) {
+          if(!isNaN(parseFloat(floatRange))) {
+            ranges[rangeType] = floatRange;
+          } else {
+            throw new Error(
+              `Invalid number supplied for ${field}_${rangeType}.`
+            );
+            return;
+          }
+        }
+      };
+
+      _addRangeForRangeType("lte", lteRange);
+      _addRangeForRangeType("gte", gteRange);
+
+      body.filter("range", field, ranges);
+    }
+
+    let possibleRangeProps = searchPropsByType["float"]
+    possibleRangeProps.forEach((field) => {
+      let lteRange = q[field + "_lte"];
+      let gteRange = q[field + "_gte"];
+      if(lteRange || gteRange) {
+        _addRangeFilter(field, lteRange, gteRange);
+      }
+    });
+  }
+
   _addGeoDistanceFilters(body, q) {
 
     //We need to put lat/long/distance into a single filter
@@ -479,6 +512,7 @@ class Searcher {
     this._addStringFilters(body, q);
     this._addDateRangeFilters(body, q);
     this._addLongRangeFilters(body, q);
+    this._addFloatRangeFilters(body, q);
     this._addGeoDistanceFilters(body, q);
     this._addBooleanFilters(body, q);
   }
@@ -567,7 +601,7 @@ class Searcher {
         body.filter("bool", "and", orBody.build());
       } else {
         body.filter("term", "codes", q.codes.toUpperCase());
-      }      
+      }
     }
 
     // set the term types (use defaults if not supplied)
