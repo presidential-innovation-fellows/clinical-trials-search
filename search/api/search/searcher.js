@@ -552,6 +552,22 @@ class Searcher {
       body.query("match", "term_suggest", q.term, {type: "phrase"});
     }
 
+    //Handle finding a term by code
+    // note we uppercase here and that is because terms
+    //are indexed as C12234 and not c12234
+    if (q.codes) {
+      if(q.codes instanceof Array) {
+        let orBody = new Bodybuilder();
+        q.codes.forEach((code) => {
+          logger.info(code);
+          orBody.orFilter("term", "codes", code.toUpperCase());
+        });
+        body.filter("bool", "and", orBody.build());
+      } else {
+        body.filter("term", "codes", q.codes.toUpperCase());
+      }      
+    }
+
     // set the term types (use defaults if not supplied)
     let termTypes = this.TERM_TYPE_DEFAULTS;
     if (q.term_type) {
@@ -597,7 +613,7 @@ class Searcher {
       "from": from
     };
 
-    // logger.info(query);
+     logger.info(query);
     return query;
   }
 
