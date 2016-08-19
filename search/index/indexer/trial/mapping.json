@@ -1,6 +1,6 @@
 {
   "trial": {
-    
+
     "properties": {
       "_diseases": {
         "type": "nested",
@@ -260,7 +260,7 @@
             "disease_code": {
               "type": "string",
               "analyzer": "keyword_ci",
-              "include_in_all": false              
+              "include_in_all": false
             },
             "synonyms": {
               "type": "string",
@@ -296,7 +296,7 @@
               "type": "string",
               "analyzer": "keyword_ci",
               "include_in_all": false
-            }            
+            }
         }
       },
       "eligibility": {
@@ -318,7 +318,7 @@
                 "include_in_all": false
               },
               "max_age_number": {
-                "type": "long",
+                "type": "float",
                 "include_in_all": false
               },
               "max_age_unit": {
@@ -332,7 +332,7 @@
                 "include_in_all": false
               },
               "min_age_number": {
-                "type": "long",
+                "type": "float",
                 "include_in_all": false
               },
               "min_age_unit": {
