@@ -29,7 +29,7 @@ Example: [/clinical-trials?eligibility.structured.gender=female&include=nct_id](
 
 When supplying an array of values for a single filter param, please use the following convention: `/clinical-trials?<field_param>=<field_value_a>&<field_param>=<field_value_b>` and note that `string` field values are not case sensitive (must otherwise must match exactly).
 
-Example: [/clinical-trials?sites.org.state_or_province=CA&sites.org.state_or_province=OR](/clinical-trials?sites.org.state_or_province=CA&sites.org.state_or_province=OR)
+Example: [/clinical-trials?sites.org_state_or_province=CA&sites.org_state_or_province=OR](/clinical-trials?sites.org_state_or_province=CA&sites.org_state_or_province=OR)
 
 -------
 
@@ -40,7 +40,7 @@ Example: [/clinical-trials?date_last_updated_anything_gte=2016-06-16](/clinical-
 -------
 
 For field params which are geolocation coordinates (`geo_point`), please supply the following to the end of the field param:
-* `_lat` - The latitude in decimal degrees and plus/minus. 
+* `_lat` - The latitude in decimal degrees and plus/minus.
 * `_lon` - The longitude in decimal degrees and plus/minus.
 * `_dist` - The radius to search within. Format must be an integer followed by a unit defined as:
   * mi - miles (for example `2mi`)
@@ -63,7 +63,7 @@ Example:
 curl -XPOST 'https://clinicaltrialsapi.cancer.gov/clinical-trials' \
      -H 'Content-Type: application/json' \
      -d '{
-        "sites.org.state_or_province": ["CA", "OR"],
+        "sites.org_state_or_province": ["CA", "OR"],
         "date_last_updated_anything_gte": "2016-06-01",
         "include": ["nci_id"]
       }'
@@ -83,7 +83,7 @@ Example: [/clinical-trials?date_last_updated_anything_gte=2016-06-16](/clinical-
 * `diseases.disease.date_last_created`
 * `diseases.disease.date_last_updated`
 * `sites.recruitment_status_date`
-* `sites.org.status_date`
+* `sites.org_status_date`
 
 -------
 
