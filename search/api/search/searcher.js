@@ -517,6 +517,47 @@ class Searcher {
     this._addBooleanFilters(body, q);
   }
 
+  /**
+   * Adds sorting depending on query input parameters.
+   *
+   * @param {any} body An instance of a Bodybuilder class
+   * @param {any} q The query parameters a user is searching for
+   */
+  _addSortOrder(body, q) {
+    // NOTE: most of these sort fields are dependent on the transform
+    //       code - to see how we are sorting enums, please look at the
+    //       import/transform logic
+
+    // 1.) sort by the study type (intervetional vs non-interventional)
+    body.sort("_study_protocol_type_sort_order", "asc");
+    // 2.) sort by the primary purpose (treatment, supportive care, etc)
+    body.sort("primary_purpose._primary_purpose_code_sort_order", "asc");
+    // 3.) sort by trial status (active, enrolling by invitation, etc)
+    body.sort("_current_trial_status_sort_order", "asc");
+    // 4.) sort by location distance (if one is entered)
+    if (q["sites.org_coordinates_lat"] && q["sites.org_coordinates_lon"]) {
+      body.sort([{
+        "sites.org_coordinates": {
+          "location": {
+            "lat": q["sites.org_coordinates_lat"],
+            "lon": q["sites.org_coordinates_lon"]
+          },
+          "order": "asc",
+          "unit": "mi",
+          "distance_type": "plane"
+        }
+      }]);
+    }
+    // 5.) sort by number of active or enrolling locations
+    body.sort("_active_sites_count", "desc");
+    // 6.) sort by phase (3, 2, 1, 0, 4, N/A)
+    body.sort("phase._phase_sort_order", "asc");
+    // 7.) sort by the scoring function
+    body.sort("_score", "desc");
+    // 8.) sort by nct id
+    body.sort("nct_id", "desc");
+  }
+
   _searchTrialsQuery(q) {
     var query;
     let body = new Bodybuilder();
@@ -530,9 +571,9 @@ class Searcher {
     this._addIncludeExclude(body, q);
     this._addFullTextQuery(body, q);
 
-    query = body.build();
+    this._addSortOrder(body, q);
 
-    // TODO: add default sort order
+    query = body.build();
 
     // logger.info(query);
     return query;
