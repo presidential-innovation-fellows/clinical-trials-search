@@ -527,8 +527,9 @@ class Searcher {
     // NOTE: most of these sort fields are dependent on the transform
     //       code - to see how we are sorting enums, please look at the
     //       import/transform logic
+    // NOTE: each successive numbered step is nested inside the former
 
-    // 1.) sort by the study type (intervetional vs non-interventional)
+    // 1.) sort by the study type (interventional vs non-interventional)
     body.sort("_study_protocol_type_sort_order", "asc");
     // 2.) sort by the primary purpose (treatment, supportive care, etc)
     body.sort("primary_purpose._primary_purpose_code_sort_order", "asc");
