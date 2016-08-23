@@ -238,6 +238,10 @@
         "analyzer": "keyword_ci",
         "include_in_all": false
       },
+      "_current_trial_status_sort_order": {
+        "type": "short",
+        "include_in_all": false
+      },
       "current_trial_status_date": {
         "type": "date",
         "format": "strict_date_optional_time||epoch_millis",
@@ -471,6 +475,10 @@
             "analyzer": "keyword_ci",
             "include_in_all": false
           },
+          "_phase_sort_order": {
+            "type": "short",
+            "include_in_all": false
+          },
           "phase_additional_qualifier_code": {
             "type": "string",
             "analyzer": "keyword_ci",
@@ -495,6 +503,10 @@
           "primary_purpose_code": {
             "type": "string",
             "analyzer": "keyword_ci",
+            "include_in_all": false
+          },
+          "_primary_purpose_code_sort_order": {
+            "type": "short",
             "include_in_all": false
           },
           "primary_purpose_other_text": {
@@ -668,6 +680,10 @@
           }
         }
       },
+      "_active_sites_count": {
+        "type": "short",
+        "include_in_all": false
+      },
       "start_date": {
         "type": "date",
         "format": "strict_date_optional_time||epoch_millis",
@@ -696,6 +712,10 @@
       "study_protocol_type": {
         "type": "string",
         "analyzer": "keyword_ci",
+        "include_in_all": false
+      },
+      "_study_protocol_type_sort_order": {
+        "type": "short",
         "include_in_all": false
       },
       "study_subtype_code": {

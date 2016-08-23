@@ -126,6 +126,95 @@ class SupplementStream extends Transform {
     }
   }
 
+  _addCurrentTrialStatusSortOrder(trial) {
+    if(!trial.current_trial_status) {
+      return;
+    }
+
+    const sortHash = {
+      "closed to accrual and intervention": 6,
+      "in review": 2,
+      "temporarily closed to accrual and intervention": 5,
+      "administratively complete": 8,
+      "temporarily closed to accrual": 4,
+      "enrolling by invitation": 1,
+      "closed to accrual": 7,
+      "active": 0,
+      "complete": 9,
+      "withdrawn": 10,
+      "approved": 3
+    };
+
+    trial._current_trial_status_sort_order =
+      sortHash[trial.current_trial_status.toLowerCase()];
+  }
+
+  _addStudyProtocolTypeSortOrder(trial) {
+    if(!trial.study_protocol_type) {
+      return;
+    }
+
+    const sortHash = {
+      "interventional": 0,
+      "non-interventional": 1
+    };
+
+    trial._study_protocol_type_sort_order =
+      sortHash[trial.study_protocol_type.toLowerCase()];
+  }
+
+  _addPrimaryPurposeCodeSortOrder(trial) {
+    if(!trial.primary_purpose || !trial.primary_purpose.primary_purpose_code) {
+      return;
+    }
+
+    const sortHash = {
+      "treatment": 0,
+      "supportive_care": 1,
+      "screening": 2,
+      "prevention": 3,
+      "diagnostic": 4,
+      "basic_science": 5,
+      "health_services_research": 6,
+      "other": 7
+    }
+
+    trial.primary_purpose._primary_purpose_code_sort_order =
+      sortHash[trial.primary_purpose.primary_purpose_code.toLowerCase()];
+  }
+
+  _addPhaseSortOrder(trial) {
+    if(!trial.phase || !trial.phase.phase) {
+      return;
+    }
+
+    const sortHash = {
+      "O": 5,
+      "I": 4,
+      "I_II": 3,
+      "II": 2,
+      "II_III": 1,
+      "III": 0,
+      "IV": 6,
+      "NA": 7
+    }
+
+    trial.phase._phase_sort_order =
+      sortHash[trial.phase.phase.toLowerCase()];
+  }
+
+  _createActiveSitesCount(trial) {
+    if(!trial.sites) {
+      return;
+    }
+
+    trial._active_sites_count = trial.sites.filter((site) => {
+      let recruitmentStatus = site.recruitment_status.toLowerCase();
+      return recruitmentStatus === "active" ||
+        recruitmentStatus === "enrolling_by_invitation";
+    }).length;
+  }
+
   _createAgeInYears(trial) {
     if(!trial.eligibility || !trial.eligibility.structured) {
       return;
@@ -330,6 +419,11 @@ class SupplementStream extends Transform {
       logger.info(`Transforming trial with nci_id (${trial.nci_id})...`);
 
       this._modifyStructure(trial);
+      this._addCurrentTrialStatusSortOrder(trial);
+      this._addStudyProtocolTypeSortOrder(trial);
+      this._addPrimaryPurposeCodeSortOrder(trial);
+      this._addPhaseSortOrder(trial);
+      this._createActiveSitesCount(trial);
       this._createAgeInYears(trial);
       this._addThesaurusTerms(trial);
       this._createLocations(trial);
