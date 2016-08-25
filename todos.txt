@@ -5,5 +5,4 @@
 + Add alerting that checks transform and index process (check counts in
   each part of the pipeline)
 + Create transformer tests
-+ Add versioning
 + Send email to coalition with updates
