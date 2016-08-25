@@ -77,7 +77,7 @@ Until these updates are made, the best field to use to see which trials have *po
 
 As an example, to see which clinical trials have been verified by an auditor since 2016-06-16...
 
-Example: [/clinical-trials?record_verification_date=2016-06-16](/clinical-trials?record_verification_date=2016-06-16)
+Example: [/clinical-trials?record_verification_date_gte=2016-06-16](/clinical-trials?record_verification_date_gte=2016-06-16)
 
 -------
 
