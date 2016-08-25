@@ -21,7 +21,7 @@ Filters all clinical trials based upon supplied filter params. Filter params may
 
 `exclude`: exclude the supplied filter param fields from all results (useful if you want most of the payload returned with the exception of a few fields)
 
-`_all`: filter results by any of the [fields listed in the schema](/clinical-trial.json) as `include_in_all`: `true`
+`_fulltext`: filter results by examining a variety of text-based fields (including the trial title, description, treatments, etc)
 
 Example: [/clinical-trials?eligibility.structured.gender=female&include=nct_id](/clinical-trials?eligibility.structured.gender=female&include=nct_id)
 
@@ -69,24 +69,22 @@ curl -XPOST 'https://clinicaltrialsapi.cancer.gov/clinical-trials' \
       }'
 ```
 
-## Fetching Daily Updates (TODO: no longer working, update...)
+## Fetching Daily Updates
 
-Updates to the API are made daily (with future plans to make updates in realtime). Although the API does not do a `diff` to track changes, it is possible to query the `date_last_updated_anything` field for any clinical trials that have been updated. This field uses all other `date` fields which track changes in a clinical trial (and selects the latest/max `date` value). For example, if you wish to see which clinical trials have changed in any way since 2016-06-16...
+Updates to the API are made daily (the refresh occurs each morning at 7:30 AM ET). Unfortunately, the API does not do a `diff` to track changes, and there is no one field in the underlying database (which the API taps into) which captures when a trial has been modified. Future modifications to the database architecture are being scheduled to change this by adding `date_created` and `date_updated` fields to each table.
 
-Example: [/clinical-trials?date_last_updated_anything_gte=2016-06-16](/clinical-trials?date_last_updated_anything_gte=2016-06-16)
+Until these updates are made, the best field to use to see which trials have *possibly* been changed in the past 24 hours is the `record_verification_date` field. This field is updated whenever a human auditor verifies a clinical trial record. It is important to note that verification does not necessarily imply that a change was made to the clinical trial record, simply that an auditor took another look at it - but this is inclusive of any instances where the auditor made modifications to the trial.
 
-`date_last_updated_anything` uses the following fields...
-* `amendment_date`
-* `current_trial_status_date`
-* `date_last_created`
-* `date_last_updated`
-* `diseases.disease.date_last_created`
-* `diseases.disease.date_last_updated`
-* `sites.recruitment_status_date`
-* `sites.org_status_date`
+As an example, to see which clinical trials have been verified by an auditor since 2016-06-16...
+
+Example: [/clinical-trials?record_verification_date=2016-06-16](/clinical-trials?record_verification_date=2016-06-16)
 
 -------
 
-As another example, if you wish to only see clinical trials which have changed their `current_trial_status` since 2016-06-16...
+For the time-being, if you simply wish to track when a trial has changed its status, the `current_trial_status_date` field might be more helpful...
 
 Example: [/clinical-trials?current_trial_status_date_gte=2016-06-16](/clinical-trials?current_trial_status_date_gte=2016-06-16)
+
+## Issues
+
+Please file any questions or issues at the [clinical-trials-search repository](https://github.com/presidential-innovation-fellows/clinical-trials-search/issues).
