@@ -3,15 +3,15 @@
 
 ## Endpoints
 
-### `GET /clinical-trial/<id>`
-Retrieves the clinical trial with supplied `nci_id` or `nct_id`. [All fields](/clinical-trial.json) (including nested ones) are returned.
+### `GET clinical-trial<id>`
+Retrieves the clinical trial with supplied `nci_id` or `nct_id`. [All fields](clinical-trial.json) (including nested ones) are returned.
 
 Examples:
-* [/clinical-trial/NCT02194738](/clinical-trial/NCT02194738)
-* [/clinical-trial/NCI-2014-01509](/clinical-trial/NCI-2014-01509)
+* [clinical-trial/NCT02194738](clinical-trial/NCT02194738)
+* [clinical-trial/NCI-2014-01509](clinical-trial/NCI-2014-01509)
 
-### `GET /clinical-trials?<filter_params>`
-Filters all clinical trials based upon supplied filter params. Filter params may be any of the [fields in the schema](/clinical-trial.json) as well as any of the following params...
+### `GET clinical-trials?<filter_params>`
+Filters all clinical trials based upon supplied filter params. Filter params may be any of the [fields in the schema](clinical-trial.json) as well as any of the following params...
 
 `size`: limit the amount of results a supplied amount (default is 10, max is 50)
 
@@ -23,19 +23,19 @@ Filters all clinical trials based upon supplied filter params. Filter params may
 
 `_fulltext`: filter results by examining a variety of text-based fields (including the trial title, description, treatments, etc)
 
-Example: [/clinical-trials?eligibility.structured.gender=female&include=nct_id](/clinical-trials?eligibility.structured.gender=female&include=nct_id)
+Example: [clinical-trials?eligibility.structured.gender=female&include=nct_id](clinical-trials?eligibility.structured.gender=female&include=nct_id)
 
 -------
 
-When supplying an array of values for a single filter param, please use the following convention: `/clinical-trials?<field_param>=<field_value_a>&<field_param>=<field_value_b>` and note that `string` field values are not case sensitive (must otherwise must match exactly).
+When supplying an array of values for a single filter param, please use the following convention: `clinical-trials?<field_param>=<field_value_a>&<field_param>=<field_value_b>` and note that `string` field values are not case sensitive (must otherwise must match exactly).
 
-Example: [/clinical-trials?sites.org_state_or_province=CA&sites.org_state_or_province=OR](/clinical-trials?sites.org_state_or_province=CA&sites.org_state_or_province=OR)
+Example: [clinical-trials?sites.org_state_or_province=CA&sites.org_state_or_province=OR](clinical-trials?sites.org_state_or_province=CA&sites.org_state_or_province=OR)
 
 -------
 
-For field params which are filtering as ranges (`date` and `long` types), please supply `_gte` or `_lte` to the end of the field param (depending on if you are filtering on greater than or equal (gte), less than or equal (lte), or both): `/clinical-trials?<field_param>_gte=<field_value_from>&<field_param>_lte=<field_value_to>`
+For field params which are filtering as ranges (`date` and `long` types), please supply `_gte` or `_lte` to the end of the field param (depending on if you are filtering on greater than or equal (gte), less than or equal (lte), or both): `clinical-trials?<field_param>_gte=<field_value_from>&<field_param>_lte=<field_value_to>`
 
-Example: [/clinical-trials?date_last_updated_anything_gte=2016-06-16](/clinical-trials?date_last_updated_anything_gte=2016-06-16)
+Example: [clinical-trials?date_last_updated_anything_gte=2016-06-16](clinical-trials?date_last_updated_anything_gte=2016-06-16)
 
 -------
 
@@ -46,15 +46,15 @@ For field params which are geolocation coordinates (`geo_point`), please supply 
   * mi - miles (for example `2mi`)
   * km - kilometer (for example `5km`)  
 
-`/clinical-trials?<field_param>_lat=<field_value_latitude>&<field_param>_lon=<field_value_longitude>&<field_param>_dist=<field_value_dist>`
+`clinical-trials?<field_param>_lat=<field_value_latitude>&<field_param>_lon=<field_value_longitude>&<field_param>_dist=<field_value_dist>`
 
-Example: [/clinical-trials?sites.org_coordinates_lat=39.1292&sites.org_coordinates_lon=-77.2953&sites.org_coordinates_dist=100mi](/clinical-trials?sites.org_coordinates_lat=39.1292&sites.org_coordinates_lon=-77.2953&sites.org_coordinates_dist=100mi)
+Example: [clinical-trials?sites.org_coordinates_lat=39.1292&sites.org_coordinates_lon=-77.2953&sites.org_coordinates_dist=100mi](clinical-trials?sites.org_coordinates_lat=39.1292&sites.org_coordinates_lon=-77.2953&sites.org_coordinates_dist=100mi)
 
 -------
 
 If you are crafting more complicated queries, it might be best to use the `POST` endpoint of the same name.
 
-### `POST /clinical-trials`
+### `POST clinical-trials`
 Same as the `GET` endpoint, but allows you to craft a JSON body as the request.
 
 Example:
@@ -77,13 +77,13 @@ Until these updates are made, the best field to use to see which trials have *po
 
 As an example, to see which clinical trials have been verified by an auditor since 2016-06-16...
 
-Example: [/clinical-trials?record_verification_date_gte=2016-06-16](/clinical-trials?record_verification_date_gte=2016-06-16)
+Example: [clinical-trials?record_verification_date_gte=2016-06-16](clinical-trials?record_verification_date_gte=2016-06-16)
 
 -------
 
 For the time-being, if you simply wish to track when a trial has changed its status, the `current_trial_status_date` field might be more helpful...
 
-Example: [/clinical-trials?current_trial_status_date_gte=2016-06-16](/clinical-trials?current_trial_status_date_gte=2016-06-16)
+Example: [clinical-trials?current_trial_status_date_gte=2016-06-16](clinical-trials?current_trial_status_date_gte=2016-06-16)
 
 ## Issues
 
