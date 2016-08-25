@@ -1,11 +1,13 @@
 const _                   = require("lodash");
 const express             = require("express");
 const md                  = require("marked");
-const searcherAdapter      = require("../../common/search_adapters/elasticsearch_adapter");
+const git                 = require("git-rev");
+const searcherAdapter     = require("../../common/search_adapters/elasticsearch_adapter");
 const Searcher            = require("../search/searcher");
 const Logger              = require('../../../common/logger');
 const Utils               = require("../../../common/utils");
 const trialMapping        = require("../../index/indexer/trial/mapping.json");
+const package             = require("../package.json");
 
 let logger = new Logger({name: "api-router"});
 
@@ -15,6 +17,10 @@ const router = express.Router();
 
 const searchPropsByType =
   Utils.getFlattenedMappingPropertiesByType(trialMapping["trial"]);
+
+const respondInvalidQuery = (res) => {
+  return res.status(400).send("Invalid query.");
+}
 
 /* get a clinical trial by nci or nct id */
 router.get('/clinical-trial/:id', (req, res, next) => {
@@ -145,8 +151,14 @@ router.get('/', (req, res, next) => {
   res.render('index', { md, title });
 });
 
-const respondInvalidQuery = (res) => {
-  return res.status(400).send("Invalid query.");
-}
+router.get('/version', (req, res, next) => {
+  git.long((gitHash) => {
+    res.json({
+      "version": package.version,
+      "git-hash": gitHash,
+      "git-repository": package.repository.url
+    });
+  });
+});
 
 module.exports = router;
