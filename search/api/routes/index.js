@@ -152,13 +152,31 @@ router.get('/', (req, res, next) => {
 });
 
 router.get('/version', (req, res, next) => {
-  git.long((gitHash) => {
+  const _sendVersionResponse = (gitHash) => {
     res.json({
       "version": package.version,
       "git-hash": gitHash,
       "git-repository": package.repository.url
     });
-  });
+  };
+
+  var gitHash;
+  try {
+    gitHash = require("./git_hash.json");
+  } catch(err) {
+    // catch error and log a warning
+    logger.warning(
+      "Missing ./git_hash.json file, attempting to use git-rev library to look up git hash..."
+    );
+  }
+
+  if (gitHash) {
+    _sendVersionResponse(gitHash)
+  } else {
+    git.long((gitHash) => {
+      _sendVersionResponse(gitHash);
+    });
+  }
 });
 
 module.exports = router;
