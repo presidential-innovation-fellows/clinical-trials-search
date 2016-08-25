@@ -6,5 +6,4 @@
   each part of the pipeline)
 + Create transformer tests
 + Add versioning
-+ Update API documentation (new structure + `record_verification_date`)
 + Send email to coalition with updates
