@@ -85,16 +85,24 @@ class SupplementStream extends Transform {
     }
   }
 
+  _getDisplayNameFromThesaurus(disease) {
+    if (disease.nci_thesaurus_concept_id && this.thesaurusById[disease.nci_thesaurus_concept_id]) {
+      return this.thesaurusById[disease.nci_thesaurus_concept_id].display_name;
+    } else {
+      // TODO: log/alert when we don't see a thesaurus item
+      logger.error(`ERROR: Couldn't find NCIt item for (${disease.nci_thesaurus_concept_id}).`);
+      return null;
+    }
+  }
+
   _modifyStructure(trial) {
     if (trial.diseases) {
       trial.diseases.forEach((disease) => {
         disease.preferred_name = disease.disease_preferred_name;
-        disease.display_name =
-          this.thesaurusById[disease.nci_thesaurus_concept_id].display_name;
+        disease.display_name = this._getDisplayNameFromThesaurus(disease);
+
         // NOTE: don't use the disease_menu_display_name, it isn't the
         //       display name that we actually want, use the one from the NCIt
-        // disease.display_name = disease.disease_menu_display_name;
-
         delete disease.disease_menu_display_name;
         delete disease.disease_preferred_name;
       });
@@ -375,8 +383,7 @@ class SupplementStream extends Transform {
             );
         }
         // add display name
-        let displayName =
-          this.thesaurusById[disease.nci_thesaurus_concept_id].display_name;
+        let displayName = this._getDisplayNameFromThesaurus(disease);
         if (displayName && displayName !== "") {
           diseases[displayName] =
             _pushOrCreateArr(
