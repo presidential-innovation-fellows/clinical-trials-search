@@ -162,11 +162,11 @@ router.get('/version', (req, res, next) => {
 
   var gitHash;
   try {
-    gitHash = require("./git_hash.json");
+    gitHash = require("../git_hash.json");
   } catch(err) {
     // catch error and log a warning
     logger.warning(
-      "Missing ./git_hash.json file, attempting to use git-rev library to look up git hash..."
+      "Missing ../git_hash.json file, attempting to use git-rev library to look up git hash..."
     );
   }
 
