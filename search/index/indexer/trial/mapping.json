@@ -531,6 +531,11 @@
         "analyzer": "keyword_ci",
         "include_in_all": true
       },
+      "record_verification_date": {
+        "type": "date",
+        "format": "strict_date_optional_time||epoch_millis",
+        "include_in_all": false
+      },
       "sampling_method_code": {
         "type": "string",
         "analyzer": "keyword_ci",
