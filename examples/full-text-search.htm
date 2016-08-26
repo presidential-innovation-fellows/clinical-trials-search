@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Full text search example</title>
+    <link href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.min.css" rel="stylesheet">
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
+    <script>
+
+var trialLinkRoot = 'http://www.cancer.gov/about-cancer/treatment/clinical-trials/search/v?id=';
+
+$(document).ready(function () {
+    $('#btnLookup').on('click', doLookup);
+    $('#formLookup').on('submit', function(evt){doLookup();evt.preventDefault();});
+    $('#keywords').autocomplete({
+        delay : 500,
+        source : doAutocompleteLookup
+    });
+    $("#btnClear").on('click', function(evt){$('#output').html("")});
+});
+    
+function doLookup(){
+    
+    var keywords = $('#keywords').val();
+    if(keywords.trim().length > 3) {
+        // Specify criteria
+        // Here we're performing a full-text search, displaying the first 20 results.
+        var data = {
+                "_fulltext" : keywords,
+                "size" : 20
+            }; 
+
+        // Perform a search against the API.
+        $.get('https://clinicaltrialsapi.cancer.gov/v1/clinical-trials', data)
+            .done(function success( results ) {
+                var output;
+                if(results.total > 0) {
+                    var count = (results.total < data["size"] ? results.total : data["size"])
+                    output = '<p>Showing results 1 to ' + count + ' of ' + results.total + '.</p>';
+                    output += '<ul>';
+                    for(var i = 0; i < results.trials.length; i++) {
+                        var trial = results.trials[i];                            
+                        output += ( '<li><a href="' + trialLinkRoot + trial.nci_id
+                            + '">' + trial.brief_title + '</a><br>' + trial.brief_summary + '</li>' );
+                    }
+                    output += '</ul>';
+                } else {
+                    output = '<p>No results found.</p>';
+                }
+                $('#output').html(output);
+            })
+            .fail(function failure (){$('#output').html('An error has occured.');});
+    }
+    else
+        alert('Please enter a longer search string.');
+}
+
+function doAutocompleteLookup(req, rsp) {
+
+    if(req.term.length > 2) {
+
+        // Specify criteria
+        // Search for disease names, return first 10 results
+        var data = {
+            'term' : req.term,
+            'term_type' : '_diseases',
+            'size' : 10
+        };
+
+        // Perform the search for disease types.
+        $.get('https://clinicaltrialsapi.cancer.gov/v1/terms', data)
+            .done(function success(results){
+                var data = [];
+                var terms = results.terms;
+                for(var i = 0; i < terms.length; i++ )
+                    data[i] = terms[i].term;
+
+                rsp(data);
+            })
+            .fail(function failure (){$('#output').html('An error has occured.');});
+    }
+}
+
+    </script>
+</head>
+<body>
+
+    <form id="formLookup">
+
+        <p><label for="keywords">Enter keywords or a disease name.</label><br>
+        <input id="keywords" type="text" maxlength="50" value=""></p>
+
+        <p><input type="button" id="btnLookup" value="Do Search"/> <input type="reset" id="btnClear" value="Clear"/></p>
+
+        <div id="output"></div>
+
+    </form>
+
+</body>
+</html>
