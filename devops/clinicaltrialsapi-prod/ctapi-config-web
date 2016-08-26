@@ -1,0 +1,57 @@
+SSH_USER=ncimaint
+
+#KEY_PATH="-i /local/home/tomcatd/.ssh/awskey/cometprivatekey.pem"
+#PROXYKEY_PATH="-i /local/home/tomcatd/.ssh/awskey/sskey1.pem"
+
+#use ncimaint key
+PROXYKEY_PATH="-i /local/home/tomcatd/.ssh/awskey/ncimaint.pem"
+KEY_PATH=$PROXYKEY_PATH
+
+
+PROXY_HOST=x.x.x.x
+PROXYCMD="ProxyCommand ssh -o StrictHostKeyChecking=no ${PROXYKEY_PATH} ${SSH_USER}@${PROXY_HOST} nc %h %p"
+SSH_OPT="-o StrictHostKeyChecking=no"
+#SSH_OPT_PROXY="-o StrictHostKeyChecking=no -o '"'$PROXYCMD'"' "
+
+
+#disable ssh proxy
+#PROXYCMD="StrictHostKeyChecking=no"
+#KEY_PATH=$PROXYKEY_PATH
+
+RPM_PATH="/local/home/tomcatd/ctapi/rpms"
+TMP_PATH="~/install_tmp"
+CONF_PATH="/local/home/tomcatd/ctapi/conf"
+
+#copy all conf files 
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME " [ -d $TMP_PATH/conf ] && rm -rf $TMP_PATH/conf ;"
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME " [ -d $TMP_PATH ] || mkdir $TMP_PATH ;"
+scp -r $SSH_OPT -o "$PROXYCMD" $KEY_PATH $CONF_PATH $SSH_USER@$HOST_NAME:$TMP_PATH
+
+# config apache
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME "sudo mv $TMP_PATH/conf/ctsapi-test.cancer.gov.crt /local/content/apache/conf/ssl.crt/"
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME "sudo mv $TMP_PATH/conf/ctsapi-test.cancer.gov.key /local/content/apache/conf/ssl.key/"
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME "sudo mv $TMP_PATH/conf/ctsapi.conf /local/content/apache/conf/vhosts/"
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME "sudo mv $TMP_PATH/conf/ctsapi-ssl.conf /local/content/apache/conf/vhosts-ssl/"
+
+
+# config nodejs
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME "sudo mv $TMP_PATH/conf/ctapi.initd /etc/init.d/ctapi"
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME "sudo chmod +x /etc/init.d/ctapi"
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME "sudo chkconfig ctapi on"
+
+#restart apache
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME 'sudo service apache restart '
+
+
+# create a service user 
+APP_USER=ctapi_user
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME "id -u $APP_USER &>/dev/null || sudo adduser -u 4000 $APP_USER"
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME "sudo [ -d /home/$APP_USER/.ssh ] || sudo mkdir /home/$APP_USER/.ssh "
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME "sudo mv $TMP_PATH/conf/ctapi_user.pub /home/$APP_USER/.ssh/authorized_keys"
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME "sudo chown -R $APP_USER.$APP_USER /home/$APP_USER/.ssh"
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME "sudo chmod go-xrw /home/$APP_USER/.ssh"
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME 'sudo sed -i "/AllowUsers centos ncimaint/c\AllowUsers centos ncimaint ctapi_user" /etc/ssh/sshd_config'
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME 'sudo systemctl restart sshd'
+
+#delete all rpms copy
+#ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME " [ -d $TMP_PATH ] && rm -rf $TMP_PATH ;"

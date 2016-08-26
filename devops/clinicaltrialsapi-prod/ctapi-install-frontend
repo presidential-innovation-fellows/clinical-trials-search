@@ -1,0 +1,84 @@
+#SSH_USER=centos
+SSH_USER=ncimaint
+
+#KEY_PATH="-i /local/home/tomcatd/.ssh/awskey/cometprivatekey.pem"
+#PROXYKEY_PATH="-i /local/home/tomcatd/.ssh/awskey/sskey1.pem"
+
+#use ncimaint key
+PROXYKEY_PATH="-i /local/home/tomcatd/.ssh/awskey/ncimaint.pem"
+KEY_PATH=$PROXYKEY_PATH
+
+
+PROXY_HOST=x.x.x.x
+PROXYCMD="ProxyCommand ssh -o StrictHostKeyChecking=no ${PROXYKEY_PATH} ${SSH_USER}@${PROXY_HOST} nc %h %p"
+SSH_OPT="-o StrictHostKeyChecking=no"
+#SSH_OPT_PROXY="-o StrictHostKeyChecking=no -o '"'$PROXYCMD'"' "
+
+#PROXYCMDTT="-o \"ProxyCommand ssh -tt -o StrictHostKeyChecking=no ${PROXYKEY_PATH} centos@${PROXY_HOST} nc %h %p \" "
+
+
+
+#disable ssh proxy
+#PROXYCMD="StrictHostKeyChecking=no"
+#KEY_PATH=$PROXYKEY_PATH
+
+RPM_PATH="/local/home/tomcatd/ctapi/rpms"
+TMP_PATH="~/install_tmp"
+
+# OS modify
+ssh -tt $SSH_OPT -o " $PROXYCMD " $KEY_PATH $SSH_USER@$HOST_NAME 'sudo sed -i "/Defaults    requiretty/c\# Defaults    requiretty" /etc/sudoers'
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME " sudo systemctl disable iptables "
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME " sudo systemctl stop iptables "
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME " sudo unlink /etc/localtime; sudo ln -s /usr/share/zoneinfo/America/New_York /etc/localtime "
+
+
+#copy all rpms
+#ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME " [ -d $TMP_PATH/rpms ] && rm -rf $TMP_PATH/rpms ;"
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME " [ -d $TMP_PATH ] || mkdir $TMP_PATH "
+scp -r $SSH_OPT -o "$PROXYCMD" $KEY_PATH $RPM_PATH $SSH_USER@$HOST_NAME:$TMP_PATH
+
+
+
+#install cbiit apache
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME " \
+     sudo yum -y localinstall $TMP_PATH/rpms/cbiit-openssl1.0.1-t-2.el7.x86_64.rpm"
+
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME " \
+     sudo yum -y localinstall $TMP_PATH/rpms/cbiit-expat2-1.0-2.el7.x86_64.rpm"
+
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME " \
+     sudo yum -y localinstall $TMP_PATH/rpms/cbiit-openldap2.4-44-2.el7.x86_64.rpm"
+
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME " \
+     sudo yum -y localinstall $TMP_PATH/rpms/cbiit-pcre8-38-1.el7.x86_64.rpm"
+
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME " \
+     sudo yum -y localinstall $TMP_PATH/rpms/cbiit-openssl1.0.1-t-2.el7.x86_64.rpm"
+
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME " \
+     sudo yum -y localinstall $TMP_PATH/rpms/cbiit-apache2.4-20-1.el7.x86_64.rpm"
+     
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME " sudo service apache start "
+
+#install nodejs
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME " \
+	curl --silent --location https://rpm.nodesource.com/setup_6.x | sudo -E bash -"
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME " sudo yum install -y nodejs "
+	
+
+
+#install epel repo
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME "sudo yum -y install epel-release"
+
+
+#install monit
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME "sudo yum -y install monit"
+
+#install git
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME "sudo yum -y install git"
+
+#install git
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME "sudo yum -y install unzip"
+
+#delete all rpms copy
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME " [ -d $TMP_PATH ] && rm -rf $TMP_PATH "

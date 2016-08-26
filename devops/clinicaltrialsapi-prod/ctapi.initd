@@ -1,0 +1,55 @@
+#!/bin/sh
+#
+# start/stop nodejs server
+# chkconfig: 345 94 90
+# description: start/stop nodejs for ctapi frontend
+#
+#
+## Instructions ##
+## copy this file into /etc/init.d
+## chkconfig --add FILENAME
+##########
+
+APP_NAME="search/api"
+APP_PATH="/local/content/deployment/ctapi"
+#ENVIRONMENT="development"
+ENVIRONMENT="production"
+USER="ctapi_user"
+#ADDRESS="127.0.0.1"
+PORT="3000"
+LOGFILE="$APP_PATH/logs/ctapi.sys.log"
+PIDFILE="/var/run/ctapi.pid"
+SET_PATH="cd $APP_PATH/$APP_NAME"
+CMD="$SET_PATH; nohup npm start >> $LOGFILE 2>&1 &"
+
+case "$1" in
+
+'start')
+        #echo $$ > $PIDFILE
+	su - $USER -c "echo \"[`date -u +%Y-%m-%dT%T.%3NZ`]  Starting\" >> $LOGFILE "
+        su - $USER -c "$CMD"
+	sleep 3
+        echo $(netstat -tupln  2>&1 | grep -v grep | grep  3000 | awk '{print $7}' | cut -f 1 -d "/") > $PIDFILE
+        ;;
+'stop')
+	su - $USER -c "echo \"[`date -u +%Y-%m-%dT%T.%3NZ`]  Stopping\" >> $LOGFILE "
+
+        if [ -r $PIDFILE ] ; then
+		kill -9 `cat $PIDFILE`
+       		rm $PIDFILE
+        fi
+
+        ;;
+'status')
+        PID=""
+        if [ -r $PIDFILE ] ; then
+                PID=`cat $PIDFILE`
+        fi
+
+        if [ "$PID" != "" ] ; then
+                echo "$APP_NAME is running PID=$PID "
+        else
+                echo "$APP_NAME is not running "
+        fi
+        ;;
+esac

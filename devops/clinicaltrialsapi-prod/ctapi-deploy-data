@@ -1,0 +1,76 @@
+PATH_BASE="/local/content/deployment"
+DATA_PATH="/local/content/ctapi_data"
+TOUT_PATH="/local/content/trialsout"
+
+ORI_PATH="/var/keys/ctapi-conf"
+
+APP_NAME=ctapi
+APP_USER=ctapi_user
+
+#SSH_USER=centos
+SSH_USER=ncimaint
+PROXYKEY_USER=ncimaint
+
+#use ncimaint key
+PROXYKEY_PATH="-i /var/keys/ncimaint.pem"
+KEY_PATH=$PROXYKEY_PATH
+
+SSH_OPT="-q -o StrictHostKeyChecking=no"
+
+PROXY_HOST=x.x.x.x
+
+PROXYCMD="ProxyCommand ssh ${SSH_OPT} ${PROXYKEY_PATH} ${PROXYKEY_USER}@${PROXY_HOST} nc %h %p"
+
+
+
+#disable ssh proxy
+#PROXYCMD="StrictHostKeyChecking=no"
+#KEY_PATH=$PROXYKEY_PATH
+
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME id
+
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME " \
+ [ -d ${DATA_PATH}.bak ] &&  sudo rm -rf ${DATA_PATH} ; \
+ [ -d ${DATA_PATH} ] &&  sudo mv ${DATA_PATH} ${DATA_PATH}.bak  ; \
+ sudo mkdir ${DATA_PATH} ; \
+ sudo chmod o+xr $DATA_PATH ; \
+ sudo chown -R $APP_USER.$APP_USER  $DATA_PATH ; "
+
+
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME " \
+ [ -d ${TOUT_PATH} ] &&  sudo rm -rf ${TOUT_PATH} ; \
+ sudo mkdir ${TOUT_PATH} "
+
+ 
+
+scp -r $SSH_OPT -o "$PROXYCMD" $KEY_PATH $ORI_PATH/get_trialsout.sh $SSH_USER@$HOST_NAME:/tmp
+scp -r $SSH_OPT -o "$PROXYCMD" $KEY_PATH $ORI_PATH/cron-index $SSH_USER@$HOST_NAME:/tmp
+#scp -r $SSH_OPT -o "$PROXYCMD" $KEY_PATH $ORI_PATH $SSH_USER@$HOST_NAME:/tmp
+
+ 
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME " \
+  sudo mv /tmp/get_trialsout.sh ${TOUT_PATH}; sudo chmod +x ${TOUT_PATH}/get_trialsout.sh; \
+  sudo ${TOUT_PATH}/get_trialsout.sh;  sudo chown -R $APP_USER.$APP_USER ${TOUT_PATH} ;"
+
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME "sudo crontab /tmp/cron-index"
+
+
+##### Deploy  ########
+
+
+SSH_USER=$APP_USER
+KEY_PATH="-i /var/keys/ctapi_user.pem"
+
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME id
+
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME " \
+	cd $DATA_PATH; \
+    curl -O https://cbiit-download.nci.nih.gov/evs/EVSOperations/PublicationImprovements/ThesaurusExtended.zip; \
+    curl -O http://evs.nci.nih.gov/ftp1/NCI_Thesaurus/Neoplasm/Neoplasm_Core.csv; \
+    curl -O http://www.cancer.gov/publishedcontent/Files/Configuration/data/zip_codes.json; \
+    unzip ThesaurusExtended.zip; chmod -R go+r *"
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME " \
+	mv  /local/content/trialsout/trials.out $DATA_PATH "
+    
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME "cd $PATH_BASE/$APP_NAME/import/transform && npm run transform-trials "
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME "cd $PATH_BASE/$APP_NAME/search/index && npm run index "

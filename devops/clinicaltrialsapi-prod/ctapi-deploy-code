@@ -1,0 +1,83 @@
+PATH_BASE="/local/content/deployment"
+DATA_PATH="/local/content/ctapi_data"
+
+APP_NAME=ctapi
+APP_USER=ctapi_user
+
+#SSH_USER=centos
+SSH_USER=ncimaint
+PROXYKEY_USER=ncimaint
+
+#use ncimaint key
+PROXYKEY_PATH="-i /var/keys/ncimaint.pem"
+KEY_PATH=$PROXYKEY_PATH
+
+SSH_OPT="-q -o StrictHostKeyChecking=no"
+
+PROXY_HOST=x.x.x.x
+
+PROXYCMD="ProxyCommand ssh ${SSH_OPT} ${PROXYKEY_PATH} ${PROXYKEY_USER}@${PROXY_HOST} nc %h %p"
+
+
+
+#disable ssh proxy
+#PROXYCMD="StrictHostKeyChecking=no"
+#KEY_PATH=$PROXYKEY_PATH
+
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME id
+
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME " \
+ [ -d ${PATH_BASE} ] ||  sudo mkdir ${PATH_BASE} ; \
+ sudo chmod o+xr $PATH_BASE ; \
+ sudo chown -R $APP_USER.$APP_USER  $PATH_BASE ; "
+
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME " \
+ [ -d ${DATA_PATH} ] ||  sudo mkdir ${DATA_PATH} ; \
+ sudo chmod o+xr $DATA_PATH ; \
+ sudo chown -R $APP_USER.$APP_USER  $DATA_PATH ; "
+
+
+##### Deploy  ########
+
+
+SSH_USER=$APP_USER
+KEY_PATH="-i /var/keys/ctapi_user.pem"
+
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME id
+
+ ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME " \
+ cd ${PATH_BASE}; \
+ [ -d backup ] ||  mkdir backup ; \
+ [ -d backup/$APP_NAME.bak ] && rm -rf backup/$APP_NAME.bak; \
+ [ -d $APP_NAME ] && mv $APP_NAME backup/$APP_NAME.bak;  \
+ mkdir -p $APP_NAME/logs;   \
+ ln -s /local/content/ctapi_data $APP_NAME/data;   \
+ echo 0 "
+
+cat cts.tar | ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME "tar xf - -C $PATH_BASE/$APP_NAME"
+
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME "cd $PATH_BASE/$APP_NAME/common && npm install "
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME "cd $PATH_BASE/$APP_NAME/search/common && npm install "
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME "cd $PATH_BASE/$APP_NAME/search/api && npm install "
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME "cd $PATH_BASE/$APP_NAME/search/index && npm install "
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME "cd $PATH_BASE/$APP_NAME/import/transform && npm install "
+
+
+if [ "$DEPLOY_ENV" = "production" ]; then
+    ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME sed -i \'s/\"localhost\"/[\"172.17.5.201\", \"172.17.5.202\", \"172.17.5.203\"]/g\' $PATH_BASE/$APP_NAME/search/config.json
+ elif [ "$DEPLOY_ENV" = "staging" ]; then
+    ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME sed -i \'s/\"localhost\"/[\"172.18.5.201\", \"172.18.5.202\", \"172.18.5.203\"]/g\' $PATH_BASE/$APP_NAME/search/config.json
+ elif [ "$DEPLOY_ENV" = "development" ]; then
+    ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME sed -i \'s/\"localhost\"/[\"172.19.5.201\", \"172.19.5.202\", \"172.19.5.203\"]/g\' $PATH_BASE/$APP_NAME/search/config.json
+ fi
+
+#### restart nodejs service
+
+SSH_USER=ncimaint
+KEY_PATH="-i /var/keys/ncimaint.pem"
+
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME id
+
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME "sudo service ctapi stop "
+
+ssh $SSH_OPT -o "$PROXYCMD" $KEY_PATH $SSH_USER@$HOST_NAME "sudo service ctapi start "

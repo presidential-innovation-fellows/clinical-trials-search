@@ -1,0 +1,8 @@
+#Add Version Info
+GHASH=$(tail -1 .git/logs/HEAD | cut -f 2 -d " ")
+echo "{" > search/api/git_hash.json
+echo " \"git_hash\": \"$GHASH\" " >> search/api/git_hash.json
+echo "}" >> search/api/git_hash.json
+
+#Packaging
+tar cf cts.tar search common import
