@@ -35,7 +35,7 @@ Example: [clinical-trials?sites.org_state_or_province=CA&sites.org_state_or_prov
 
 For field params which are filtering as ranges (`date` and `long` types), please supply `_gte` or `_lte` to the end of the field param (depending on if you are filtering on greater than or equal (gte), less than or equal (lte), or both): `clinical-trials?<field_param>_gte=<field_value_from>&<field_param>_lte=<field_value_to>`
 
-Example: [clinical-trials?date_last_updated_anything_gte=2016-06-16](clinical-trials?date_last_updated_anything_gte=2016-06-16)
+Example: [clinical-trials?record_verification_date_gte=2016-08-25](clinical-trials?record_verification_date_gte=2016-08-25)
 
 -------
 
@@ -64,7 +64,7 @@ curl -XPOST 'https://clinicaltrialsapi.cancer.gov/clinical-trials' \
      -H 'Content-Type: application/json' \
      -d '{
         "sites.org_state_or_province": ["CA", "OR"],
-        "date_last_updated_anything_gte": "2016-06-01",
+        "record_verification_date_gte": "2016-06-01",
         "include": ["nci_id"]
       }'
 ```
@@ -75,15 +75,15 @@ Updates to the API are made daily (the refresh occurs each morning at 7:30 AM ET
 
 Until these updates are made, the best field to use to see which trials have *possibly* been changed in the past 24 hours is the `record_verification_date` field. This field is updated whenever a human auditor verifies a clinical trial record. It is important to note that verification does not necessarily imply that a change was made to the clinical trial record, simply that an auditor took another look at it - but this is inclusive of any instances where the auditor made modifications to the trial.
 
-As an example, to see which clinical trials have been verified by an auditor since 2016-06-16...
+As an example, to see which clinical trials have been verified by an auditor since 2016-08-25...
 
-Example: [clinical-trials?record_verification_date_gte=2016-06-16](clinical-trials?record_verification_date_gte=2016-06-16)
+Example: [clinical-trials?record_verification_date_gte=2016-08-25](clinical-trials?record_verification_date_gte=2016-08-25)
 
 -------
 
 For the time-being, if you simply wish to track when a trial has changed its status, the `current_trial_status_date` field might be more helpful...
 
-Example: [clinical-trials?current_trial_status_date_gte=2016-06-16](clinical-trials?current_trial_status_date_gte=2016-06-16)
+Example: [clinical-trials?current_trial_status_date_gte=2016-08-25](clinical-trials?current_trial_status_date_gte=2016-08-25)
 
 ## Issues
 
