@@ -140,7 +140,8 @@ router.get('/clinical-trial.json', (req, res, next) => {
   let clinicalTrialJson = Utils.omitPrivateKeys(trialMapping);
   let excludeKeys = [
     "analyzer", "index",
-    "format", "include_in_root"
+    "format", "include_in_root",
+    "include_in_all"
   ]
   clinicalTrialJson = Utils.omitDeepKeys(clinicalTrialJson, excludeKeys);
   res.json(clinicalTrialJson["trial"]["properties"]);
