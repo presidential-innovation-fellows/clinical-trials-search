@@ -1,5 +1,5 @@
 # NCI Clinical Trials API
-[https://clinicaltrialsapi.cancer.gov]
+[https://clinicaltrialsapi.cancer.gov/v1]
 
 ## Endpoints
 
@@ -60,7 +60,7 @@ Same as the `GET` endpoint, but allows you to craft a JSON body as the request.
 Example:
 
 ```
-curl -XPOST 'https://clinicaltrialsapi.cancer.gov/clinical-trials' \
+curl -XPOST 'https://clinicaltrialsapi.cancer.gov/v1/clinical-trials' \
      -H 'Content-Type: application/json' \
      -d '{
         "sites.org_state_or_province": ["CA", "OR"],
