@@ -69,6 +69,12 @@ curl -XPOST 'https://clinicaltrialsapi.cancer.gov/v1/clinical-trials' \
       }'
 ```
 
+### `GET terms?term=<search_term>[&term_type=<search_term_type>]`
+The `terms` endpoint is intended for typeaheads and other use cases where it is necessary to search for available terms which can later be used to filter clinical trial results. Terms are matched partially by supplying a string to the `term` field and may be filtered by clinical trial type using the `term_type` field. Results are sorted by a combination of string relevancy and popularity.
+
+Example:
+[terms?term=pancreatic%20n](https://clinicaltrialsapi.cancer.gov/v1/terms?term=pancreatic%20n)
+
 ## Fetching Daily Updates
 
 Updates to the API are made daily (the refresh occurs each morning at 7:30 AM ET). Unfortunately, the API does not do a `diff` to track changes, and there is no one field in the underlying database (which the API taps into) which captures when a trial has been modified. Future modifications to the database architecture are being scheduled to change this by adding `date_created` and `date_updated` fields to each table.
