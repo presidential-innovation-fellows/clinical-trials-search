@@ -311,10 +311,4 @@ SELECT
     )
   ) as trial_json_object
 FROM
-  dw_study study
-WHERE
-  -- lower(current_trial_status) = 'active' AND
-  lower(processing_status) LIKE 'abstraction verified no response' OR
-  lower(processing_status) LIKE 'abstraction verified response' OR
-  lower(processing_status) LIKE 'verification pending' OR
-  lower(processing_status) LIKE 'abstraction';
+  dw_study study;
