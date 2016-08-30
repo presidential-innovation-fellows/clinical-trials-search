@@ -30,7 +30,11 @@ router.get('/clinical-trial/:id', (req, res, next) => {
     if(err) {
       return res.sendStatus(500);
     }
-    res.json(trial);
+    if (!_.isEmpty(trial)) {
+      res.json(trial);
+    } else {
+      res.sendStatus(404);
+    }
   });
 });
 
