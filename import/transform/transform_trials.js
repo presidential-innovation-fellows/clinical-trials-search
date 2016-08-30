@@ -20,9 +20,13 @@ const THESAURUS_FILEPATH = "../../data/ThesaurusExtended.txt";
 const NEOPLASM_CORE_FILEPATH = "../../data/Neoplasm_Core.csv";
 const DISEASE_BLACKLIST_FILEPATH = "disease_blacklist.csv";
 const TRIALS_FILEPATH = "../../data/trials.out";
-const TRIALS_KOSHER_CHARS_FILEPATH = "../../data/trials_kosher_chars.txt";
-const TRIALS_SUPPLEMENTED_FILEPATH = "../../data/trials_supplemented.json";
-const TRIALS_CLEANSED_FILEPATH = "../../data/trials_cleansed.json";
+const SPECIAL_CHARS_REMOVED_EXT = ".01.chars_removed";
+const SUPPLEMENTED_EXT = ".02.supplemented";
+const CLEANSED_EXT = ".03.cleansed";
+
+// TODO: it might be better to do away with temporary intermediate files and
+//       instead use streams - it is easier to debug output using files,
+//       however
 
 class TrialsTransformer {
 
@@ -34,7 +38,7 @@ class TrialsTransformer {
     logger.info(`Removing special chars from ${TRIALS_FILEPATH}...`);
     let rs = fs.createReadStream(path.join(__dirname, TRIALS_FILEPATH));
     let ss = new SpecialCharsStream();
-    let ws = fs.createWriteStream(TRIALS_KOSHER_CHARS_FILEPATH);
+    let ws = fs.createWriteStream(TRIALS_FILEPATH + SPECIAL_CHARS_REMOVED_EXT);
 
     rs.on("error", (err) => { logger.error(err); })
       .pipe(ss)
@@ -124,12 +128,12 @@ class TrialsTransformer {
 
   _transformTrials(callback) {
     logger.info("Transforming trials...");
-    let rs = fs.createReadStream(path.join(__dirname, TRIALS_KOSHER_CHARS_FILEPATH));
+    let rs = fs.createReadStream(path.join(__dirname, TRIALS_FILEPATH + SPECIAL_CHARS_REMOVED_EXT));
     let ls = byline.createStream();
     let ts = new SupplementStream(this.thesaurus, this.neoplasmCore, this.diseaseBlacklist);
     let gs = new GeoCodingStream();
     let jw = JSONStream.stringify();
-    let ws = fs.createWriteStream(TRIALS_SUPPLEMENTED_FILEPATH);
+    let ws = fs.createWriteStream(TRIALS_FILEPATH + SUPPLEMENTED_EXT);
 
     rs.on("error", (err) => { logger.error(err); })
       .pipe(ls)
@@ -147,7 +151,7 @@ class TrialsTransformer {
 
   _loadTerms(callback) {
     logger.info("Loading terms...");
-    let rs = fs.createReadStream(path.join(__dirname, TRIALS_SUPPLEMENTED_FILEPATH));
+    let rs = fs.createReadStream(path.join(__dirname, TRIALS_FILEPATH + SUPPLEMENTED_EXT));
     let termLoader = new TermLoader();
     termLoader.loadTermsFromTrialsJsonReadStream(rs, (err) => {
       if (err) {
@@ -162,11 +166,11 @@ class TrialsTransformer {
 
   _cleanseTrials(callback) {
     logger.info("Cleansing trials...");
-    let rs = fs.createReadStream(path.join(__dirname, TRIALS_SUPPLEMENTED_FILEPATH));
+    let rs = fs.createReadStream(path.join(__dirname, TRIALS_FILEPATH + SUPPLEMENTED_EXT));
     let js = JSONStream.parse("*");
     let cs = new CleanseStream(this.terms);
     let jw = JSONStream.stringify();
-    let ws = fs.createWriteStream(TRIALS_CLEANSED_FILEPATH);
+    let ws = fs.createWriteStream(TRIALS_FILEPATH + CLEANSED_EXT);
 
     rs.on("error", (err) => { logger.error(err); })
       .pipe(js)

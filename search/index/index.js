@@ -8,7 +8,7 @@ const Logger                = require("../../common/logger");
 const elasticsearchAdapter  = require("../common/search_adapters/elasticsearch_adapter");
 
 const TRIALS_FILEPATH = path.join(__dirname,
-  '../../data/trials_cleansed.json');
+  '../../data/trials.out.03.cleansed');
 
 /**
  * Defines the class responsible for creating and managing the elasticsearch indexes
