@@ -12,12 +12,16 @@ var trialLinkRoot = 'http://www.cancer.gov/about-cancer/treatment/clinical-trial
 
 $(document).ready(function () {
     $('#btnLookup').on('click', doLookup);
-    $('#formLookup').on('submit', function(evt){doLookup();evt.preventDefault();});
+    $('#formLookup').on('submit', function(evt) {doLookup();evt.preventDefault();});
     $('#diseaseName').autocomplete({
         delay : 500,
         source : doAutocompleteLookup,
 		select : autocompleteSelect,
-		change : function (event, ui) {event.preventDefault();}
+		focus : function(evt,  ui) {
+			// Display disease name instead of ID.
+			$('#diseaseName').val(ui.item.label);
+			evt.preventDefault();
+		},
     });
     $("#btnClear").on('click', function(evt){
 		$('#output').html("");
@@ -77,10 +81,9 @@ function doLookup(){
 	// Set up the browser geolocation API with success and error callbacks.
 	// In Chrome, geolcation is only available on pages served over HTTPS.
 	if($('#diseaseID').val() !== '') {
+		$('#error').html('');
 		navigator.geolocation.getCurrentPosition(success, error);
 	}
-	else
-		$('#error').html('Please enter a longer search string.');
 }
 
 // Autocomplete for disease names.
@@ -113,12 +116,12 @@ function doAutocompleteLookup(req, rsp) {
 }
 
 // Autocomplete select handler.
-function autocompleteSelect(event, ui ) {
+function autocompleteSelect(evt, ui ) {
 	$('#diseaseName').val(ui.item.label);
 	$('#diseaseID').val(ui.item.value);
 	$('#diseaseName').prop('disabled', true);
 	$('#btnLookup').prop('disabled', false);
-	event.preventDefault();
+	evt.preventDefault();
 }
 
     </script>
@@ -127,7 +130,7 @@ function autocompleteSelect(event, ui ) {
 
     <form id="formLookup">
 
-        <p><label for="diseaseName">Enter a disease name.</label><br>
+        <p><label for="diseaseName">Start typing to select a disease name.</label><br>
         <input id="diseaseName" type="text" maxlength="50" value="">
 		<input id="diseaseID" type="hidden" value="" /></p>
 
