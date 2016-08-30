@@ -23,15 +23,15 @@ $(document).ready(function () {
 function doLookup(){
     
     var keywords = $('#keywords').val();
-    if(keywords.trim().length > 3) {
-        // Specify criteria
-        // Here we're performing a full-text search, displaying the first 20 results.
+    if(keywords.trim().length > 2) {
+
+		// Search for trials, doing a full-text search, displaying the first 20 results.
         var data = {
                 "_fulltext" : keywords,
                 "size" : 20
             }; 
 
-        // Perform a search against the API.
+        // Perform a full-text search against the API.
         $.get('https://clinicaltrialsapi.cancer.gov/v1/clinical-trials', data)
             .done(function success( results ) {
                 var output;
@@ -53,14 +53,13 @@ function doLookup(){
             .fail(function failure (){$('#output').html('An error has occured.');});
     }
     else
-        alert('Please enter a longer search string.');
+        $('#error').html('Please enter a longer search string.');
 }
 
 function doAutocompleteLookup(req, rsp) {
 
     if(req.term.length > 2) {
 
-        // Specify criteria
         // Search for disease names, return first 10 results
         var data = {
             'term' : req.term,
@@ -78,7 +77,7 @@ function doAutocompleteLookup(req, rsp) {
 
                 rsp(data);
             })
-            .fail(function failure (){$('#output').html('An error has occured.');});
+            .fail(function failure (){$('#error').html('An error has occured.');});
     }
 }
 
@@ -93,6 +92,7 @@ function doAutocompleteLookup(req, rsp) {
 
         <p><input type="button" id="btnLookup" value="Do Search"/> <input type="reset" id="btnClear" value="Clear"/></p>
 
+		<div id="error"></div>
         <div id="output"></div>
 
     </form>
