@@ -5,4 +5,3 @@
 + Add alerting that checks transform and index process (check counts in
   each part of the pipeline)
 + Create transformer tests
-+ Create documentation for `terms` endpoint
