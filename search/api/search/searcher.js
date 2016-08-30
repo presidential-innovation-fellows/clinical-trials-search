@@ -81,13 +81,16 @@ class Searcher {
 
   _addFullTextQuery(body, q) {
     if (q._fulltext) {
-      body.query("bool", "should", {
+      // need to nest `_fulltext` query as a "must"
+      let ftBody = new Bodybuilder();
+
+      ftBody.query("bool", "should", {
         "multi_match": {
           "query": q._fulltext,
           "fields": ["*_id", "other_ids.value"]
         }
       });
-      body.query("bool", "should", {
+      ftBody.query("bool", "should", {
         "match_phrase": {
           "_diseases.term._fulltext": {
             "query": q._fulltext,
@@ -95,7 +98,7 @@ class Searcher {
           }
         }
       });
-      body.query("bool", "should", {
+      ftBody.query("bool", "should", {
         "match_phrase": {
           "brief_title": {
             "query": q._fulltext,
@@ -103,14 +106,14 @@ class Searcher {
           }
         }
       });
-      body.query("bool", "should", {
+      ftBody.query("bool", "should", {
         "match_phrase": {
           "brief_summary": {
             "query": q._fulltext
           }
         }
       });
-      body.query("bool", "should", {
+      ftBody.query("bool", "should", {
         "match_phrase": {
           "official_title": {
             "query": q._fulltext,
@@ -118,7 +121,7 @@ class Searcher {
           }
         }
       });
-      body.query("bool", "should", {
+      ftBody.query("bool", "should", {
         "match_phrase": {
           "detail_description": {
             "query": q._fulltext,
@@ -126,7 +129,7 @@ class Searcher {
           }
         }
       });
-      body.query("bool", "should", {
+      ftBody.query("bool", "should", {
         "common": {
           "official_title": {
             "query": q._fulltext,
@@ -136,7 +139,7 @@ class Searcher {
           }
         }
       });
-      body.query("bool", "should", {
+      ftBody.query("bool", "should", {
         "common": {
           "brief_title": {
             "query": q._fulltext,
@@ -145,7 +148,7 @@ class Searcher {
           }
         }
       });
-      body.query("bool", "should", {
+      ftBody.query("bool", "should", {
         "common": {
           "brief_summary": {
             "query": q._fulltext,
@@ -154,7 +157,7 @@ class Searcher {
           }
         }
       });
-      body.query("bool", "should", {
+      ftBody.query("bool", "should", {
         "common": {
           "_diseases.term._fulltext": {
             "query": q._fulltext,
@@ -163,7 +166,7 @@ class Searcher {
           }
         }
       });
-      body.query("bool", "should", {
+      ftBody.query("bool", "should", {
         "common": {
           "detail_description": {
             "query": q._fulltext,
@@ -172,7 +175,7 @@ class Searcher {
           }
         }
       });
-      body.query("bool", "should", {
+      ftBody.query("bool", "should", {
         "common": {
           "sites.org_name._fulltext": {
             "query": q._fulltext,
@@ -182,7 +185,7 @@ class Searcher {
           }
         }
       });
-      body.query("bool", "should", {
+      ftBody.query("bool", "should", {
         "common": {
           "collaborators.name._fulltext": {
             "query": q._fulltext,
@@ -192,29 +195,29 @@ class Searcher {
           }
         }
       });
-      body.query("bool", "should", {
+      ftBody.query("bool", "should", {
         "match": {
           "principal_investigator._fulltext": q._fulltext
         }
       });
-      body.query("bool", "should", {
+      ftBody.query("bool", "should", {
         "match": {
           "sites.contact_name._fulltext": q._fulltext
         }
       });
-      body.query("bool", "should", {
+      ftBody.query("bool", "should", {
         "match": {
           "sites.org_city._fulltext": q._fulltext
         }
       });
-      body.query("bool", "should", {
+      ftBody.query("bool", "should", {
         "match": {
           "sites.org_state_or_province._fulltext": q._fulltext
         }
       });
 
       // TODO: break this up using another bodybuilder
-      body.query("bool", "should", {
+      ftBody.query("bool", "should", {
         "bool": {
           "must": [{
               "nested": {
@@ -239,6 +242,8 @@ class Searcher {
           ]
         }
       });
+
+      body.query("bool", "must", ftBody.build());
     }
   }
 
