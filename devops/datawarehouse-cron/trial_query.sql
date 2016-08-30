@@ -250,10 +250,11 @@ SELECT
           SELECT
             json_agg(
               json_build_object(
-                -- 'display_order', eligibility.display_order,
+                'display_order', eligibility.display_order,
                 'inclusion_indicator', eligibility.inclusion_indicator,
                 'description', eligibility.description
               )
+              ORDER BY eligibility.display_order
             )
           FROM
             dw_study_eligibility_criteria eligibility
