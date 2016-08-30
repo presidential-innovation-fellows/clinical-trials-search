@@ -365,6 +365,9 @@
               },
               "inclusion_indicator": {
                 "type": "boolean"
+              },
+              "display_order": {
+                "type": "short"
               }
             }
           }
