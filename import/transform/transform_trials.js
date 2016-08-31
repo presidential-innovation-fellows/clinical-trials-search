@@ -16,7 +16,7 @@ const SupplementStream    = require("./stream/supplement.js");
 
 let logger = new Logger({ name: "import-transform" });
 
-const THESAURUS_FILEPATH = "../../data/ThesaurusExtended.txt";
+const THESAURUS_FILEPATH = "../../data/Thesaurus.txt";
 const NEOPLASM_CORE_FILEPATH = "../../data/Neoplasm_Core.csv";
 const DISEASE_BLACKLIST_FILEPATH = "disease_blacklist.csv";
 const TRIALS_FILEPATH = "../../data/trials.out";
