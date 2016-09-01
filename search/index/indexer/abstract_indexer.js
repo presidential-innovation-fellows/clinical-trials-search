@@ -4,6 +4,7 @@ const async               = require("async");
 const _                   = require("lodash");
 const JSONStream          = require("JSONStream");
 const ElasticSearch       = require("elasticsearch");
+const moment              = require("moment");
 
 const Logger              = require("../../../common/logger");
 const CONFIG              = require("../../config.json");
@@ -29,8 +30,9 @@ class AbstractIndexer {
 
     //Index is based on time stamp
     //Get timestamp to append to alias name
-    var now = new Date();    
-    let timestamp = `${now.getFullYear()}${now.getMonth()+1}${now.getDate()}_${now.getHours()}${now.getHours()}${now.getSeconds()}`;
+    var now = moment();
+    let timestamp = now.format('YYYYMMDD_HHmmss');
+
     //Set the index name to be alias appended with a timestamp.  Seconds should be good for now.
     this.esIndex = this.esAlias + timestamp;
 
