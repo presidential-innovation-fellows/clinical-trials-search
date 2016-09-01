@@ -2,6 +2,7 @@ const async               = require("async");
 const _                   = require("lodash");
 const ElasticSearch       = require("elasticsearch");
 
+const AbstractIndexTool   = require("./abstract_index_tool");
 const Logger              = require("../../../common/logger");
 
 class ElasticSearchLogger extends Logger {
@@ -15,7 +16,7 @@ class ElasticSearchLogger extends Logger {
  * 
  * @class AliasSwapper
  */
-class IndexOptimizer {
+class IndexOptimizer extends AbstractIndexTool {
 
   get LOGGER_NAME() {
     return "index-optimizer";
@@ -27,9 +28,7 @@ class IndexOptimizer {
    * @param {any} adapter The search adapter to use for connecting to ElasticSearch
    */
   constructor(adapter) {
-    this.logger = new Logger({name: this.LOGGER_NAME});
-
-    this.client = adapter.getClient();
+    super(adapter);
   }
 
   /**

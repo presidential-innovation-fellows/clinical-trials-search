@@ -3,12 +3,15 @@ const path                  = require("path");
 const TrialIndexer          = require("./indexer/trial/indexer");
 const TermIndexer           = require("./indexer/term/indexer");
 const AliasSwapper          = require("./indexer/alias_swapper");
+const IndexCleaner          = require("./indexer/index_cleaner");
 const IndexOptimizer        = require("./indexer/index_optimizer");
 const Logger                = require("../../common/logger");
 const elasticsearchAdapter  = require("../common/search_adapters/elasticsearch_adapter");
 
 const TRIALS_FILEPATH = path.join(__dirname,
   '../../data/trials.out.03.cleansed');
+
+const DAYS_TO_KEEP = 7;
 
 /**
  * Defines the class responsible for creating and managing the elasticsearch indexes
@@ -52,7 +55,9 @@ class Indexer {
       //Optimize the index
       (next) => { IndexOptimizer.init(elasticsearchAdapter, trialIndexInfo, termIndexInfo, next); },
       //if all went well, swap aliases
-      (next) => { AliasSwapper.init(elasticsearchAdapter, trialIndexInfo, termIndexInfo, next); }
+      (next) => { AliasSwapper.init(elasticsearchAdapter, trialIndexInfo, termIndexInfo, next); }/*,
+      //clean up old indices
+      (next) => { IndexCleaner.init(elasticsearchAdapter, trialIndexInfo.esAlias, termIndexInfo.esAlias, DAYS_TO_KEEP, next); }*/
     ], (err, status) => {
       if (err) {
         this.logger.info("Errors encountered. Exiting.");

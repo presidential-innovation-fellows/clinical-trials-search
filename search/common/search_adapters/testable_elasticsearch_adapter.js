@@ -5,9 +5,9 @@ const BaseElasticsearchAdapter      = require("./base_elasticsearch_adapter");
  * Represents the client that should be used for integration tests 
  * 
  * @class ElasticsearchAdapter
- * @extends {AbstractElasticsearchAdapter}
+ * @extends {BaseElasticsearchAdapter}
  */
-class TestableElasticsearchAdapter extends AbstractElasticsearchAdapter {
+class TestableElasticsearchAdapter extends BaseElasticsearchAdapter {
 
     /**
      * Creates an instance of ElasticsearchAdapter.
@@ -20,7 +20,7 @@ class TestableElasticsearchAdapter extends AbstractElasticsearchAdapter {
 
         this.client = new ElasticSearch.Client({
             host: hosts,
-            log: 'trace'
+            log: 'error'
         });
     }
 }
