@@ -13,7 +13,7 @@
     "async": "2.0.0-rc.4",
     "elasticsearch": "11.0.1",
     "event-stream": "3.3.2",
-    "lodash": "4.12.0",
+    "lodash": ">=4.12.0",
     "moment": "2.13.0"
   },
   "devDependencies": {
